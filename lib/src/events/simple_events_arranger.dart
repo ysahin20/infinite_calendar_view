@@ -1,5 +1,3 @@
-
-
 import '../extension.dart';
 import 'event.dart';
 import 'event_arranger.dart';

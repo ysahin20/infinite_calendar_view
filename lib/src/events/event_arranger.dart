@@ -1,4 +1,3 @@
-
 import 'event.dart';
 
 abstract class EventArranger {
@@ -9,7 +8,6 @@ abstract class EventArranger {
   ///
   const EventArranger();
 
-  /// {@macro event_arranger_arrange_method_doc}
   List<OrganizedEvent> arrange({
     required List<Event> events,
     required double height,

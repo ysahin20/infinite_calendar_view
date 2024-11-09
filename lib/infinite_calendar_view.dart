@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+/// Fletch infinite calendar views and helpers widgets.
 library infinite_calendar_view;
 
 export './src/controller/events_controller.dart';

@@ -8,7 +8,7 @@ A Flutter package allows you to easily implement all calendar UI.
 
 ## Features
 
-- 💙 **Inspired by outlook and teams mobile**. Easy to use
+- 💙 **Inspired by Outlook and Teams mobile**. Easy to use
 - ♾️ **Infinite scroll**. Lazy build
 - 🚀 **Good performance**. With several dozen appointments per day
 - 🎲 **Customizable number of days**. Depending on the screen size

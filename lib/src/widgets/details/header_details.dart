@@ -21,14 +21,16 @@ class DefaultHeader extends StatelessWidget {
           const Divider(height: defaultDividerHeight),
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: defaultHorizontalPadding,
-                vertical: defaultVerticalPadding),
+              horizontal: defaultHorizontalPadding,
+              vertical: defaultVerticalPadding,
+            ),
             child: Container(
               alignment: Alignment.centerLeft,
               child: Text(
                 dayText,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
               ),
             ),
           ),
