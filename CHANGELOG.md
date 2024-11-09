@@ -1,3 +1,7 @@
+# [1.0.1 - 10 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.0.1)
+
+- Pub dev publish warning corrections
+
 # [1.0.0 - 10 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.0.0)
 
 - Initial release
