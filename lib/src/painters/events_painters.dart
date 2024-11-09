@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../calendar_view.dart';
+import '../../infinite_calendar_view.dart';
 import '../extension.dart';
 
 class LinesPainter extends CustomPainter {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_calendar_view/calendar_view.dart';
+import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
 import 'data.dart';
 import 'enumerations.dart';
