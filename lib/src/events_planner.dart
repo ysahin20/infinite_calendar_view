@@ -499,6 +499,7 @@ class FullDayParam {
     this.fullDayEventsBarDecoration = const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black12))),
     this.fullDayEventsBuilder,
+    this.fullDayEventBuilder,
   });
 
   static const defaultFullDayEventsBarLeftText = 'All day';
@@ -518,9 +519,12 @@ class FullDayParam {
   /// events days top bar decoration
   final Decoration? fullDayEventsBarDecoration;
 
-  /// full day event builder
+  /// full day events builder
   final Widget Function(List<FullDayEvent> events, double width)?
       fullDayEventsBuilder;
+
+  /// full day event builder
+  final Widget Function(FullDayEvent event, double width)? fullDayEventBuilder;
 }
 
 class PinchToZoomParameters {

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
 DateTime get _now => DateTime.now();
-List<Event> events = generateRandomEvents(50);
+List<Event> events = generateRandomEvents(250);
 List<Event> events2 = [
   Event(
     title: "Project meeting",
@@ -153,7 +153,7 @@ List<Event> generateRandomEvents(int count) {
     final startTime = DateTime(
         _now.year,
         _now.month,
-        _now.day + random.nextInt(10) - 5,
+        _now.day + random.nextInt(60) - 30,
         startHour.toInt(),
         startMinute.toInt());
 
@@ -174,3 +174,11 @@ List<Event> generateRandomEvents(int count) {
     );
   });
 }
+
+List<FullDayEvent> fullDayEvents = [
+  FullDayEvent(
+    title: "vacation",
+    color: Colors.grey,
+    textColor: Colors.white,
+  ),
+];

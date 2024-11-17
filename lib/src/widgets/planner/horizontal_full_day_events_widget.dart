@@ -79,12 +79,10 @@ class HorizontalFullDayEventsWidget extends StatelessWidget {
                             isToday: isToday,
                             day: day,
                             todayColor: todayColor,
-                            height: fullDayParam.fullDayEventsBarHeight,
+                            fullDayParam: fullDayParam,
                             dayWidth: dayWidth,
                             daySeparationWidthPadding:
                                 daySeparationWidthPadding,
-                            fullDayEventsBuilder:
-                                fullDayParam.fullDayEventsBuilder,
                           ),
                         );
                       },
@@ -105,21 +103,18 @@ class FullDayEventsWidget extends StatefulWidget {
     required this.isToday,
     required this.day,
     required this.todayColor,
-    required this.height,
+    required this.fullDayParam,
     required this.dayWidth,
     required this.daySeparationWidthPadding,
-    required this.fullDayEventsBuilder,
   });
 
   final EventsController controller;
   final bool isToday;
   final DateTime day;
   final Color? todayColor;
-  final double height;
+  final FullDayParam fullDayParam;
   final double dayWidth;
   final double daySeparationWidthPadding;
-  final Widget Function(List<FullDayEvent> events, double width)?
-      fullDayEventsBuilder;
 
   @override
   State<FullDayEventsWidget> createState() => _FullDayEventsWidgetState();
@@ -170,22 +165,29 @@ class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
       child: Container(
         decoration:
             BoxDecoration(color: widget.isToday ? widget.todayColor : null),
-        child: widget.fullDayEventsBuilder != null
-            ? widget.fullDayEventsBuilder!.call(events ?? [], widget.dayWidth)
+        child: widget.fullDayParam.fullDayEventsBuilder != null
+            ? widget.fullDayParam.fullDayEventsBuilder!
+                .call(events ?? [], widget.dayWidth)
             : Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: events
-                          ?.map((e) => DefaultDayEvent(
-                                height: 15,
-                                width: width,
-                                title: e.title,
-                                description: e.description,
-                                color: e.color,
-                                textColor: e.textColor,
-                              ))
-                          .toList() ??
+                  children: events?.map(
+                        (e) {
+                          return widget.fullDayParam.fullDayEventBuilder != null
+                              ? widget.fullDayParam.fullDayEventBuilder!
+                                  .call(e, widget.dayWidth)
+                              : DefaultDayEvent(
+                                  height: 15,
+                                  width: width,
+                                  title: e.title,
+                                  titleFontSize: 10,
+                                  description: e.description,
+                                  color: e.color,
+                                  textColor: e.textColor,
+                                );
+                        },
+                      ).toList() ??
                       [],
                 ),
               ),

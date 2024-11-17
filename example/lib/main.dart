@@ -19,7 +19,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   EventsController controller = EventsController()
-    ..updateCalendarData((calendarData) => calendarData.addEvents(events));
+    ..updateCalendarData((calendarData) {
+      calendarData.addEvents(events);
+      calendarData.addFullDayEvents(DateTime.now(), fullDayEvents);
+    });
   var calendarMode = CalendarView.day3;
   var darkMode = false;
 

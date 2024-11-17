@@ -1,3 +1,9 @@
+# [1.0.3 - 14 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.0.3)
+
+- Add full day event builder
+- Bug on full day event default font size
+- Add full day event example
+
 # [1.0.2 - 10 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.0.2)
 
 - Pub dev publish warning corrections
