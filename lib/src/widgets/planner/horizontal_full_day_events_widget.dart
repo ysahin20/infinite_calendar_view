@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
 import 'package:sticky_infinite_list/widget.dart';
 
-import '../../controller/events_controller.dart';
-import '../../events/event.dart';
-import '../../events_planner.dart';
-import 'day_widget.dart';
+import '../../../infinite_calendar_view.dart';
 
 class HorizontalFullDayEventsWidget extends StatelessWidget {
   const HorizontalFullDayEventsWidget({
     super.key,
     required this.controller,
     required this.fullDayParam,
+    required this.columnsParam,
     required this.daySeparationWidthPadding,
     required this.dayHorizontalController,
     required this.maxPreviousDays,
@@ -25,6 +23,7 @@ class HorizontalFullDayEventsWidget extends StatelessWidget {
 
   final EventsController controller;
   final FullDayParam fullDayParam;
+  final ColumnsParam columnsParam;
   final double daySeparationWidthPadding;
   final ScrollController dayHorizontalController;
   final int? maxPreviousDays;
@@ -80,6 +79,7 @@ class HorizontalFullDayEventsWidget extends StatelessWidget {
                             day: day,
                             todayColor: todayColor,
                             fullDayParam: fullDayParam,
+                            columnsParam: columnsParam,
                             dayWidth: dayWidth,
                             daySeparationWidthPadding:
                                 daySeparationWidthPadding,
@@ -104,6 +104,7 @@ class FullDayEventsWidget extends StatefulWidget {
     required this.day,
     required this.todayColor,
     required this.fullDayParam,
+    required this.columnsParam,
     required this.dayWidth,
     required this.daySeparationWidthPadding,
   });
@@ -113,6 +114,7 @@ class FullDayEventsWidget extends StatefulWidget {
   final DateTime day;
   final Color? todayColor;
   final FullDayParam fullDayParam;
+  final ColumnsParam columnsParam;
   final double dayWidth;
   final double daySeparationWidthPadding;
 
@@ -160,37 +162,69 @@ class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
     var width = widget.dayWidth - (widget.daySeparationWidthPadding * 2);
 
     return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: widget.daySeparationWidthPadding),
+      padding: EdgeInsets.symmetric(
+        horizontal: widget.daySeparationWidthPadding,
+      ),
       child: Container(
-        decoration:
-            BoxDecoration(color: widget.isToday ? widget.todayColor : null),
-        child: widget.fullDayParam.fullDayEventsBuilder != null
-            ? widget.fullDayParam.fullDayEventsBuilder!
-                .call(events ?? [], widget.dayWidth)
-            : Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: events?.map(
-                        (e) {
-                          return widget.fullDayParam.fullDayEventBuilder != null
-                              ? widget.fullDayParam.fullDayEventBuilder!
-                                  .call(e, widget.dayWidth)
-                              : DefaultDayEvent(
-                                  height: 15,
-                                  width: width,
-                                  title: e.title,
-                                  titleFontSize: 10,
-                                  description: e.description,
-                                  color: e.color,
-                                  textColor: e.textColor,
-                                );
-                        },
-                      ).toList() ??
-                      [],
-                ),
-              ),
+        decoration: BoxDecoration(
+          color: widget.isToday && widget.todayColor != null
+              ? widget.todayColor
+              : widget.fullDayParam.fullDayBackgroundColor,
+        ),
+        child: Stack(
+          children: [
+            // columns painters
+            if (widget.columnsParam.columns > 1) getColumnPainter(width),
+            getFullDayEvents(width),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getFullDayEvents(double width) {
+    return widget.fullDayParam.fullDayEventsBuilder != null
+        ? widget.fullDayParam.fullDayEventsBuilder!
+            .call(events ?? [], widget.dayWidth)
+        : Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: events?.map(
+                    (e) {
+                      return widget.fullDayParam.fullDayEventBuilder != null
+                          ? widget.fullDayParam.fullDayEventBuilder!
+                              .call(e, widget.dayWidth)
+                          : DefaultDayEvent(
+                              height: 15,
+                              width: width,
+                              title: e.title,
+                              titleFontSize: 10,
+                              description: e.description,
+                              color: e.color,
+                              textColor: e.textColor,
+                            );
+                    },
+                  ).toList() ??
+                  [],
+            ),
+          );
+  }
+
+  Widget getColumnPainter(double width) {
+    return SizedBox(
+      width: width,
+      height: widget.fullDayParam.fullDayEventsBarHeight,
+      child: CustomPaint(
+        foregroundPainter: widget.columnsParam.columnCustomPainter?.call(
+              width,
+              widget.columnsParam.columns,
+            ) ??
+            ColumnPainter(
+              width: width,
+              columnsParam: widget.columnsParam,
+              lineColor: Theme.of(context).colorScheme.outlineVariant,
+            ),
       ),
     );
   }

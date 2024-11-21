@@ -13,7 +13,6 @@ abstract class EventArranger {
     required double height,
     required double width,
     required double heightPerMinute,
-    required Object type,
   });
 }
 

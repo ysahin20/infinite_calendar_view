@@ -31,7 +31,7 @@ class EventsListView extends StatelessWidget {
           emptyEventsWidget: DefaultDayEvents.defaultEmptyEventsWidget,
         );
       },
-      dayHeaderBuilder: (day, isToday) => DefaultHeader(
+      dayHeaderBuilder: (day, isToday, events) => DefaultHeader(
         dayText: DateFormat.MMMMEEEEd().format(day).toUpperCase(),
       ),
     );

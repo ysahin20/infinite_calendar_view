@@ -8,6 +8,7 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
   const HorizontalDaysIndicatorWidget({
     super.key,
     required this.daysHeaderParam,
+    required this.columnsParam,
     required this.timesIndicatorsWidth,
     required this.dayHorizontalController,
     required this.maxPreviousDays,
@@ -17,6 +18,7 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
   });
 
   final DaysHeaderParam daysHeaderParam;
+  final ColumnsParam columnsParam;
   final double timesIndicatorsWidth;
   final ScrollController dayHorizontalController;
   final int? maxPreviousDays;
@@ -52,16 +54,92 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
                   contentBuilder: (context) {
                     return SizedBox(
                       width: dayWidth,
-                      child: daysHeaderParam.dayHeaderBuilder != null
-                          ? daysHeaderParam.dayHeaderBuilder!.call(day, isToday)
-                          : DefaultDayHeader(
-                              dayText: "${day.day}/${day.month}",
-                              isToday: isToday,
-                            ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          daysHeaderParam.dayHeaderBuilder != null
+                              ? daysHeaderParam.dayHeaderBuilder!
+                                  .call(day, isToday)
+                              : DefaultDayHeader(
+                                  dayText: "${day.day}/${day.month}",
+                                  isToday: isToday,
+                                ),
+                          if (columnsParam.columns > 1)
+                            getColumnsHeader(context, day, isToday)
+                        ],
+                      ),
                     );
                   },
                 );
               }),
+        ),
+      ),
+    );
+  }
+
+  Row getColumnsHeader(BuildContext context, DateTime day, bool isToday) {
+    var colorScheme = Theme.of(context).colorScheme;
+    var bgColor = colorScheme.surface;
+    var fgColor = colorScheme.primary;
+    var builder = columnsParam.columnHeaderBuilder;
+    return Row(
+      children: [
+        for (var column = 0; column < columnsParam.columns; column++)
+          if (builder != null)
+            builder.call(day, isToday, column,
+                columnsParam.getColumSize(dayWidth, column))
+          else
+            DefaultColumnHeader(
+              columnIndex: column,
+              columnText: columnsParam.columnsLabels[column],
+              columnWidth: columnsParam.getColumSize(dayWidth, column),
+              backgroundColor: columnsParam.columnsColors.isNotEmpty
+                  ? columnsParam.columnsColors[column]
+                  : bgColor,
+              foregroundColor: fgColor,
+            )
+      ],
+    );
+  }
+}
+
+class DefaultColumnHeader extends StatelessWidget {
+  const DefaultColumnHeader({
+    super.key,
+    required this.columnText,
+    required this.backgroundColor,
+    required this.foregroundColor,
+    required this.columnIndex,
+    required this.columnWidth,
+  });
+
+  final String columnText;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final int columnIndex;
+  final double columnWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: columnWidth,
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            child: Text(
+              columnText,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: foregroundColor,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -100,8 +178,8 @@ class DefaultDayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var fgColor = foregroundColor ?? colorScheme.onPrimary;
-    var todayBgColor = todayForegroundColor ?? colorScheme.surface;
-    var todayFgColor = todayBackgroundColor ?? colorScheme.primary;
+    var todayBgColor = todayBackgroundColor ?? colorScheme.surface;
+    var todayFgColor = todayForegroundColor ?? colorScheme.primary;
 
     return Center(
       child: isToday

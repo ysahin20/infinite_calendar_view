@@ -22,6 +22,7 @@ class DayWidget extends StatelessWidget {
     required this.dayWidth,
     required this.dayEventsArranger,
     required this.dayParam,
+    required this.columnsParam,
     required this.currentHourIndicatorParam,
     required this.currentHourIndicatorColor,
     required this.offTimesParam,
@@ -36,6 +37,7 @@ class DayWidget extends StatelessWidget {
   final double dayWidth;
   final EventArranger dayEventsArranger;
   final DayParam dayParam;
+  final ColumnsParam columnsParam;
   final CurrentHourIndicatorParam currentHourIndicatorParam;
   final Color currentHourIndicatorColor;
   final OffTimesParam offTimesParam;
@@ -43,7 +45,8 @@ class DayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isToday = DateUtils.isSameDay(day, DateTime.now());
-    var dayBackgroundColor = isToday ? todayColor : null;
+    var dayBackgroundColor =
+        isToday && todayColor != null ? todayColor : dayParam.dayColor;
     var width = dayWidth - (daySeparationWidthPadding * 2);
     var offTimesOfDay = offTimesParam.offTimesDayRanges[day];
     var offTimesDefaultColor = context.isDarkMode
@@ -131,16 +134,40 @@ class DayWidget extends StatelessWidget {
               ),
             ),
 
+            // columns painters
+            if (columnsParam.columns > 1)
+              SizedBox(
+                width: width,
+                height: plannerHeight,
+                child: CustomPaint(
+                  foregroundPainter: columnsParam.columnCustomPainter?.call(
+                        width,
+                        columnsParam.columns,
+                      ) ??
+                      ColumnPainter(
+                        width: width,
+                        columnsParam: columnsParam,
+                        lineColor: Theme.of(context).colorScheme.outlineVariant,
+                      ),
+                ),
+              ),
+
             // events
-            EventsListWidget(
-              controller: controller,
-              day: day,
-              plannerHeight: plannerHeight -
-                  (dayParam.dayTopPadding + dayParam.dayBottomPadding),
-              heightPerMinute: heightPerMinute,
-              dayWidth: width,
-              dayEventsArranger: dayEventsArranger,
-              dayEventBuilder: dayParam.dayEventBuilder,
+            Row(
+              children: [
+                for (var column = 0; column < columnsParam.columns; column++)
+                  EventsListWidget(
+                    controller: controller,
+                    columIndex: column,
+                    day: day,
+                    plannerHeight: plannerHeight -
+                        (dayParam.dayTopPadding + dayParam.dayBottomPadding),
+                    heightPerMinute: heightPerMinute,
+                    dayWidth: columnsParam.getColumSize(width, column),
+                    dayEventsArranger: dayEventsArranger,
+                    dayParam: dayParam,
+                  ),
+              ],
             ),
 
             // time line indicator
@@ -184,22 +211,22 @@ class EventsListWidget extends StatefulWidget {
     super.key,
     required this.controller,
     required this.day,
+    required this.columIndex,
     required this.plannerHeight,
     required this.heightPerMinute,
     required this.dayWidth,
     required this.dayEventsArranger,
-    required this.dayEventBuilder,
+    required this.dayParam,
   });
 
   final EventsController controller;
+  final int columIndex;
   final DateTime day;
   final double plannerHeight;
   final double heightPerMinute;
   final double dayWidth;
   final EventArranger dayEventsArranger;
-  final Widget Function(
-          Event event, double height, double width, double heightPerMinute)?
-      dayEventBuilder;
+  final DayParam dayParam;
 
   @override
   State<EventsListWidget> createState() => _EventsListWidgetState();
@@ -215,11 +242,10 @@ class _EventsListWidgetState extends State<EventsListWidget> {
   void initState() {
     super.initState();
     heightPerMinute = widget.heightPerMinute;
+    events = getDayColumnEvents();
+    organizedEvents = getOrganizedEvents(events);
     eventListener = () => updateEvents();
     widget.controller.addListener(eventListener);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      updateEvents();
-    });
   }
 
   @override
@@ -228,24 +254,40 @@ class _EventsListWidgetState extends State<EventsListWidget> {
     widget.controller.removeListener(eventListener);
   }
 
+  List<Event>? getDayColumnEvents() {
+    return widget.controller
+        .getFilteredDayEvents(widget.day)
+        ?.where((e) => e.columnIndex == widget.columIndex)
+        .toList();
+  }
+
+  List<OrganizedEvent> getOrganizedEvents(List<Event>? events) {
+    var arranger = widget.dayEventsArranger;
+    return arranger.arrange(
+      events: events ?? [],
+      height: widget.plannerHeight,
+      width: widget.dayWidth,
+      heightPerMinute: heightPerMinute,
+    );
+  }
+
   void updateEvents() {
     if (mounted) {
-      var dayEvents = widget.controller.getFilteredDayEvents(widget.day);
+      var dayEvents = getDayColumnEvents();
 
-      // no update if no change for current day
-      if ((listEquals(dayEvents, events) == false) ||
-          (heightPerMinute != widget.heightPerMinute)) {
+      // update events when pinch to zoom
+      if (heightPerMinute != widget.heightPerMinute) {
         setState(() {
           heightPerMinute = widget.heightPerMinute;
+          organizedEvents = getOrganizedEvents(events);
+        });
+      }
+
+      // no update if no change for current day
+      if (listEquals(dayEvents, events) == false) {
+        setState(() {
           events = dayEvents != null ? [...dayEvents] : null;
-          var arranger = widget.dayEventsArranger;
-          organizedEvents = arranger.arrange(
-            events: events ?? [],
-            height: widget.plannerHeight,
-            width: widget.dayWidth,
-            heightPerMinute: heightPerMinute,
-            type: "",
-          );
+          organizedEvents = getOrganizedEvents(events);
         });
       }
     }
@@ -280,9 +322,13 @@ class _EventsListWidgetState extends State<EventsListWidget> {
         widget.plannerHeight - organizedEvent.bottom - organizedEvent.top;
     var width = widget.dayWidth - organizedEvent.left - organizedEvent.right;
 
-    if (widget.dayEventBuilder != null) {
-      return widget.dayEventBuilder!
-          .call(organizedEvent.event, height, width, heightPerMinute);
+    if (widget.dayParam.dayEventBuilder != null) {
+      return widget.dayParam.dayEventBuilder!.call(
+        organizedEvent.event,
+        height,
+        width,
+        heightPerMinute,
+      );
     }
     return DefaultDayEvent(
       title: organizedEvent.event.title,

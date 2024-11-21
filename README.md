@@ -15,6 +15,7 @@ A Flutter package allows you to easily implement all calendar UI.
 - ✏️ **All configurable**. Everything is configurable!
 - 🤏 **Pinch to zoom**. Change the time scale with two fingers
 - 👆🏼 **Drag and drop**. Move appointments easily
+- 👩‍👧‍👦 **Multi column**. Manage multiple calendars in the same view !
 - 🗂️ **Events filter**. Easy filter day events
 - 🗓️ **Events arranger**. Customize the placement of appointments in the schedule
 - ♾️ **...**
@@ -191,6 +192,35 @@ A Flutter package allows you to easily implement all calendar UI.
      });
    }
    ```
+
+3. Manage multiple calendars in the same view with multiple columns
+
+   Set columnIndex in Event
+   ```dart
+   Event(
+      columnIndex: 2,
+      ...
+    )
+   ```
+
+   Set columns number, labels, colors and ratio (optional)
+   ```dart
+   EventsPlanner(
+      controller: controller,
+      columnsParam: ColumnsParam(
+        columns: 4,
+        columnsLabels: ["Tennis", "Foot", "Bad"],
+        columnsWidthRatio: [1 / 3, 1 / 3, 1 / 3],
+        columnsColors: [
+          Colors.yellow.pastel,
+          Colors.green.pastel,
+          Colors.blueAccent.pastel,
+        ],
+      ),
+   );
+   ```
+
+   ![Preview](https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/columns.png)
 
 ## All parameters
 

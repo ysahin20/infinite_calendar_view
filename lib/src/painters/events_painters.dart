@@ -216,3 +216,29 @@ class OffSetAllDaysPainter extends CustomPainter {
   @override
   bool shouldRepaint(OffSetAllDaysPainter oldDelegate) => true;
 }
+
+class ColumnPainter extends CustomPainter {
+  const ColumnPainter({
+    required this.width,
+    required this.columnsParam,
+    required this.lineColor,
+  });
+
+  final double width;
+  final ColumnsParam columnsParam;
+  final Color lineColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var columnsTotalWidth = 0.0;
+    final paint = Paint()..color = lineColor;
+    for (var i = 1; i < columnsParam.columns; i++) {
+      columnsTotalWidth += columnsParam.getColumSize(width, i - 1);
+      canvas.drawLine(Offset(columnsTotalWidth, 0),
+          Offset(columnsTotalWidth, size.height), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(ColumnPainter oldDelegate) => true;
+}

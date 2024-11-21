@@ -1,3 +1,4 @@
+import 'package:example/views/events_planner_multi_columns_view.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
@@ -74,6 +75,10 @@ class _MyAppState extends State<MyApp> {
               key: UniqueKey(),
               controller: controller,
               daysShowed: 7,
+              isDarkMode: darkMode,
+            ),
+          CalendarView.multi_column => EventsPlannerMultiColumnView(
+              key: UniqueKey(),
               isDarkMode: darkMode,
             ),
         },

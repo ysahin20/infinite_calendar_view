@@ -32,6 +32,7 @@ class EventsPlanner extends StatefulWidget {
     this.automaticAdjustHorizontalScrollToDay = true,
     this.onAutomaticAdjustHorizontalScroll,
     this.dayParam = const DayParam(),
+    this.columnsParam = const ColumnsParam(),
     this.timesIndicatorsParam = const TimesIndicatorsParam(),
     this.daysHeaderParam = const DaysHeaderParam(),
     this.currentHourIndicatorParam = const CurrentHourIndicatorParam(),
@@ -87,6 +88,9 @@ class EventsPlanner extends StatefulWidget {
 
   /// day param : day builder, padding, colors...
   final DayParam dayParam;
+
+  /// columns param : multi columns (multi agenda) per day
+  final ColumnsParam columnsParam;
 
   /// left time indicator (hour) parameters
   final TimesIndicatorsParam timesIndicatorsParam;
@@ -234,7 +238,8 @@ class EventsPlannerState extends State<EventsPlanner> {
         return Column(
           children: [
             // top days header
-            if (widget.daysHeaderParam.daysHeaderVisibility)
+            if (widget.daysHeaderParam.daysHeaderVisibility ||
+                widget.columnsParam.columns > 1)
               getHorizontalDaysIndicatorWidget(),
 
             // full day events
@@ -366,6 +371,7 @@ class EventsPlannerState extends State<EventsPlanner> {
               dayWidth: dayWidth,
               dayEventsArranger: widget.dayEventsArranger,
               dayParam: widget.dayParam,
+              columnsParam: widget.columnsParam,
               currentHourIndicatorParam: widget.currentHourIndicatorParam,
               currentHourIndicatorColor: currentHourIndicatorColor,
               offTimesParam: widget.offTimesParam,
@@ -395,6 +401,7 @@ class EventsPlannerState extends State<EventsPlanner> {
     return HorizontalFullDayEventsWidget(
       controller: _controller,
       fullDayParam: widget.fullDayParam,
+      columnsParam: widget.columnsParam,
       daySeparationWidthPadding: daySeparationWidthPadding,
       dayHorizontalController: headersHorizontalController,
       maxPreviousDays: widget.maxPreviousDays,
@@ -409,6 +416,7 @@ class EventsPlannerState extends State<EventsPlanner> {
   HorizontalDaysIndicatorWidget getHorizontalDaysIndicatorWidget() {
     return HorizontalDaysIndicatorWidget(
       daysHeaderParam: widget.daysHeaderParam,
+      columnsParam: widget.columnsParam,
       dayHorizontalController: headersHorizontalController,
       maxPreviousDays: widget.maxPreviousDays,
       maxNextDays: widget.maxNextDays,
@@ -500,6 +508,7 @@ class FullDayParam {
         border: Border(bottom: BorderSide(color: Colors.black12))),
     this.fullDayEventsBuilder,
     this.fullDayEventBuilder,
+    this.fullDayBackgroundColor,
   });
 
   static const defaultFullDayEventsBarLeftText = 'All day';
@@ -525,6 +534,9 @@ class FullDayParam {
 
   /// full day event builder
   final Widget Function(FullDayEvent event, double width)? fullDayEventBuilder;
+
+  /// color of background top bar
+  final Color? fullDayBackgroundColor;
 }
 
 class PinchToZoomParameters {
@@ -664,9 +676,51 @@ class TimesIndicatorsParam {
       timesIndicatorsCustomPainter;
 }
 
+class ColumnsParam {
+  const ColumnsParam({
+    this.columns = 1,
+    this.columnsLabels = const [],
+    this.columnsColors = const [],
+    this.columnsWidthRatio,
+    this.columnHeaderBuilder,
+    this.columnCustomPainter,
+  });
+
+  /// number of columns per day
+  final int columns;
+
+  /// label of column showed in header
+  final List<String> columnsLabels;
+
+  /// background color of column showed in header
+  final List<Color> columnsColors;
+
+  /// ratio of dayWidth of each column
+  final List<double>? columnsWidthRatio;
+
+  /// column custom builder in top bar
+  final Widget Function(
+    DateTime day,
+    bool isToday,
+    int columIndex,
+    double columnWidth,
+  )? columnHeaderBuilder;
+
+  /// custom day painter for paint verticals lines
+  final CustomPainter Function(double width, int colum)? columnCustomPainter;
+
+  double getColumSize(double dayWidth, int columnIndex) {
+    var columnWidthRatio = columnsWidthRatio?[columnIndex];
+    return columnWidthRatio != null
+        ? dayWidth * columnWidthRatio
+        : dayWidth / columns;
+  }
+}
+
 class DayParam {
   const DayParam({
     this.todayColor,
+    this.dayColor,
     this.dayTopPadding = 10,
     this.dayBottomPadding = 15,
     this.dayCustomPainter,
@@ -690,6 +744,9 @@ class DayParam {
   /// today day color
   /// null for no color
   final Color? todayColor;
+
+  /// day background color
+  final Color? dayColor;
 
   /// custom day painter for paint horizontal lines
   final CustomPainter Function(double heightPerMinute, bool isToday)?

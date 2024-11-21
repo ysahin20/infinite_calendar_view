@@ -26,6 +26,12 @@ class EventsPlannerView extends StatelessWidget {
       initialDate: DateTime.now(),
       heightPerMinute: heightPerMinute,
       initialVerticalScrollOffset: initialVerticalScrollOffset,
+      dayParam: DayParam(
+        onSlotTap: (exactDateTime, roundDateTime) {},
+        dayEventBuilder: (event, height, width, heightPerMinute) {
+          return draggableEvent(event, height, width, heightPerMinute);
+        },
+      ),
       daysHeaderParam: DaysHeaderParam(
         daysHeaderVisibility: daysShowed != 1,
         daysHeaderColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -36,12 +42,6 @@ class EventsPlannerView extends StatelessWidget {
             foregroundColor:
                 isDarkMode ? Theme.of(context).colorScheme.primary : null,
           );
-        },
-      ),
-      dayParam: DayParam(
-        onSlotTap: (exactDateTime, roundDateTime) {},
-        dayEventBuilder: (event, height, width, heightPerMinute) {
-          return draggableEvent(event, height, width, heightPerMinute);
         },
       ),
     );

@@ -17,7 +17,6 @@ class SideEventArranger extends EventArranger {
     required double height,
     required double width,
     required double heightPerMinute,
-    required Object type,
   }) {
     var eventsConflict = <Event, List<Event>>{};
     var eventsConflictGroup = <Event, Set<Event>>{};

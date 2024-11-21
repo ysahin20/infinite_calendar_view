@@ -17,7 +17,6 @@ class SimpleEventArranger extends EventArranger {
     required double height,
     required double width,
     required double heightPerMinute,
-    required Object type,
   }) {
     var organizedEvents = events
         .map((event) => OrganizedEvent(

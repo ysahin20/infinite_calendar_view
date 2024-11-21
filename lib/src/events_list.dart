@@ -54,7 +54,11 @@ class EventsList extends StatefulWidget {
   final Color? todayHeaderColor;
 
   /// day builder in top bar
-  final Widget Function(DateTime day, bool isToday)? dayHeaderBuilder;
+  final Widget Function(
+    DateTime day,
+    bool isToday,
+    List<Event>? events,
+  )? dayHeaderBuilder;
 
   /// Horizontal day scroll physics
   final ScrollPhysics verticalScrollPhysics;
@@ -89,15 +93,17 @@ class EventsListState extends State<EventsList> {
 
         return InfiniteListItem(
           headerStateBuilder: (context, state) {
-            if (state.sticky) {
-              if (listenScroll) {
-                Future(() {
-                  widget.onDayChange?.call(day);
-                });
-              }
+            if (state.sticky && listenScroll) {
+              Future(() {
+                widget.onDayChange?.call(day);
+              });
             }
-            return widget.dayHeaderBuilder?.call(day, isToday) ??
-                DefaultHeader(dayText: day.toString());
+            return HeaderListWidget(
+              controller: widget.controller,
+              day: day,
+              isToday: isToday,
+              dayHeaderBuilder: widget.dayHeaderBuilder,
+            );
           },
           contentBuilder: (context) => DayEvents(
             controller: widget.controller,
@@ -150,11 +156,9 @@ class _DayEventsState extends State<DayEvents> {
   @override
   void initState() {
     super.initState();
+    events = widget.controller.getFilteredDayEvents(widget.day);
     eventListener = () => updateEvents();
     widget.controller.addListener(eventListener);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      updateEvents();
-    });
   }
 
   @override

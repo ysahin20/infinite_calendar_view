@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Event {
   Event({
+    this.columnIndex = 0,
     required this.startTime,
     required this.endTime,
     this.title,
@@ -14,6 +15,7 @@ class Event {
 
   static const String defaultType = "default";
 
+  final int columnIndex;
   final DateTime startTime;
   final DateTime endTime;
   final String? title;
@@ -48,6 +50,7 @@ class Event {
 
 class FullDayEvent {
   FullDayEvent({
+    this.columnIndex = 0,
     this.title,
     this.description,
     this.data,
@@ -56,6 +59,7 @@ class FullDayEvent {
     this.textColor = Colors.white,
   });
 
+  final int columnIndex;
   final String? title;
   final String? description;
   final Color color;
