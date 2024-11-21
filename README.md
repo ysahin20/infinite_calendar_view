@@ -22,7 +22,16 @@ A Flutter package allows you to easily implement all calendar UI.
 
 ## Preview
 
-![Preview](https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/demo.gif)
+<table>
+   <tr>
+      <td>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/demo.gif" alt="drawing" width="300"/>
+      </td>
+      <td>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/dark-tablet.png" alt="drawing" width="600"/>
+      </td>
+   </tr>
+</table>
 
 ## Installing
 
@@ -220,7 +229,7 @@ A Flutter package allows you to easily implement all calendar UI.
    );
    ```
 
-   ![Preview](https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/columns.png)
+   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/columns.png" alt="drawing" width="300"/>
 
 ## All parameters
 

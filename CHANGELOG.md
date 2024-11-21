@@ -1,5 +1,10 @@
 # [1.1.0 - 21 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.0)
 
+- [bug] Rebuild day list header when day events change
+- [new] add tablet screenshot
+
+# [1.1.0 - 21 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.0)
+
 - [new] Multiple column per day
 - [new] Add day events in events list builder and rebuild when day events change
 - [bug] Sync build of day events /list events when events are already in controller

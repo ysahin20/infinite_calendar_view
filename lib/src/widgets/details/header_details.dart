@@ -53,7 +53,7 @@ class _HeaderListWidgetState extends State<HeaderListWidget> {
       // no update if no change for current day
       if (listEquals(dayEvents, events) == false) {
         setState(() {
-          //events = dayEvents;
+          events = dayEvents;
         });
       }
     }
