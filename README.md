@@ -9,13 +9,14 @@ A Flutter package allows you to easily implement all calendar UI.
 ## Features
 
 - 💙 **Inspired by Outlook and Teams mobile**. Easy to use
+- 🍻 **Two views**. Events Planner and Events List
 - ♾️ **Infinite scroll**. Lazy build
 - 🚀 **Good performance**. With several dozen appointments per day
 - 🎲 **Customizable number of days**. Depending on the screen size
 - ✏️ **All configurable**. Everything is configurable!
 - 🤏 **Pinch to zoom**. Change the time scale with two fingers
 - 👆🏼 **Drag and drop**. Move appointments easily
-- 👩‍👧‍👦 **Multi column**. Manage multiple calendars in the same view !
+- 👩‍👧‍👦 **Multi columns**. Manage multiple calendars in the same view !
 - 🗂️ **Events filter**. Easy filter day events
 - 🗓️ **Events arranger**. Customize the placement of appointments in the schedule
 - ♾️ **...**
@@ -25,13 +26,21 @@ A Flutter package allows you to easily implement all calendar UI.
 <table>
    <tr>
       <td>
-         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/demo.gif" alt="drawing" width="300"/>
+         <div class=""><b>Events Planner</b></div>
+         <div>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/demo.gif" alt="drawing" width="300"/>
+         </div>
       </td>
       <td>
-         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/dark-tablet.png" alt="drawing" width="600"/>
+         <div class=""><b>Events List</b></div>
+         <div>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/events-list.gif" alt="drawing" width="300"/>
+         </div>
       </td>
    </tr>
 </table>
+
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/dark-tablet.png" alt="drawing" />
 
 ## Installing
 
