@@ -34,7 +34,7 @@ A Flutter package allows you to easily implement all calendar UI.
       <td>
          <div class=""><b>Events Planner Three Day</b></div>
          <div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/one_day.gif" alt="drawing" width="300"/>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/three_days.gif" alt="drawing" width="300"/>
          </div>
       </td>
       <td>
