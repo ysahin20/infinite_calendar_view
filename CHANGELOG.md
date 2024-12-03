@@ -1,3 +1,7 @@
+# [1.1.3 - 3 Dec 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.3)
+
+- Readme preview gif
+
 # [1.1.2 - 3 Dec 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.2)
 
 - [bug] Event size when pinch to zoom
