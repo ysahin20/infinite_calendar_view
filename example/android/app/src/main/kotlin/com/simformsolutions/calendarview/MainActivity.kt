@@ -1,6 +1,6 @@
-package com.simformsolutions.calendarview
+package com.pickywawa.infinitecalendarview
 
 import io.flutter.embedding.android.FlutterActivity
 
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
 }

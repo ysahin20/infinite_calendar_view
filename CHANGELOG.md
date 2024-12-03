@@ -1,4 +1,11 @@
-# [1.1.0 - 21 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.0)
+# [1.1.2 - 3 Dec 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.2)
+
+- [bug] Event size when pinch to zoom
+- [bug] DefaultDayEvent overflow text when pinch to zoom
+- [new] First and end line in column painter
+- [new] Preview gifs
+
+# [1.1.1 - 21 Nov 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.1)
 
 - [bug] Rebuild day list header when day events change
 - [new] add tablet screenshot

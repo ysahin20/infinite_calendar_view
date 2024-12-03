@@ -80,7 +80,7 @@ class TimeIndicatorPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(TimeIndicatorPainter oldDelegate) => false;
+  bool shouldRepaint(TimeIndicatorPainter oldDelegate) => true;
 }
 
 class HoursPainter extends CustomPainter {
@@ -232,10 +232,14 @@ class ColumnPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var columnsTotalWidth = 0.0;
     final paint = Paint()..color = lineColor;
-    for (var i = 1; i < columnsParam.columns; i++) {
-      columnsTotalWidth += columnsParam.getColumSize(width, i - 1);
+    for (var i = 0; i <= columnsParam.columns; i++) {
       canvas.drawLine(Offset(columnsTotalWidth, 0),
           Offset(columnsTotalWidth, size.height), paint);
+
+      if (i != columnsParam.columns) {
+        var columnWidth = columnsParam.getColumSize(width, i);
+        columnsTotalWidth += columnWidth;
+      }
     }
   }
 

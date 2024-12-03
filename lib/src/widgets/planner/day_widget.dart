@@ -305,39 +305,42 @@ class _EventsListWidgetState extends State<EventsListWidget> {
       width: widget.dayWidth,
       child: Stack(
         children: organizedEvents
-            .map((e) => Positioned(
-                  left: e.left,
-                  top: e.top * scale,
-                  right: e.right,
-                  bottom: e.bottom * scale,
-                  child: getEventWidget(e),
-                ))
+            .map(
+              (e) => getEventWidget(e, scale),
+            )
             .toList(),
       ),
     );
   }
 
-  Widget getEventWidget(OrganizedEvent organizedEvent) {
-    var height =
-        widget.plannerHeight - organizedEvent.bottom - organizedEvent.top;
-    var width = widget.dayWidth - organizedEvent.left - organizedEvent.right;
+  Widget getEventWidget(OrganizedEvent organizedEvent, double scale) {
+    var left = organizedEvent.left;
+    var top = organizedEvent.top * scale;
+    var right = organizedEvent.right;
+    var bottom = organizedEvent.bottom * scale;
+    var height = widget.plannerHeight - (bottom + top);
+    var width = widget.dayWidth - (left + right);
 
-    if (widget.dayParam.dayEventBuilder != null) {
-      return widget.dayParam.dayEventBuilder!.call(
-        organizedEvent.event,
-        height,
-        width,
-        heightPerMinute,
-      );
-    }
-    return DefaultDayEvent(
-      title: organizedEvent.event.title,
-      description: organizedEvent.event.description,
-      color: organizedEvent.event.color,
-      textColor: organizedEvent.event.textColor,
-      height: height,
-      width: width,
-    );
+    return Positioned(
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
+        child: widget.dayParam.dayEventBuilder != null
+            ? widget.dayParam.dayEventBuilder!.call(
+                organizedEvent.event,
+                height,
+                width,
+                heightPerMinute,
+              )
+            : DefaultDayEvent(
+                title: organizedEvent.event.title,
+                description: organizedEvent.event.description,
+                color: organizedEvent.event.color,
+                textColor: organizedEvent.event.textColor,
+                height: height,
+                width: width,
+              ));
   }
 }
 
@@ -369,6 +372,8 @@ class DefaultDayEvent extends StatelessWidget {
   final double verticalPadding;
   final EdgeInsetsGeometry? eventMargin;
 
+  static final minHeight = 30;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -379,13 +384,13 @@ class DefaultDayEvent extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
-          vertical: height > 30 ? verticalPadding : 0,
+          vertical: height > minHeight ? verticalPadding : 0,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (title?.isNotEmpty == true)
+            if (title?.isNotEmpty == true && height > 15)
               Flexible(
                 child: Text(
                   title!,
@@ -394,10 +399,11 @@ class DefaultDayEvent extends StatelessWidget {
                     fontSize: titleFontSize,
                   ),
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+                  softWrap: false,
+                  maxLines: height > 40 ? 2 : 1,
                 ),
               ),
-            if (description?.isNotEmpty == true)
+            if (description?.isNotEmpty == true && height > 40)
               Flexible(
                 child: Text(
                   description!,
@@ -406,6 +412,7 @@ class DefaultDayEvent extends StatelessWidget {
                     fontSize: descriptionFontSize,
                   ),
                   overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                   maxLines: 4,
                 ),
               ),

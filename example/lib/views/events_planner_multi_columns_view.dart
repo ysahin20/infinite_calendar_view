@@ -30,15 +30,17 @@ class EventsPlannerMultiColumnView extends StatelessWidget {
       initialVerticalScrollOffset: initialVerticalScrollOffset,
       daySeparationWidth: 10,
       columnsParam: ColumnsParam(
-        columns: 4,
-        columnsLabels: ["Tennis", "Foot1", "Foot2", "Bad"],
-        columnsWidthRatio: [1 / 3, 1 / 6, 1 / 6, 1 / 3],
+        columns: 3,
+        columnsLabels: ["Tennis", "Foot", "Bad"],
+        columnsWidthRatio: [1 / 3, 1 / 3, 1 / 3],
         columnsColors: [
           Colors.yellow.pastel,
           Colors.green.pastel,
-          Colors.green.pastel,
           Colors.blueAccent.pastel,
         ],
+      ),
+      fullDayParam: FullDayParam(
+        fullDayEventsBarVisibility: false,
       ),
       daysHeaderParam: DaysHeaderParam(
         daysHeaderHeight: 80,

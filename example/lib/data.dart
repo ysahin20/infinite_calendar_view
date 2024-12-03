@@ -122,7 +122,6 @@ List<Event> generateReservationRandomEvents(int count) {
   final colors = [
     Colors.yellow,
     Colors.green,
-    Colors.green,
     Colors.blue,
   ];
   final titles = [
