@@ -5,7 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
 DateTime get _now => DateTime.now();
-List<Event> events = generateRandomEvents(250);
+List<Event> events = [
+  ...generateRandomEvents(250),
+  ...generateMultiDaysEvents(),
+];
+
+List<Event> generateMultiDaysEvents() {
+  return [
+    Event(
+      title: "Multi days event",
+      description: "Multi days description",
+      startTime: _now.add(Duration(days: 40, hours: -5)),
+      endTime: _now.add(Duration(days: 42, hours: 3)),
+      color: Colors.red.pastel,
+      textColor: Colors.red.onPastel,
+    ),
+  ];
+}
 
 List<Event> generateRandomEvents(int count) {
   final random = Random();

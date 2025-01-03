@@ -1,3 +1,7 @@
+# [1.1.4 - 3 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.4)
+
+- Multi days events management (range)
+
 # [1.1.3 - 3 Dec 2024](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.3)
 
 - Readme preview gif

@@ -55,9 +55,19 @@ class CalendarData {
   final dayEvents = <DateTime, List<Event>>{};
   final fullDayEvents = <DateTime, List<FullDayEvent>>{};
 
+  /// add all events and cuts up appointments if they are over several days
   void addEvents(List<Event> events) {
     for (var event in events) {
-      addDayEvents(event.startTime.withoutTime, [event]);
+      var days = event.endTime.difference(event.startTime).inDays;
+      for (int i = 0; i <= days; i++) {
+        var day = event.startTime.withoutTime.add(Duration(days: i));
+        var startTime = i == 0 ? event.startTime : day;
+        var endTime = i == days
+            ? event.endTime
+            : day.add(Duration(days: 1, milliseconds: -1));
+        var newEvents = event.copyWith(startTime: startTime, endTime: endTime);
+        addDayEvents(day, [newEvents]);
+      }
     }
   }
 
