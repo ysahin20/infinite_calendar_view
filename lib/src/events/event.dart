@@ -26,6 +26,7 @@ class Event {
   final Object eventType;
 
   Event copyWith({
+    final int? columnIndex,
     final DateTime? startTime,
     final DateTime? endTime,
     final String? title,
@@ -36,6 +37,7 @@ class Event {
     final Object? eventType,
   }) {
     return Event(
+      columnIndex: columnIndex ?? this.columnIndex,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       title: title ?? this.title,
