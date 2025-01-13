@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
 extension ColorExtension on Color {
-  get pastel => HSLColor.fromColor(this)
-      .withSaturation(0.65)
-      .withLightness(0.87)
-      .toColor();
+  Color get pastel {
+    var hsl = HSLColor.fromColor(this);
+    var newSaturation = hsl.saturation > 0.1 ? 0.65 : hsl.saturation;
+    return hsl.withSaturation(newSaturation).withLightness(0.87).toColor();
+  }
 
-  get onPastel => HSLColor.fromColor(this)
-      .withSaturation(0.48)
-      .withLightness(0.28)
-      .toColor();
+  Color get onPastel {
+    var hsl = HSLColor.fromColor(this);
+    var newSaturation = hsl.saturation > 0.1 ? 0.48 : hsl.saturation;
+    return hsl.withSaturation(newSaturation).withLightness(0.20).toColor();
+  }
+}
+
+extension DateTimeExtensions on DateTime {
+  /// Returns [DateTime] without timestamp.
+  DateTime get withoutTime => DateTime(year, month, day);
 }

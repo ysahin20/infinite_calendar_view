@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_calendar_view/src/utils/extension.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
 import 'package:sticky_infinite_list/widget.dart';
 
@@ -29,7 +30,8 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // take appbar background color first
-    var defaultHeaderBackgroundColor = Theme.of(context).colorScheme.primary;
+    var defaultHeaderBackgroundColor =
+        Theme.of(context).appBarTheme.backgroundColor;
 
     return Container(
       decoration: BoxDecoration(
@@ -40,40 +42,47 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
         child: SizedBox(
           height: daysHeaderParam.daysHeaderHeight,
           child: InfiniteList(
-              controller: dayHorizontalController,
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              direction: InfiniteListDirection.multi,
-              negChildCount: maxPreviousDays,
-              posChildCount: maxNextDays,
-              builder: (context, index) {
-                var day = initialDate.add(Duration(days: index));
-                var isToday = DateUtils.isSameDay(day, DateTime.now());
+            controller: dayHorizontalController,
+            physics: const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            direction: InfiniteListDirection.multi,
+            negChildCount: maxPreviousDays,
+            posChildCount: maxNextDays,
+            builder: (context, index) {
+              var day = initialDate.add(Duration(days: index));
+              var isToday = DateUtils.isSameDay(day, DateTime.now());
 
-                return InfiniteListItem(
-                  contentBuilder: (context) {
-                    return SizedBox(
-                      width: dayWidth,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          daysHeaderParam.dayHeaderBuilder != null
-                              ? daysHeaderParam.dayHeaderBuilder!
-                                  .call(day, isToday)
-                              : DefaultDayHeader(
-                                  dayText: "${day.day}/${day.month}",
-                                  isToday: isToday,
-                                ),
-                          if (columnsParam.columns > 1)
-                            getColumnsHeader(context, day, isToday)
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }),
+              return InfiniteListItem(
+                contentBuilder: (context) {
+                  return SizedBox(
+                    width: dayWidth,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        daysHeaderParam.dayHeaderBuilder != null
+                            ? daysHeaderParam.dayHeaderBuilder!
+                                .call(day, isToday)
+                            : getDefaultDayHeader(day, isToday),
+                        if (columnsParam.columns > 1)
+                          getColumnsHeader(context, day, isToday)
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
+    );
+  }
+
+  DefaultDayHeader getDefaultDayHeader(DateTime day, bool isToday) {
+    return DefaultDayHeader(
+      dayText: daysHeaderParam.dayHeaderTextBuilder?.call(day) ??
+          "${day.day}/${day.month}",
+      isToday: isToday,
+      foregroundColor: daysHeaderParam.daysHeaderForegroundColor,
     );
   }
 
@@ -177,7 +186,10 @@ class DefaultDayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
-    var fgColor = foregroundColor ?? colorScheme.onPrimary;
+    var defaultForegroundColor = context.isDarkMode
+        ? Theme.of(context).colorScheme.primary
+        : colorScheme.onPrimary;
+    var fgColor = foregroundColor ?? defaultForegroundColor;
     var todayBgColor = todayBackgroundColor ?? colorScheme.surface;
     var todayFgColor = todayForegroundColor ?? colorScheme.primary;
 

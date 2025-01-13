@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
 
-class EventsPlannerView extends StatelessWidget {
-  const EventsPlannerView({
+class EventsPlannerDraggableEventsView extends StatelessWidget {
+  const EventsPlannerDraggableEventsView({
     super.key,
     required this.controller,
     required this.daysShowed,
@@ -34,16 +34,18 @@ class EventsPlannerView extends StatelessWidget {
       ),
       daysHeaderParam: DaysHeaderParam(
         daysHeaderVisibility: daysShowed != 1,
-        daysHeaderColor: Theme.of(context).appBarTheme.backgroundColor,
-        dayHeaderBuilder: (day, isToday) {
-          return DefaultDayHeader(
-            dayText: DateFormat("E d").format(day),
-            isToday: isToday,
-            foregroundColor:
-                isDarkMode ? Theme.of(context).colorScheme.primary : null,
-          );
-        },
+        dayHeaderTextBuilder: (day) => DateFormat("E d").format(day),
       ),
+    );
+  }
+
+  DefaultDayHeader getDayHeader(
+      DateTime day, bool isToday, BuildContext context) {
+    return DefaultDayHeader(
+      dayText: DateFormat("E d").format(day),
+      isToday: isToday,
+      foregroundColor:
+          isDarkMode ? Theme.of(context).colorScheme.primary : null,
     );
   }
 

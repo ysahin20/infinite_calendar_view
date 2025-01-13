@@ -5,7 +5,7 @@ import 'package:sticky_infinite_list/widget.dart';
 
 import 'controller/events_controller.dart';
 import 'events/event.dart';
-import 'extension.dart';
+import 'utils/extension.dart';
 import 'widgets/details/day_details.dart';
 import 'widgets/details/header_details.dart';
 
@@ -156,7 +156,7 @@ class _DayEventsState extends State<DayEvents> {
   @override
   void initState() {
     super.initState();
-    events = widget.controller.getFilteredDayEvents(widget.day);
+    events = widget.controller.getSortedFilteredDayEvents(widget.day);
     eventListener = () => updateEvents();
     widget.controller.addListener(eventListener);
   }
@@ -171,7 +171,6 @@ class _DayEventsState extends State<DayEvents> {
   void updateEvents() {
     if (mounted) {
       var dayEvents = widget.controller.getFilteredDayEvents(widget.day);
-
       // no update if no change for current day
       if (listEquals(dayEvents, events) == false) {
         setState(() {

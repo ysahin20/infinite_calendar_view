@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_calendar_view/src/utils/default_text.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
 import 'package:sticky_infinite_list/widget.dart';
 
@@ -6,7 +7,7 @@ import 'controller/events_controller.dart';
 import 'events/event.dart';
 import 'events/event_arranger.dart';
 import 'events/side_events_arranger.dart';
-import 'extension.dart';
+import 'utils/extension.dart';
 import 'widgets/planner/day_widget.dart';
 import 'widgets/planner/horizontal_days_indicator_widget.dart';
 import 'widgets/planner/horizontal_full_day_events_widget.dart';
@@ -502,7 +503,7 @@ class FullDayParam {
   const FullDayParam({
     this.fullDayEventsBarVisibility = true,
     this.fullDayEventsBarHeight = 40,
-    this.fullDayEventsBarLeftText = defaultFullDayEventsBarLeftText,
+    this.fullDayEventsBarLeftText = defaultFullDayText,
     this.fullDayEventsBarLeftWidget,
     this.fullDayEventsBarDecoration = const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black12))),
@@ -510,8 +511,6 @@ class FullDayParam {
     this.fullDayEventBuilder,
     this.fullDayBackgroundColor,
   });
-
-  static const defaultFullDayEventsBarLeftText = 'All day';
 
   /// visibility of full days events
   final bool fullDayEventsBarVisibility;
@@ -529,11 +528,10 @@ class FullDayParam {
   final Decoration? fullDayEventsBarDecoration;
 
   /// full day events builder
-  final Widget Function(List<FullDayEvent> events, double width)?
-      fullDayEventsBuilder;
+  final Widget Function(List<Event> events, double width)? fullDayEventsBuilder;
 
   /// full day event builder
-  final Widget Function(FullDayEvent event, double width)? fullDayEventBuilder;
+  final Widget Function(Event event, double width)? fullDayEventBuilder;
 
   /// color of background top bar
   final Color? fullDayBackgroundColor;
@@ -642,7 +640,9 @@ class DaysHeaderParam {
     this.daysHeaderVisibility = true,
     this.daysHeaderHeight = 40.0,
     this.daysHeaderColor,
+    this.daysHeaderForegroundColor,
     this.dayHeaderBuilder,
+    this.dayHeaderTextBuilder,
   });
 
   /// visibility of days top bar
@@ -654,8 +654,14 @@ class DaysHeaderParam {
   /// day top bar background color
   final Color? daysHeaderColor;
 
+  /// day top bar foreground color
+  final Color? daysHeaderForegroundColor;
+
   /// day builder in top bar
   final Widget Function(DateTime day, bool isToday)? dayHeaderBuilder;
+
+  /// day text builder
+  final String Function(DateTime day)? dayHeaderTextBuilder;
 }
 
 class TimesIndicatorsParam {
@@ -754,7 +760,8 @@ class DayParam {
 
   /// event builder
   /// for listening event tap, it's possible to add gesture detector to dayEventBuilder
-  /// example : dayEventBuilder : (event, height, width) => GestureDetector(child: DefaultEventWidget(...));
+  /// example : dayEventBuilder : (event, height, width) => DefaultDayEvent(height: height, width: width, onTap...)
+  /// or GestureDetector(child: DefaultEventWidget(...));
   final Widget Function(
           Event event, double height, double width, double heightPerMinute)?
       dayEventBuilder;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_calendar_view/src/utils/default_text.dart';
 
 import '../../events/event.dart';
 
@@ -19,7 +20,7 @@ class DefaultDayEvents extends StatelessWidget {
 
   static const defaultEventSeparator = Padding(
     padding: EdgeInsets.only(left: defaultHorizontalPadding),
-    child: Divider(),
+    child: Divider(height: 1),
   );
 
   static const defaultEmptyEventsWidget = Padding(
@@ -80,6 +81,12 @@ class DefaultDetailEvent extends StatelessWidget {
   const DefaultDetailEvent({
     super.key,
     required this.event,
+    this.onTap,
+    this.leftWidget,
+    this.centerWidget,
+    this.rightWidget,
+    this.timeText,
+    this.durationText,
   });
 
   static const defaultCircleColorSize = 10.0;
@@ -88,28 +95,43 @@ class DefaultDetailEvent extends StatelessWidget {
   static const defaultContentFit = 14;
 
   final Event event;
+  final GestureTapCallback? onTap;
+  final Widget? leftWidget;
+  final Widget? centerWidget;
+  final Widget? rightWidget;
+  final String? timeText;
+  final String? durationText;
 
   @override
   Widget build(BuildContext context) {
-    var startTime = event.startTime;
-    var timeText =
-        "${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}";
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: DefaultDayEvents.defaultHorizontalPadding,
-        vertical: DefaultDayEvents.defaultVerticalPadding,
-      ),
-      child: SizedBox(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // date and duration
-            getHour(timeText, context),
-            // colored circle
-            getColoredCircle(),
-            // content (title and description)
-            getContent(context),
-          ],
+    String? durationText = this.durationText;
+    var timeText = this.timeText ?? defaultFullDayText;
+    var event = this.event;
+    if (!event.isFullDay) {
+      var startTime = event.startTime;
+      timeText = this.timeText ??
+          "${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}";
+      durationText = this.getDurationText(event.startTime, event.endTime!);
+    }
+    return InkWell(
+      onTap: () => onTap?.call(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: DefaultDayEvents.defaultHorizontalPadding,
+          vertical: DefaultDayEvents.defaultVerticalPadding,
+        ),
+        child: SizedBox(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // date and duration
+              leftWidget ?? getHour(timeText, durationText, context),
+              // colored circle
+              centerWidget ?? getColoredCircle(),
+              // content (title and description)
+              rightWidget ?? getContent(context),
+            ],
+          ),
         ),
       ),
     );
@@ -156,7 +178,8 @@ class DefaultDetailEvent extends StatelessWidget {
     );
   }
 
-  Flexible getHour(String timeText, BuildContext context) {
+  Flexible getHour(
+      String timeText, String? durationText, BuildContext context) {
     return Flexible(
       flex: defaultDateFit,
       fit: FlexFit.tight,
@@ -165,13 +188,14 @@ class DefaultDetailEvent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(timeText),
-          Text(
-            getDurationText(event.startTime, event.endTime),
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: Theme.of(context).colorScheme.outline),
-          ),
+          if (durationText != null)
+            Text(
+              durationText,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Theme.of(context).colorScheme.outline),
+            ),
         ],
       ),
     );

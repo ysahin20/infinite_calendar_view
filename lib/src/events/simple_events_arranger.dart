@@ -1,4 +1,4 @@
-import '../extension.dart';
+import '../utils/extension.dart';
 import 'event.dart';
 import 'event_arranger.dart';
 
@@ -21,11 +21,11 @@ class SimpleEventArranger extends EventArranger {
     var organizedEvents = events
         .map((event) => OrganizedEvent(
               top: event.startTime.totalMinutes * heightPerMinute,
-              bottom: height - (event.endTime.totalMinutes * heightPerMinute),
+              bottom: height - (event.endTime!.totalMinutes * heightPerMinute),
               left: paddingLeft,
               right: paddingRight,
               startDuration: event.startTime,
-              endDuration: event.endTime,
+              endDuration: event.endTime!,
               event: event,
             ))
         .toList();

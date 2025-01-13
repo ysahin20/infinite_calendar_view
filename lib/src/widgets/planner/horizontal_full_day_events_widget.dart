@@ -123,7 +123,7 @@ class FullDayEventsWidget extends StatefulWidget {
 }
 
 class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
-  List<FullDayEvent>? events;
+  List<Event>? events;
 
   late VoidCallback eventListener;
 
@@ -145,8 +145,8 @@ class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
 
   void updateEvents() {
     if (mounted) {
-      var fullDayEvents =
-          widget.controller.getFilteredFullDayEvents(widget.day);
+      var fullDayEvents = widget.controller
+          .getFilteredDayEvents(widget.day, returnDayEvents: false);
 
       // no update if no change for current day
       if (listEquals(fullDayEvents, events) == false) {
@@ -196,7 +196,7 @@ class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
                           ? widget.fullDayParam.fullDayEventBuilder!
                               .call(e, widget.dayWidth)
                           : DefaultDayEvent(
-                              height: 15,
+                              height: 16,
                               width: width,
                               title: e.title,
                               titleFontSize: 10,

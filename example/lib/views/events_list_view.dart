@@ -19,6 +19,7 @@ class EventsListView extends StatelessWidget {
         return DefaultDayEvents(
           events: events,
           nullEventsWidget: DefaultDayEvents.defaultEmptyEventsWidget,
+          eventBuilder: (event) => DefaultDetailEvent(event: event),
         );
       },
       dayHeaderBuilder: (day, isToday, events) => DefaultHeader(

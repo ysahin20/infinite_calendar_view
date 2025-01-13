@@ -1,4 +1,4 @@
-import '../extension.dart';
+import '../utils/extension.dart';
 import 'event.dart';
 import 'event_arranger.dart';
 
@@ -26,8 +26,8 @@ class SideEventArranger extends EventArranger {
       var conflicts = events
           .where((e) =>
               e != event &&
-              e.startTime.isBefore(event.endTime) == true &&
-              e.endTime.isAfter(event.startTime))
+              e.startTime.isBefore(event.endTime!) == true &&
+              e.endTime!.isAfter(event.startTime))
           .toList();
       eventsConflict[event] = conflicts;
 
@@ -84,11 +84,11 @@ class SideEventArranger extends EventArranger {
 
       return OrganizedEvent(
         top: event.startTime.totalMinutes * heightPerMinute,
-        bottom: height - (event.endTime.totalMinutes * heightPerMinute),
+        bottom: height - (event.endTime!.totalMinutes * heightPerMinute),
         left: (columnIndex * columnWidth) + paddingLeft,
         right: ((maxColumn - columnIndex - 1) * columnWidth) + paddingRight,
         startDuration: event.startTime,
-        endDuration: event.endTime,
+        endDuration: event.endTime!,
         event: event,
       );
     }).toList();

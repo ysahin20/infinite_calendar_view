@@ -11,6 +11,7 @@ export './src/events/event_arranger.dart';
 export './src/events/side_events_arranger.dart';
 export './src/events/simple_events_arranger.dart';
 export './src/events_list.dart';
+export './src/events_months.dart';
 export './src/events_planner.dart';
 export './src/painters/events_painters.dart';
 export './src/widgets/details/day_details.dart';

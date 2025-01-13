@@ -1,3 +1,17 @@
+# [2.0.0 - 12 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.0)
+
+- New view : month view
+- Multi days events management
+    - add unique id in each event
+    - multi day events in month view
+    -
+- Add full day event in list details view
+- Complete DefaultDetailEvent
+
+# [1.1.5 - 7 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.5)
+
+- Multi days events bug with multi columns
+
 # [1.1.4 - 3 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.4)
 
 - Multi days events management (range)

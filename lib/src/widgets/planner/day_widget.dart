@@ -7,8 +7,8 @@ import '../../controller/events_controller.dart';
 import '../../events/event.dart';
 import '../../events/event_arranger.dart';
 import '../../events_planner.dart';
-import '../../extension.dart';
 import '../../painters/events_painters.dart';
+import '../../utils/extension.dart';
 
 class DayWidget extends StatelessWidget {
   const DayWidget({
@@ -256,7 +256,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
 
   List<Event>? getDayColumnEvents() {
     return widget.controller
-        .getFilteredDayEvents(widget.day)
+        .getFilteredDayEvents(widget.day, returnFullDayEvent: false)
         ?.where((e) => e.columnIndex == widget.columIndex)
         .toList();
   }
@@ -322,25 +322,26 @@ class _EventsListWidgetState extends State<EventsListWidget> {
     var width = widget.dayWidth - (left + right);
 
     return Positioned(
-        left: left,
-        top: top,
-        right: right,
-        bottom: bottom,
-        child: widget.dayParam.dayEventBuilder != null
-            ? widget.dayParam.dayEventBuilder!.call(
-                organizedEvent.event,
-                height,
-                width,
-                heightPerMinute,
-              )
-            : DefaultDayEvent(
-                title: organizedEvent.event.title,
-                description: organizedEvent.event.description,
-                color: organizedEvent.event.color,
-                textColor: organizedEvent.event.textColor,
-                height: height,
-                width: width,
-              ));
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
+      child: widget.dayParam.dayEventBuilder != null
+          ? widget.dayParam.dayEventBuilder!.call(
+              organizedEvent.event,
+              height,
+              width,
+              heightPerMinute,
+            )
+          : DefaultDayEvent(
+              title: organizedEvent.event.title,
+              description: organizedEvent.event.description,
+              color: organizedEvent.event.color,
+              textColor: organizedEvent.event.textColor,
+              height: height,
+              width: width,
+            ),
+    );
   }
 }
 
@@ -358,6 +359,7 @@ class DefaultDayEvent extends StatelessWidget {
     this.horizontalPadding = 4,
     this.verticalPadding = 4,
     this.eventMargin = const EdgeInsets.all(1),
+    this.onTap,
   });
 
   final String? title;
@@ -371,52 +373,56 @@ class DefaultDayEvent extends StatelessWidget {
   final double horizontalPadding;
   final double verticalPadding;
   final EdgeInsetsGeometry? eventMargin;
+  final GestureTapCallback? onTap;
 
   static final minHeight = 30;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: eventMargin,
-      decoration: BoxDecoration(color: color),
-      width: width,
-      height: height,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: height > minHeight ? verticalPadding : 0,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (title?.isNotEmpty == true && height > 15)
-              Flexible(
-                child: Text(
-                  title!,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: titleFontSize,
+    return InkWell(
+      onTap: () => onTap?.call(),
+      child: Container(
+        margin: eventMargin,
+        decoration: BoxDecoration(color: color),
+        width: width,
+        height: height,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: height > minHeight ? verticalPadding : 0,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (title?.isNotEmpty == true && height > 15)
+                Flexible(
+                  child: Text(
+                    title!,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: titleFontSize,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    maxLines: height > 40 ? 2 : 1,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  maxLines: height > 40 ? 2 : 1,
                 ),
-              ),
-            if (description?.isNotEmpty == true && height > 40)
-              Flexible(
-                child: Text(
-                  description!,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: descriptionFontSize,
+              if (description?.isNotEmpty == true && height > 40)
+                Flexible(
+                  child: Text(
+                    description!,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: descriptionFontSize,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    maxLines: 4,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  maxLines: 4,
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

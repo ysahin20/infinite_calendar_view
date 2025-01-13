@@ -1,11 +1,13 @@
+import 'package:example/views/events_months_view.dart';
 import 'package:example/views/events_planner_multi_columns_view.dart';
+import 'package:example/views/events_planner_simple_view.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
 import 'data.dart';
 import 'enumerations.dart';
 import 'views/events_list_view.dart';
-import 'views/events_planner_view.dart';
+import 'views/events_planner_draggable_events_view.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   EventsController controller = EventsController()
     ..updateCalendarData((calendarData) {
       calendarData.addEvents(events);
-      calendarData.addFullDayEvents(DateTime.now(), fullDayEvents);
+      calendarData.addEvents(fullDayEvents);
     });
   var calendarMode = CalendarView.day3;
   var darkMode = false;
@@ -71,7 +73,13 @@ class _MyAppState extends State<MyApp> {
               daysShowed: 3,
               isDarkMode: darkMode,
             ),
-          CalendarView.day7 => EventsPlannerView(
+          CalendarView.draggableDay3 => EventsPlannerDraggableEventsView(
+              key: UniqueKey(),
+              controller: controller,
+              daysShowed: 3,
+              isDarkMode: darkMode,
+            ),
+          CalendarView.day7 => EventsPlannerDraggableEventsView(
               key: UniqueKey(),
               controller: controller,
               daysShowed: 7,
@@ -80,6 +88,9 @@ class _MyAppState extends State<MyApp> {
           CalendarView.multi_column => EventsPlannerMultiColumnView(
               key: UniqueKey(),
               isDarkMode: darkMode,
+            ),
+          CalendarView.month => EventsMonthsView(
+              controller: controller,
             ),
         },
       ),

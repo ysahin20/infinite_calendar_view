@@ -11,6 +11,11 @@ extension DateTimeExtensions on DateTime {
 
   int getDayDifference(DateTime date) =>
       withoutTime.difference(date.withoutTime).inDays.abs();
+
+  /// get startOfWeek day depending on the desired starting day of the week
+  DateTime startOfWeek(int weekday) {
+    return DateTime(year, month, day - this.weekday % weekday);
+  }
 }
 
 extension TimerOfDayExtension on TimeOfDay {
@@ -44,5 +49,12 @@ extension ColorBrightness on Color {
     final hslLight =
         hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
     return hslLight.toColor();
+  }
+}
+
+extension IterableExtension<T> on Iterable<T> {
+  T? getOrNull(int index) {
+    if (index >= length || index < 0) return null;
+    return elementAt(index);
   }
 }

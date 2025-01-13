@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../events/event.dart';
 import '../../events_planner.dart';
-import '../../extension.dart';
+import '../../utils/extension.dart';
 
 class DraggableEventWidget extends StatelessWidget {
   const DraggableEventWidget({
@@ -68,7 +68,7 @@ class DraggableEventWidget extends StatelessWidget {
       },
       onDragEnd: (details) {
         var difference = details.offset.dy - oldPositionY;
-        var minutesDiff = event.endTime.difference(event.startTime).inMinutes;
+        var minutesDiff = event.endTime!.difference(event.startTime).inMinutes;
         var minuteDiff = difference / heightPerMinute;
 
         // find day

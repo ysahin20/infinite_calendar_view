@@ -20,6 +20,30 @@ List<Event> generateMultiDaysEvents() {
       color: Colors.red.pastel,
       textColor: Colors.red.onPastel,
     ),
+    Event(
+      title: "Multi days event",
+      description: "Multi days description",
+      startTime: DateTime(_now.year, _now.month, _now.day + 13, 9),
+      endTime: DateTime(_now.year, _now.month, _now.day + 15, 8),
+      color: Colors.green.pastel,
+      textColor: Colors.green.onPastel,
+    ),
+    Event(
+      title: "Multi days event",
+      description: "Multi days description",
+      startTime: DateTime(_now.year, _now.month, _now.day + 12, 8),
+      endTime: DateTime(_now.year, _now.month, _now.day + 14, 8),
+      color: Colors.blue.pastel,
+      textColor: Colors.blue.onPastel,
+    ),
+    Event(
+      title: "Multi days event",
+      description: "Multi days description",
+      startTime: DateTime(_now.year, _now.month, _now.day + 7, 9),
+      endTime: DateTime(_now.year, _now.month, _now.day + 15, 9),
+      color: Colors.orange.pastel,
+      textColor: Colors.orange.onPastel,
+    ),
   ];
 }
 
@@ -35,7 +59,7 @@ List<Event> generateRandomEvents(int count) {
     Colors.purple,
     Colors.pink,
     Colors.cyanAccent,
-    Colors.grey
+    Colors.brown
   ];
   final titles = [
     "Project meeting",
@@ -123,11 +147,14 @@ List<Event> generateRandomEvents(int count) {
   });
 }
 
-List<FullDayEvent> fullDayEvents = [
-  FullDayEvent(
-    title: "vacation",
-    color: Colors.grey,
-    textColor: Colors.white,
+List<Event> fullDayEvents = [
+  Event(
+    title: "Vacation",
+    color: Colors.grey.pastel,
+    textColor: Colors.grey.onPastel,
+    startTime: _now.withoutTime,
+    endTime: _now.withoutTime.add(Duration(days: 7)),
+    isFullDay: true,
   ),
 ];
 
