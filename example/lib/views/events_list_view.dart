@@ -14,7 +14,6 @@ class EventsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return EventsList(
       controller: controller,
-      initialDate: DateTime.now(),
       dayEventsBuilder: (day, events) {
         return DefaultDayEvents(
           events: events,

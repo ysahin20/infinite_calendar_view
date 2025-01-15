@@ -13,10 +13,7 @@ class EventsMonthsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return EventsMonths(
       controller: controller,
-      initialDate: DateTime.now(),
-      daysParam: DaysParam(
-        onDayTapUp: (day) {},
-      ),
+      automaticAdjustScrollToStartOfMonth: true,
     );
   }
 }

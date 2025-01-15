@@ -25,30 +25,57 @@ A Flutter package allows you to easily implement all calendar UI.
 
 <table>
    <tr>
+      <td colspan="2" style="background: #0054de;color: white;text-align:center;">
+          <div class=""><b>Planner View</b></div>
+      </td>
+   </tr>
+   <tr>
       <td>
-         <div class=""><b>Events Planner 1 day</b></div>
+         <div style="text-align:center;"><b>1 day</b></div>
          <div>
             <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/one_day.gif" alt="drawing" width="300"/>
          </div>
       </td>
       <td>
-         <div class=""><b>Events Planner 3 days</b></div>
+         <div style="text-align:center;"><b>3 days</b></div>
          <div>
             <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/three_days.gif" alt="drawing" width="300"/>
          </div>
       </td>
-      <td>
-         <div class=""><b>Events List</b></div>
-         <div>
+   </tr>
+   <tr>
+      <td colspan="2">
+         <div style="text-align:center;">
+            <div style="text-align:center;"><b>7 day (web or tablet)</b></div>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/dark-tablet.png" alt="drawing" />
+         </div>
+      </td>
+   </tr>
+   <tr>
+      <td colspan="2" style="background: #0054de;color: white;text-align:center;">
+          <div class=""><b>Month View</b></div>
+      </td>
+   </tr>
+   <tr>
+      <td colspan="2">
+         <div style="text-align:center;">
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/month.png" alt="drawing" width="300"/>
+         </div>
+      </td>
+   </tr>
+   <tr>
+      <td colspan="2" style="background: #0054de;color: white;text-align:center;">
+          <div class=""><b>List View</b></div>
+      </td>
+   </tr>
+   <tr>
+      <td colspan="2">
+         <div style="text-align:center;">
             <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/events-list.gif" alt="drawing" width="300"/>
          </div>
       </td>
    </tr>
 </table>
-
-### Events Planner 7 days (tablet or web)
-
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/dark-tablet.png" alt="drawing" />
 
 ## Installing
 
@@ -397,6 +424,11 @@ A Flutter package allows you to easily implement all calendar UI.
       ),
    );
    ```
+
+## Showcase
+
+   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase1.png" alt="drawing" width="300"/>
+   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase2.png" alt="drawing" width="300"/>
 
 ## License
 

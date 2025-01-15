@@ -10,7 +10,7 @@ extension DateTimeExtensions on DateTime {
   int get totalMinutes => hour * 60 + minute;
 
   int getDayDifference(DateTime date) =>
-      withoutTime.difference(date.withoutTime).inDays.abs();
+      withoutTime.difference(date.withoutTime).inDays;
 
   /// get startOfWeek day depending on the desired starting day of the week
   DateTime startOfWeek(int weekday) {

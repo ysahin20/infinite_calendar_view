@@ -25,7 +25,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-
+  table_calendar: ^3.2.0
   intl:
   infinite_calendar_view:
     path: ../

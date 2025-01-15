@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 enum CalendarView {
-  agenda("Agenda", Icons.list),
-  day("Day", Icons.calendar_view_day_outlined),
-  day3("3 days", Icons.view_column),
-  draggableDay3("3 days with draggable events", Icons.view_column),
-  day7("7 days (web)", Icons.calendar_view_week),
-  multi_column("Multi columns", Icons.view_column_outlined),
-  month("Month", Icons.calendar_month);
+  agenda("List", Icons.list),
+  day("One Day", Icons.calendar_view_day_outlined),
+  day3("Three days", Icons.view_column),
+  month("Month", Icons.calendar_month),
+  draggableDay3("Draggable events", Icons.view_column),
+  multi_column("Multi columns planner", Icons.view_column_outlined),
+  day7("Seven days (web or tablet)", Icons.calendar_view_week);
 
   const CalendarView(
     this.text,

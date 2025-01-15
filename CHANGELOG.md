@@ -1,12 +1,22 @@
-# [2.0.0 - 12 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.0)
+# [2.0.0 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.0)
 
-- New view : month view
-- Multi days events management
-    - add unique id in each event
+- [change] Fusion between Event and fullDayEvent
+- [new] New view : infinite month view !
+- [new] Multi days events management
+    - generate and add unique id in each event
     - multi day events in month view
-    -
-- Add full day event in list details view
-- Complete DefaultDetailEvent
+    - delete and update methode in controller to remove multi day event yet
+- [new] Focused day saved in controller
+    - easy shared focusedDay between views
+    - init one callback (for update AppBar for example)
+    - use controller focusedDay by default if intitialDay is not defined
+- Add full day event in list details view yet (with fusion between Event and fullDayEvent)
+- [improve] Complete DefaultDetailEvent
+- [improve] InkWell in DefaultDetailEvent and DefaultDayEvent for beautiful tap
+- [improve] Scroll in FullDayEvents for unlimited full day events
+- [example] Show month in AppBar
+- [example] Month Example
+- [example] One Day + Table Calendar Example
 
 # [1.1.5 - 7 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/1.1.5)
 

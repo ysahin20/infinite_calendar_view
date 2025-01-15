@@ -91,49 +91,53 @@ class _WeekState extends State<Week> {
     return Container(
       decoration: widget.weekParam.weekDecoration ??
           WeekParam.defaultWeekDecoration(context),
-      child: LayoutBuilder(builder: (context, constraints) {
-        var width = constraints.maxWidth;
-        var dayWidth = width / 7;
+      child: Container(
+        height: widget.weekParam.weekHeight,
+        child: LayoutBuilder(builder: (context, constraints) {
+          var width = constraints.maxWidth;
+          var dayWidth = width / 7;
 
-        return GestureDetector(
-          onTapDown: (details) => widget.daysParam.onDayTapDown
-              ?.call(getTapDay(details.localPosition, dayWidth)),
-          onTapUp: (details) => widget.daysParam.onDayTapUp
-              ?.call(getTapDay(details.localPosition, dayWidth)),
-          child: Column(
-            children: [
-              // days header
-              Container(
-                height: widget.daysParam.headerHeight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
-                      Expanded(child: getHeaderWidget(dayOfWeek)),
-                  ],
+          return GestureDetector(
+            onTapDown: (details) => widget.daysParam.onDayTapDown
+                ?.call(getTapDay(details.localPosition, dayWidth)),
+            onTapUp: (details) => widget.daysParam.onDayTapUp
+                ?.call(getTapDay(details.localPosition, dayWidth)),
+            behavior: HitTestBehavior.translucent,
+            child: Column(
+              children: [
+                // days header
+                Container(
+                  height: widget.daysParam.headerHeight,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
+                        Expanded(child: getHeaderWidget(dayOfWeek)),
+                    ],
+                  ),
                 ),
-              ),
 
-              // week events
-              Container(
-                height:
-                    widget.weekParam.weekHeight - widget.daysParam.headerHeight,
-                child: Stack(
-                  children: [
-                    for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
-                      for (var eventIndex = 0;
-                          eventIndex < weekShowedEvents[dayOfWeek].length;
-                          eventIndex++)
-                        if (eventIndex < maxEventsShowed)
-                          ...getEventOrMoreEventsWidget(
-                              dayOfWeek, eventIndex, dayWidth),
-                  ],
+                // week events
+                Container(
+                  height: widget.weekParam.weekHeight -
+                      widget.daysParam.headerHeight,
+                  child: Stack(
+                    children: [
+                      for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
+                        for (var eventIndex = 0;
+                            eventIndex < weekShowedEvents[dayOfWeek].length;
+                            eventIndex++)
+                          if (eventIndex < maxEventsShowed)
+                            ...getEventOrMoreEventsWidget(
+                                dayOfWeek, eventIndex, dayWidth),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      }),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 

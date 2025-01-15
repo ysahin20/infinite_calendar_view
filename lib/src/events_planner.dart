@@ -135,7 +135,8 @@ class EventsPlannerState extends State<EventsPlanner> {
     super.initState();
     heightPerMinute = widget.heightPerMinute;
     _controller = widget.controller;
-    initialDate = widget.initialDate?.withoutTime ?? DateTime.now().withoutTime;
+    initialDate =
+        widget.initialDate?.withoutTime ?? widget.controller.focusedDay;
     currentIndex = 0;
     mainVerticalController = ScrollController(
       initialScrollOffset: widget.initialVerticalScrollOffset,
@@ -151,9 +152,7 @@ class EventsPlannerState extends State<EventsPlanner> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // index calculation and first day showed
-      if (widget.onDayChange != null) {
-        initDayChangingListener();
-      }
+      initDayChangingListener();
 
       // Automatic adjust horizontal scroll to nearest day
       if (widget.automaticAdjustHorizontalScrollToDay) {
@@ -186,6 +185,7 @@ class EventsPlannerState extends State<EventsPlanner> {
           currentIndex = index;
           var currentDay = initialDate.add(Duration(days: currentIndex));
           widget.onDayChange?.call(currentDay);
+          widget.controller.updateFocusedDay(currentDay);
         }
       }
     });
@@ -200,17 +200,17 @@ class EventsPlannerState extends State<EventsPlanner> {
       var stopScroll = !scroll.position.isScrollingNotifier.value;
       if (listenHorizontalScrollDayChange && stopScroll) {
         // Round to nearest day
-        var nearestDay = dayWidth * (scroll.offset / dayWidth).round();
-        if (nearestDay != scroll.offset) {
+        var nearestDayOffset = dayWidth * (scroll.offset / dayWidth).round();
+        if (nearestDayOffset != scroll.offset) {
           // adjust scroll
           Future.delayed(const Duration(milliseconds: 1), () {
-            scroll.animateTo(nearestDay,
+            scroll.animateTo(nearestDayOffset,
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.easeIn);
 
             // event
             var adjustedDay = initialDate
-                .add(Duration(days: (nearestDay / dayWidth).toInt()));
+                .add(Duration(days: (nearestDayOffset / dayWidth).toInt()));
             widget.onAutomaticAdjustHorizontalScroll?.call(adjustedDay);
           });
         }
@@ -376,6 +376,7 @@ class EventsPlannerState extends State<EventsPlanner> {
               currentHourIndicatorParam: widget.currentHourIndicatorParam,
               currentHourIndicatorColor: currentHourIndicatorColor,
               offTimesParam: widget.offTimesParam,
+              showMultiDayEvents: !widget.fullDayParam.showMultiDayEvents,
             );
           },
         );
@@ -502,7 +503,9 @@ class EventsPlannerState extends State<EventsPlanner> {
 class FullDayParam {
   const FullDayParam({
     this.fullDayEventsBarVisibility = true,
+    this.showMultiDayEvents = true,
     this.fullDayEventsBarHeight = 40,
+    this.fullDayEventHeight = 20,
     this.fullDayEventsBarLeftText = defaultFullDayText,
     this.fullDayEventsBarLeftWidget,
     this.fullDayEventsBarDecoration = const BoxDecoration(
@@ -515,8 +518,14 @@ class FullDayParam {
   /// visibility of full days events
   final bool fullDayEventsBarVisibility;
 
+  /// show multi day event (no full day) in full day
+  final bool showMultiDayEvents;
+
   /// events days top bar height
   final double fullDayEventsBarHeight;
+
+  /// event height
+  final double fullDayEventHeight;
 
   /// events days top bar left widget
   final Widget? fullDayEventsBarLeftWidget;

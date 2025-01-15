@@ -26,6 +26,7 @@ class DayWidget extends StatelessWidget {
     required this.currentHourIndicatorParam,
     required this.currentHourIndicatorColor,
     required this.offTimesParam,
+    required this.showMultiDayEvents,
   });
 
   final EventsController controller;
@@ -41,6 +42,7 @@ class DayWidget extends StatelessWidget {
   final CurrentHourIndicatorParam currentHourIndicatorParam;
   final Color currentHourIndicatorColor;
   final OffTimesParam offTimesParam;
+  final bool showMultiDayEvents;
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +168,7 @@ class DayWidget extends StatelessWidget {
                     dayWidth: columnsParam.getColumSize(width, column),
                     dayEventsArranger: dayEventsArranger,
                     dayParam: dayParam,
+                    showMultiDayEvents: showMultiDayEvents,
                   ),
               ],
             ),
@@ -217,6 +220,7 @@ class EventsListWidget extends StatefulWidget {
     required this.dayWidth,
     required this.dayEventsArranger,
     required this.dayParam,
+    required this.showMultiDayEvents,
   });
 
   final EventsController controller;
@@ -227,6 +231,7 @@ class EventsListWidget extends StatefulWidget {
   final double dayWidth;
   final EventArranger dayEventsArranger;
   final DayParam dayParam;
+  final bool showMultiDayEvents;
 
   @override
   State<EventsListWidget> createState() => _EventsListWidgetState();
@@ -256,7 +261,12 @@ class _EventsListWidgetState extends State<EventsListWidget> {
 
   List<Event>? getDayColumnEvents() {
     return widget.controller
-        .getFilteredDayEvents(widget.day, returnFullDayEvent: false)
+        .getFilteredDayEvents(
+          widget.day,
+          returnMultiDayEvents: widget.showMultiDayEvents,
+          returnFullDayEvent: false,
+          returnMultiFullDayEvents: false,
+        )
         ?.where((e) => e.columnIndex == widget.columIndex)
         .toList();
   }
@@ -360,6 +370,11 @@ class DefaultDayEvent extends StatelessWidget {
     this.verticalPadding = 4,
     this.eventMargin = const EdgeInsets.all(1),
     this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onTapDown,
+    this.onTapUp,
+    this.onTapCancel,
   });
 
   final String? title;
@@ -374,54 +389,63 @@ class DefaultDayEvent extends StatelessWidget {
   final double verticalPadding;
   final EdgeInsetsGeometry? eventMargin;
   final GestureTapCallback? onTap;
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapCallback? onTapCancel;
+  final GestureTapCallback? onDoubleTap;
+  final GestureLongPressCallback? onLongPress;
 
   static final minHeight = 30;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onTap?.call(),
-      child: Container(
-        margin: eventMargin,
-        decoration: BoxDecoration(color: color),
-        width: width,
-        height: height,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: height > minHeight ? verticalPadding : 0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (title?.isNotEmpty == true && height > 15)
-                Flexible(
-                  child: Text(
-                    title!,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: titleFontSize,
+    return Container(
+      margin: eventMargin,
+      child: Material(
+        child: InkWell(
+          onTap: () {},
+          child: Ink(
+            color: color,
+            width: width,
+            height: height,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: height > minHeight ? verticalPadding : 0,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (title?.isNotEmpty == true && height > 15)
+                    Flexible(
+                      child: Text(
+                        title!,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: titleFontSize,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        maxLines: height > 40 ? 2 : 1,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    maxLines: height > 40 ? 2 : 1,
-                  ),
-                ),
-              if (description?.isNotEmpty == true && height > 40)
-                Flexible(
-                  child: Text(
-                    description!,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: descriptionFontSize,
+                  if (description?.isNotEmpty == true && height > 40)
+                    Flexible(
+                      child: Text(
+                        description!,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: descriptionFontSize,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        maxLines: 4,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    maxLines: 4,
-                  ),
-                ),
-            ],
+                ],
+              ),
+            ),
           ),
         ),
       ),

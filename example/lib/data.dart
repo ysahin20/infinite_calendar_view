@@ -6,7 +6,7 @@ import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
 DateTime get _now => DateTime.now();
 List<Event> events = [
-  ...generateRandomEvents(250),
+  ...generateRandomEvents(500),
   ...generateMultiDaysEvents(),
 ];
 
@@ -125,7 +125,7 @@ List<Event> generateRandomEvents(int count) {
     final startTime = DateTime(
         _now.year,
         _now.month,
-        _now.day + random.nextInt(60) - 30,
+        _now.day + random.nextInt(150) - 75,
         startHour.toInt(),
         startMinute.toInt());
 

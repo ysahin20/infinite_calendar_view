@@ -1,9 +1,11 @@
 import 'package:example/views/events_months_view.dart';
 import 'package:example/views/events_planner_multi_columns_view.dart';
-import 'package:example/views/events_planner_simple_view.dart';
+import 'package:example/views/events_planner_one_day_view.dart';
+import 'package:example/views/events_planner_three_days_view.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
+import 'app_bar.dart';
 import 'data.dart';
 import 'enumerations.dart';
 import 'views/events_list_view.dart';
@@ -21,13 +23,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  EventsController controller = EventsController()
-    ..updateCalendarData((calendarData) {
+  EventsController eventsController = EventsController();
+  var calendarMode = CalendarView.day3;
+  var darkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    eventsController.updateCalendarData((calendarData) {
       calendarData.addEvents(events);
       calendarData.addEvents(fullDayEvents);
     });
-  var calendarMode = CalendarView.day3;
-  var darkMode = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,91 +63,69 @@ class _MyAppState extends State<MyApp> {
       ),
       themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
       home: Scaffold(
-        appBar: getAppBar(context),
-        body: switch (calendarMode) {
-          CalendarView.agenda => EventsListView(
-              controller: controller,
-            ),
-          CalendarView.day => EventsPlannerView(
-              key: UniqueKey(),
-              controller: controller,
-              daysShowed: 1,
-              isDarkMode: darkMode,
-            ),
-          CalendarView.day3 => EventsPlannerView(
-              key: UniqueKey(),
-              controller: controller,
-              daysShowed: 3,
-              isDarkMode: darkMode,
-            ),
-          CalendarView.draggableDay3 => EventsPlannerDraggableEventsView(
-              key: UniqueKey(),
-              controller: controller,
-              daysShowed: 3,
-              isDarkMode: darkMode,
-            ),
-          CalendarView.day7 => EventsPlannerDraggableEventsView(
-              key: UniqueKey(),
-              controller: controller,
-              daysShowed: 7,
-              isDarkMode: darkMode,
-            ),
-          CalendarView.multi_column => EventsPlannerMultiColumnView(
-              key: UniqueKey(),
-              isDarkMode: darkMode,
-            ),
-          CalendarView.month => EventsMonthsView(
-              controller: controller,
-            ),
-        },
+        appBar: CustomAppBar(
+          eventsController: eventsController,
+          onChangeCalendarView: (calendarMode) =>
+              setState(() => this.calendarMode = calendarMode),
+          onChangeDarkMode: (darkMode) =>
+              setState(() => this.darkMode = darkMode),
+        ),
+        body: CalendarViewWidget(
+            calendarMode: calendarMode,
+            controller: eventsController,
+            darkMode: darkMode),
       ),
     );
   }
+}
 
-  AppBar getAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(
-        "Infinite Calendar View",
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-      ),
-      scrolledUnderElevation: 0.0,
-      toolbarOpacity: 1,
-      elevation: 0,
-      centerTitle: false,
-      leading: Icon(
-        Icons.rocket_launch,
-        color: Theme.of(context).colorScheme.onPrimary,
-      ),
-      actions: [
-        // change dark mode
-        IconButton(
-          onPressed: () => setState(() => darkMode = !darkMode),
-          icon: Icon(
-            Icons.dark_mode,
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
-        ),
+class CalendarViewWidget extends StatelessWidget {
+  const CalendarViewWidget({
+    super.key,
+    required this.calendarMode,
+    required this.controller,
+    required this.darkMode,
+  });
 
-        // change calendar mode
-        PopupMenuButton(
-          icon: Icon(calendarMode.icon),
-          iconColor: Theme.of(context).colorScheme.onPrimary,
-          onSelected: (value) => setState(() => calendarMode = value),
-          itemBuilder: (BuildContext context) {
-            return CalendarView.values.map((mode) {
-              return PopupMenuItem(
-                value: mode,
-                child: ListTile(
-                  leading: Icon(mode.icon),
-                  title: Text(mode.text),
-                ),
-              );
-            }).toList();
-          },
+  final CalendarView calendarMode;
+  final EventsController controller;
+  final bool darkMode;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (calendarMode) {
+      CalendarView.agenda => EventsListView(
+          controller: controller,
         ),
-      ],
-    );
+      CalendarView.day => EventsPlannerOneDayView(
+          key: UniqueKey(),
+          controller: controller,
+          isDarkMode: darkMode,
+        ),
+      CalendarView.day3 => EventsPlannerTreeDaysView(
+          key: UniqueKey(),
+          controller: controller,
+          isDarkMode: darkMode,
+        ),
+      CalendarView.draggableDay3 => EventsPlannerDraggableEventsView(
+          key: UniqueKey(),
+          controller: controller,
+          daysShowed: 3,
+          isDarkMode: darkMode,
+        ),
+      CalendarView.day7 => EventsPlannerDraggableEventsView(
+          key: UniqueKey(),
+          controller: controller,
+          daysShowed: 7,
+          isDarkMode: darkMode,
+        ),
+      CalendarView.multi_column => EventsPlannerMultiColumnView(
+          key: UniqueKey(),
+          isDarkMode: darkMode,
+        ),
+      CalendarView.month => EventsMonthsView(
+          controller: controller,
+        ),
+    };
   }
 }

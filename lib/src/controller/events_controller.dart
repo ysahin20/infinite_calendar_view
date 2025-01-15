@@ -9,11 +9,19 @@ typedef EventFilter = List<Event>? Function(
 typedef UpdateCalendarDataCallback = void Function(CalendarData calendarData);
 
 class EventsController extends ChangeNotifier {
-  EventsController({EventFilter? eventFilter});
+  EventsController();
 
+  // events data
   final CalendarData calendarData = CalendarData();
 
+  // events filter to show on views
   EventFilter dayEventsFilter = (date, dayEvents) => dayEvents;
+
+  // focused day : change when scroll on view
+  DateTime focusedDay = DateTime.now();
+
+  // call when focused day change
+  void Function(DateTime day)? onFocusedDayChange;
 
   /// modify event data and update UI
   void updateCalendarData(UpdateCalendarDataCallback fn) {
@@ -27,15 +35,26 @@ class EventsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  updateFocusedDay(DateTime day) {
+    focusedDay = day;
+    onFocusedDayChange?.call(day);
+  }
+
   // get events for day with filter applied
   List<Event>? getFilteredDayEvents(
     DateTime date, {
     bool returnDayEvents = true,
     bool returnFullDayEvent = true,
+    bool returnMultiDayEvents = true,
+    bool returnMultiFullDayEvents = true,
   }) {
     var dayEvents = calendarData.dayEvents[date.withoutTime];
     var dayEventsByType = dayEvents
-        ?.where((e) => e.isFullDay ? returnFullDayEvent : returnDayEvents)
+        ?.where((e) => e.isFullDay
+            ? (e.daysIndex == null
+                ? returnFullDayEvent
+                : returnMultiFullDayEvents)
+            : (e.daysIndex == null ? returnDayEvents : returnMultiDayEvents))
         .toList();
     return dayEventsFilter.call(date, dayEventsByType);
   }

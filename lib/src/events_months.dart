@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_calendar_view/src/widgets/month/header.dart';
-import 'package:infinite_calendar_view/src/widgets/month/month.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
 import 'package:sticky_infinite_list/widget.dart';
 
 import 'controller/events_controller.dart';
 import 'events/event.dart';
+import 'widgets/month/header.dart';
+import 'widgets/month/month.dart';
 
 class EventsMonths extends StatefulWidget {
   const EventsMonths({
     super.key,
     required this.controller,
-    this.initialDate,
+    this.initialMonth,
     this.maxPreviousMonth = 120,
     this.maxNextMonth = 120,
     this.weekParam = const WeekParam(),
     this.daysParam = const DaysParam(),
+    this.onMonthChange,
+    this.automaticAdjustScrollToStartOfMonth = true,
     this.verticalScrollPhysics = const BouncingScrollPhysics(
       decelerationRate: ScrollDecelerationRate.fast,
     ),
@@ -25,7 +27,7 @@ class EventsMonths extends StatefulWidget {
   final EventsController controller;
 
   /// initial first day
-  final DateTime? initialDate;
+  final DateTime? initialMonth;
 
   /// max horizontal previous days scroll
   /// Null for infinite
@@ -41,7 +43,13 @@ class EventsMonths extends StatefulWidget {
   /// day param
   final DaysParam daysParam;
 
-  /// Horizontal day scroll physics
+  /// Callback when month change during vertical scroll
+  final void Function(DateTime monthFirstDay)? onMonthChange;
+
+  /// Automatic adjust scroll to nearest month and background
+  final bool automaticAdjustScrollToStartOfMonth;
+
+  /// Vertical day scroll physics
   final ScrollPhysics verticalScrollPhysics;
 
   @override
@@ -51,14 +59,53 @@ class EventsMonths extends StatefulWidget {
 class EventsMonthsState extends State<EventsMonths> {
   late ScrollController mainVerticalController;
   late DateTime initialMonth;
-  bool listenScroll = true;
+  late DateTime _stickyMonth;
+  late double _stickyPercent;
+  late double _stickyOffset;
+  bool _blockAdjustScroll = false;
+  bool scrollIsStopped = true;
 
   @override
   void initState() {
     super.initState();
-    var initialDay = widget.initialDate ?? DateTime.now();
+    var initialDay = widget.initialMonth ?? widget.controller.focusedDay;
     initialMonth = DateTime(initialDay.year, initialDay.month);
+    _stickyMonth = initialMonth;
     mainVerticalController = ScrollController();
+
+    if (widget.automaticAdjustScrollToStartOfMonth) {
+      autoAdjustScrollToStartOfMonth();
+    }
+  }
+
+  void autoAdjustScrollToStartOfMonth() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      var scroll = mainVerticalController;
+      scroll.position.isScrollingNotifier.addListener(() {
+        scrollIsStopped = !scroll.position.isScrollingNotifier.value;
+        if (scrollIsStopped) {
+          if (!_blockAdjustScroll) {
+            var adjustedOffset = _stickyPercent < 0.5
+                ? scroll.offset - _stickyOffset
+                : scroll.offset +
+                    (((1 - _stickyPercent) * _stickyOffset) / _stickyPercent);
+
+            Future.delayed(const Duration(milliseconds: 1), () {
+              if (scrollIsStopped) {
+                _blockAdjustScroll = true;
+                scroll.animateTo(
+                  adjustedOffset,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeIn,
+                );
+              }
+            });
+          } else {
+            _blockAdjustScroll = false;
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -79,8 +126,19 @@ class EventsMonthsState extends State<EventsMonths> {
             builder: (context, index) {
               var month =
                   DateTime(initialMonth.year, initialMonth.month + index);
-
               return InfiniteListItem(
+                headerStateBuilder: (context, state) {
+                  if (state.sticky && _stickyMonth != month) {
+                    _stickyMonth = month;
+                    Future(() {
+                      widget.controller.updateFocusedDay(_stickyMonth);
+                      widget.onMonthChange?.call(_stickyMonth);
+                    });
+                  }
+                  _stickyPercent = state.position;
+                  _stickyOffset = state.offset;
+                  return SizedBox.shrink();
+                },
                 contentBuilder: (context) => Month(
                   controller: widget.controller,
                   month: month,
@@ -99,11 +157,9 @@ class EventsMonthsState extends State<EventsMonths> {
   /// change initial date and redraw all list
   void jumpToDate(DateTime date) {
     if (context.mounted) {
-      listenScroll = false;
       setState(() {
         initialMonth = DateTime(date.year, date.month);
       });
-      listenScroll = true;
       mainVerticalController.jumpTo(0);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {

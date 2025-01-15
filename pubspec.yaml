@@ -1,6 +1,6 @@
 name: infinite_calendar_view
 description: A Flutter package allows you to easily implement all calendar views.
-version: 1.1.5
+version: 2.0.0
 homepage: https://github.com/pickywawa/infinite_calendar_view
 issue_tracker: https://github.com/pickywawa/infinite_calendar_view/issues
 

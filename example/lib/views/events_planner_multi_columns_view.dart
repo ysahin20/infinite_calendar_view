@@ -25,7 +25,6 @@ class EventsPlannerMultiColumnView extends StatelessWidget {
     return EventsPlanner(
       controller: controller,
       daysShowed: 1,
-      initialDate: DateTime.now(),
       heightPerMinute: heightPerMinute,
       initialVerticalScrollOffset: initialVerticalScrollOffset,
       daySeparationWidth: 10,

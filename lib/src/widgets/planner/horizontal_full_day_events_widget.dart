@@ -145,8 +145,11 @@ class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
 
   void updateEvents() {
     if (mounted) {
-      var fullDayEvents = widget.controller
-          .getFilteredDayEvents(widget.day, returnDayEvents: false);
+      var fullDayEvents = widget.controller.getFilteredDayEvents(
+        widget.day,
+        returnDayEvents: false,
+        returnMultiDayEvents: widget.fullDayParam.showMultiDayEvents,
+      );
 
       // no update if no change for current day
       if (listEquals(fullDayEvents, events) == false) {
@@ -183,30 +186,30 @@ class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
   }
 
   Widget getFullDayEvents(double width) {
+    var eventTopPadding = 2.0;
     return widget.fullDayParam.fullDayEventsBuilder != null
         ? widget.fullDayParam.fullDayEventsBuilder!
             .call(events ?? [], widget.dayWidth)
-        : Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+        : SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: events?.map(
-                    (e) {
-                      return widget.fullDayParam.fullDayEventBuilder != null
-                          ? widget.fullDayParam.fullDayEventBuilder!
-                              .call(e, widget.dayWidth)
-                          : DefaultDayEvent(
-                              height: 16,
-                              width: width,
-                              title: e.title,
-                              titleFontSize: 10,
-                              description: e.description,
-                              color: e.color,
-                              textColor: e.textColor,
-                            );
-                    },
-                  ).toList() ??
-                  [],
+              children: [
+                for (var e in events ?? [])
+                  Padding(
+                    padding: EdgeInsets.only(top: eventTopPadding),
+                    child: widget.fullDayParam.fullDayEventBuilder
+                            ?.call(e, widget.dayWidth) ??
+                        DefaultDayEvent(
+                          height: widget.fullDayParam.fullDayEventHeight,
+                          width: width,
+                          title: e.title,
+                          titleFontSize: 10,
+                          description: e.description,
+                          color: e.color,
+                          textColor: e.textColor,
+                        ),
+                  ),
+              ],
             ),
           );
   }

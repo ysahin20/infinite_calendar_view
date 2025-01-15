@@ -70,12 +70,15 @@ class EventsList extends StatefulWidget {
 class EventsListState extends State<EventsList> {
   late ScrollController mainVerticalController;
   late DateTime initialDay;
+  late DateTime stickyDay;
   bool listenScroll = true;
 
   @override
   void initState() {
     super.initState();
-    initialDay = widget.initialDate?.withoutTime ?? DateTime.now().withoutTime;
+    initialDay =
+        widget.initialDate?.withoutTime ?? widget.controller.focusedDay;
+    stickyDay = initialDay;
     mainVerticalController = ScrollController();
   }
 
@@ -94,9 +97,13 @@ class EventsListState extends State<EventsList> {
         return InfiniteListItem(
           headerStateBuilder: (context, state) {
             if (state.sticky && listenScroll) {
-              Future(() {
-                widget.onDayChange?.call(day);
-              });
+              if (stickyDay != day) {
+                stickyDay = day;
+                Future(() {
+                  widget.onDayChange?.call(stickyDay);
+                  widget.controller.updateFocusedDay(stickyDay);
+                });
+              }
             }
             return HeaderListWidget(
               controller: widget.controller,

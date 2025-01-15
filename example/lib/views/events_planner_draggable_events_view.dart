@@ -23,7 +23,6 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
     return EventsPlanner(
       controller: controller,
       daysShowed: daysShowed,
-      initialDate: DateTime.now(),
       heightPerMinute: heightPerMinute,
       initialVerticalScrollOffset: initialVerticalScrollOffset,
       dayParam: DayParam(
@@ -60,12 +59,8 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
       height: height,
       width: width,
       heightPerMinute: heightPerMinute,
-      onDragEnd: (
-        exactStartDateTime,
-        exactEndDateTime,
-        roundStartDateTime,
-        roundEndDateTime,
-      ) {
+      onDragEnd: (exactStartDateTime, exactEndDateTime, roundStartDateTime,
+          roundEndDateTime) {
         moveEvent(event, roundStartDateTime, roundEndDateTime);
       },
       child: DefaultDayEvent(
