@@ -8,11 +8,17 @@ class LinesPainter extends CustomPainter {
     required this.heightPerMinute,
     required this.isToday,
     required this.lineColor,
+    this.hourStrokeWidth = 0.5,
+    this.halfStrokeWidth = 0.2,
+    this.quarterStrokeWidth = 0.1,
   });
 
   final double heightPerMinute;
   final bool isToday;
   final Color lineColor;
+  final double hourStrokeWidth;
+  final double halfStrokeWidth;
+  final double quarterStrokeWidth;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -20,15 +26,15 @@ class LinesPainter extends CustomPainter {
 
     final hourPaint = Paint()
       ..color = lineColor
-      ..strokeWidth = 0.7;
+      ..strokeWidth = hourStrokeWidth;
 
     final halfHourPaint = Paint()
       ..color = lineColor
-      ..strokeWidth = 0.3;
+      ..strokeWidth = halfStrokeWidth;
 
     final quarterHourPaint = Paint()
       ..color = lineColor
-      ..strokeWidth = 0.2;
+      ..strokeWidth = quarterStrokeWidth;
 
     for (var i = 0; i < 24; i++) {
       final hourY = i * cellHeight;

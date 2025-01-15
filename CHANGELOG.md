@@ -1,3 +1,8 @@
+# [2.0.1 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)
+
+- [improve] Complete Line Painter stroke option
+- [documentation] Complete readme
+
 # [2.0.0 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.0)
 
 - [change] Fusion between Event and fullDayEvent

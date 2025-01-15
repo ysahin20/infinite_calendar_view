@@ -9,15 +9,16 @@ A Flutter package allows you to easily implement all calendar UI.
 ## Features
 
 - 💙 **Inspired by Outlook and Teams mobile**. Easy to use
-- 🍻 **Two views**. Events Planner and Events List
-- ♾️ **Infinite scroll**. Lazy build
+- 🍻 **Three views**. Planner, Month and List views
+- ♾️ **Infinite scroll**. Lazy build and best user experience
 - 🚀 **Good performance**. With several dozen appointments per day
-- 🎲 **Customizable number of days**. Depending on the screen size
 - ✏️ **All configurable**. Everything is configurable!
+- 🗂️ **Events filter**. Easy filter day events
+- 🗓️ **Events types**. Managing all-day events and multi-day events
+- 🎲 **Customizable number of days**. Depending on the screen size
 - 🤏 **Pinch to zoom**. Change the time scale with two fingers
 - 👆🏼 **Drag and drop**. Move appointments easily
 - 👩‍👧‍👦 **Multi columns**. Manage multiple calendars in the same view !
-- 🗂️ **Events filter**. Easy filter day events
 - 🗓️ **Events arranger**. Customize the placement of appointments in the schedule
 - ♾️ **...**
 
