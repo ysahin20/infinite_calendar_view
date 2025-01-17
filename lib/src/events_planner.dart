@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/src/utils/default_text.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
@@ -337,7 +339,7 @@ class EventsPlannerState extends State<EventsPlanner> {
     );
   }
 
-  InfiniteList getPlannerWidget(
+  Widget getPlannerWidget(
     Color todayColor,
     double daySeparationWidthPadding,
     double plannerHeight,
@@ -347,40 +349,46 @@ class EventsPlannerState extends State<EventsPlanner> {
         ? const NeverScrollableScrollPhysics()
         : widget.horizontalScrollPhysics;
 
-    return InfiniteList(
-      physics: physics,
-      controller: mainHorizontalController,
-      scrollDirection: Axis.horizontal,
-      direction: InfiniteListDirection.multi,
-      negChildCount: widget.maxPreviousDays,
-      posChildCount: widget.maxNextDays,
-      builder: (context, index) {
-        var day = initialDate.add(Duration(days: index));
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        scrollbars: false,
+        dragDevices: PointerDeviceKind.values.toSet(),
+      ),
+      child: InfiniteList(
+        physics: physics,
+        controller: mainHorizontalController,
+        scrollDirection: Axis.horizontal,
+        direction: InfiniteListDirection.multi,
+        negChildCount: widget.maxPreviousDays,
+        posChildCount: widget.maxNextDays,
+        builder: (context, index) {
+          var day = initialDate.add(Duration(days: index));
 
-        // notify day will be build
-        Future(() => widget.dayParam.onDayBuild?.call(day));
+          // notify day will be build
+          Future(() => widget.dayParam.onDayBuild?.call(day));
 
-        return InfiniteListItem(
-          contentBuilder: (context) {
-            return DayWidget(
-              controller: _controller,
-              day: day,
-              todayColor: todayColor,
-              daySeparationWidthPadding: daySeparationWidthPadding,
-              plannerHeight: plannerHeight,
-              heightPerMinute: heightPerMinute,
-              dayWidth: dayWidth,
-              dayEventsArranger: widget.dayEventsArranger,
-              dayParam: widget.dayParam,
-              columnsParam: widget.columnsParam,
-              currentHourIndicatorParam: widget.currentHourIndicatorParam,
-              currentHourIndicatorColor: currentHourIndicatorColor,
-              offTimesParam: widget.offTimesParam,
-              showMultiDayEvents: !widget.fullDayParam.showMultiDayEvents,
-            );
-          },
-        );
-      },
+          return InfiniteListItem(
+            contentBuilder: (context) {
+              return DayWidget(
+                controller: _controller,
+                day: day,
+                todayColor: todayColor,
+                daySeparationWidthPadding: daySeparationWidthPadding,
+                plannerHeight: plannerHeight,
+                heightPerMinute: heightPerMinute,
+                dayWidth: dayWidth,
+                dayEventsArranger: widget.dayEventsArranger,
+                dayParam: widget.dayParam,
+                columnsParam: widget.columnsParam,
+                currentHourIndicatorParam: widget.currentHourIndicatorParam,
+                currentHourIndicatorColor: currentHourIndicatorColor,
+                offTimesParam: widget.offTimesParam,
+                showMultiDayEvents: !widget.fullDayParam.showMultiDayEvents,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

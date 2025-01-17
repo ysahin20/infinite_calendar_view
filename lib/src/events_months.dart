@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
 import 'package:sticky_infinite_list/widget.dart';
@@ -21,6 +23,7 @@ class EventsMonths extends StatefulWidget {
     this.verticalScrollPhysics = const BouncingScrollPhysics(
       decelerationRate: ScrollDecelerationRate.fast,
     ),
+    this.showWebScrollBar = false,
   });
 
   /// data controller
@@ -51,6 +54,9 @@ class EventsMonths extends StatefulWidget {
 
   /// Vertical day scroll physics
   final ScrollPhysics verticalScrollPhysics;
+
+  /// show scroll bar for web
+  final bool showWebScrollBar;
 
   @override
   State createState() => EventsMonthsState();
@@ -117,36 +123,42 @@ class EventsMonthsState extends State<EventsMonths> {
 
         // months
         Expanded(
-          child: InfiniteList(
-            controller: mainVerticalController,
-            direction: InfiniteListDirection.multi,
-            negChildCount: widget.maxPreviousMonth,
-            posChildCount: widget.maxNextMonth,
-            physics: widget.verticalScrollPhysics,
-            builder: (context, index) {
-              var month =
-                  DateTime(initialMonth.year, initialMonth.month + index);
-              return InfiniteListItem(
-                headerStateBuilder: (context, state) {
-                  if (state.sticky && _stickyMonth != month) {
-                    _stickyMonth = month;
-                    Future(() {
-                      widget.controller.updateFocusedDay(_stickyMonth);
-                      widget.onMonthChange?.call(_stickyMonth);
-                    });
-                  }
-                  _stickyPercent = state.position;
-                  _stickyOffset = state.offset;
-                  return SizedBox.shrink();
-                },
-                contentBuilder: (context) => Month(
-                  controller: widget.controller,
-                  month: month,
-                  weekParam: widget.weekParam,
-                  daysParam: widget.daysParam,
-                ),
-              );
-            },
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              scrollbars: widget.showWebScrollBar,
+              dragDevices: PointerDeviceKind.values.toSet(),
+            ),
+            child: InfiniteList(
+              controller: mainVerticalController,
+              direction: InfiniteListDirection.multi,
+              negChildCount: widget.maxPreviousMonth,
+              posChildCount: widget.maxNextMonth,
+              physics: widget.verticalScrollPhysics,
+              builder: (context, index) {
+                var month =
+                    DateTime(initialMonth.year, initialMonth.month + index);
+                return InfiniteListItem(
+                  headerStateBuilder: (context, state) {
+                    if (state.sticky && _stickyMonth != month) {
+                      _stickyMonth = month;
+                      Future(() {
+                        widget.controller.updateFocusedDay(_stickyMonth);
+                        widget.onMonthChange?.call(_stickyMonth);
+                      });
+                    }
+                    _stickyPercent = state.position;
+                    _stickyOffset = state.offset;
+                    return SizedBox.shrink();
+                  },
+                  contentBuilder: (context) => Month(
+                    controller: widget.controller,
+                    month: month,
+                    weekParam: widget.weekParam,
+                    daysParam: widget.daysParam,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],

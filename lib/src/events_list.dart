@@ -23,6 +23,7 @@ class EventsList extends StatefulWidget {
     this.verticalScrollPhysics = const BouncingScrollPhysics(
       decelerationRate: ScrollDecelerationRate.fast,
     ),
+    this.showWebScrollBar = false,
   });
 
   /// data controller
@@ -53,6 +54,9 @@ class EventsList extends StatefulWidget {
   /// null for no color
   final Color? todayHeaderColor;
 
+  /// show scroll bar for web
+  final bool showWebScrollBar;
+
   /// day builder in top bar
   final Widget Function(
     DateTime day,
@@ -60,7 +64,7 @@ class EventsList extends StatefulWidget {
     List<Event>? events,
   )? dayHeaderBuilder;
 
-  /// Horizontal day scroll physics
+  /// Vertical day scroll physics
   final ScrollPhysics verticalScrollPhysics;
 
   @override
@@ -84,41 +88,45 @@ class EventsListState extends State<EventsList> {
 
   @override
   Widget build(BuildContext context) {
-    return InfiniteList(
-      controller: mainVerticalController,
-      direction: InfiniteListDirection.multi,
-      negChildCount: widget.maxPreviousDays,
-      posChildCount: widget.maxNextDays,
-      physics: widget.verticalScrollPhysics,
-      builder: (context, index) {
-        var day = initialDay.add(Duration(days: index)).withoutTime;
-        var isToday = DateUtils.isSameDay(day, DateTime.now());
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context)
+          .copyWith(scrollbars: widget.showWebScrollBar),
+      child: InfiniteList(
+        controller: mainVerticalController,
+        direction: InfiniteListDirection.multi,
+        negChildCount: widget.maxPreviousDays,
+        posChildCount: widget.maxNextDays,
+        physics: widget.verticalScrollPhysics,
+        builder: (context, index) {
+          var day = initialDay.add(Duration(days: index)).withoutTime;
+          var isToday = DateUtils.isSameDay(day, DateTime.now());
 
-        return InfiniteListItem(
-          headerStateBuilder: (context, state) {
-            if (state.sticky && listenScroll) {
-              if (stickyDay != day) {
-                stickyDay = day;
-                Future(() {
-                  widget.onDayChange?.call(stickyDay);
-                  widget.controller.updateFocusedDay(stickyDay);
-                });
+          return InfiniteListItem(
+            headerStateBuilder: (context, state) {
+              if (state.sticky && listenScroll) {
+                if (stickyDay != day) {
+                  stickyDay = day;
+                  Future(() {
+                    widget.onDayChange?.call(stickyDay);
+                    widget.controller.updateFocusedDay(stickyDay);
+                  });
+                }
               }
-            }
-            return HeaderListWidget(
+              return HeaderListWidget(
+                controller: widget.controller,
+                day: day,
+                isToday: isToday,
+                dayHeaderBuilder: widget.dayHeaderBuilder,
+              );
+            },
+            contentBuilder: (context) => DayEvents(
               controller: widget.controller,
               day: day,
-              isToday: isToday,
-              dayHeaderBuilder: widget.dayHeaderBuilder,
-            );
-          },
-          contentBuilder: (context) => DayEvents(
-            controller: widget.controller,
-            day: day,
-            dayEventsBuilder: widget.dayEventsBuilder,
-          ),
-        );
-      },
+              dayEventsBuilder: widget.dayEventsBuilder,
+            ),
+          );
+        },
+      ),
     );
   }
 

@@ -60,7 +60,7 @@ A Flutter package allows you to easily implement all calendar UI.
    <tr>
       <td colspan="2">
          <div style="text-align:center;">
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/month.png" alt="drawing" width="300"/>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/month.png" alt="drawing" width="500"/>
          </div>
       </td>
    </tr>
