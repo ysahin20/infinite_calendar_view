@@ -713,6 +713,7 @@ class ColumnsParam {
     this.columns = 1,
     this.columnsLabels = const [],
     this.columnsColors = const [],
+    this.columnsForegroundColors,
     this.columnsWidthRatio,
     this.columnHeaderBuilder,
     this.columnCustomPainter,
@@ -726,6 +727,8 @@ class ColumnsParam {
 
   /// background color of column showed in header
   final List<Color> columnsColors;
+
+  final List<Color>? columnsForegroundColors;
 
   /// ratio of dayWidth of each column
   final List<double>? columnsWidthRatio;

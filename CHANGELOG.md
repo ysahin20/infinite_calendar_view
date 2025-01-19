@@ -4,6 +4,7 @@
 - [bug] pointer scroll support on web
 - [bug] drag and drop on calendar not full width
 - [improve] change vertical scroll during drag and drop
+- [documentation] improve multi column demo
 - [documentation] web demo
 
 # [2.0.1 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)

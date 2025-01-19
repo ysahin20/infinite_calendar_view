@@ -158,7 +158,7 @@ List<Event> fullDayEvents = [
   ),
 ];
 
-List<Event> reservationsEvents = generateReservationRandomEvents(500);
+List<Event> reservationsEvents = generateReservationRandomEvents(2000);
 
 List<Event> generateReservationRandomEvents(int count) {
   final random = Random();
@@ -187,7 +187,7 @@ List<Event> generateReservationRandomEvents(int count) {
     "Muller",
   ];
 
-  return List.generate(count, (index) {
+  var list = List.generate(count, (index) {
     final column = random.nextInt(colors.length);
     // Random title and description
     final title = titles[random.nextInt(titles.length)];
@@ -220,4 +220,6 @@ List<Event> generateReservationRandomEvents(int count) {
       textColor: color.onPastel,
     );
   });
+
+  return list.distinctBy((e) => e.startTime).toList();
 }

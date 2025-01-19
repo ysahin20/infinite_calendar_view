@@ -89,7 +89,6 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
   Row getColumnsHeader(BuildContext context, DateTime day, bool isToday) {
     var colorScheme = Theme.of(context).colorScheme;
     var bgColor = colorScheme.surface;
-    var fgColor = colorScheme.primary;
     var builder = columnsParam.columnHeaderBuilder;
     return Row(
       children: [
@@ -99,13 +98,13 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
                 columnsParam.getColumSize(dayWidth, column))
           else
             DefaultColumnHeader(
-              columnIndex: column,
               columnText: columnsParam.columnsLabels[column],
               columnWidth: columnsParam.getColumSize(dayWidth, column),
               backgroundColor: columnsParam.columnsColors.isNotEmpty
                   ? columnsParam.columnsColors[column]
                   : bgColor,
-              foregroundColor: fgColor,
+              foregroundColor: columnsParam.columnsForegroundColors?[column] ??
+                  colorScheme.primary,
             )
       ],
     );
@@ -118,14 +117,12 @@ class DefaultColumnHeader extends StatelessWidget {
     required this.columnText,
     required this.backgroundColor,
     required this.foregroundColor,
-    required this.columnIndex,
     required this.columnWidth,
   });
 
   final String columnText;
   final Color backgroundColor;
   final Color foregroundColor;
-  final int columnIndex;
   final double columnWidth;
 
   @override

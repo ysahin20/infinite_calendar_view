@@ -18,3 +18,16 @@ extension DateTimeExtensions on DateTime {
   /// Returns [DateTime] without timestamp.
   DateTime get withoutTime => DateTime(year, month, day);
 }
+
+extension IterableExtension<T> on List<T> {
+  Iterable<T> distinctBy(Object getCompareValue(T e)) {
+    var idSet = <Object>{};
+    var distinct = <T>[];
+    for (var d in this) {
+      if (idSet.add(getCompareValue(d))) {
+        distinct.add(d);
+      }
+    }
+    return distinct;
+  }
+}
