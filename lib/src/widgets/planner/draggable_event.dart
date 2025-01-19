@@ -52,6 +52,7 @@ class DraggableEventWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     EventsPlannerState? plannerState;
     var oldPositionY = 0.0;
+    var oldVerticalOffset = 0.0;
 
     return LongPressDraggable(
       feedback: draggableFeedback ?? getDefaultDraggableFeedback(),
@@ -61,29 +62,34 @@ class DraggableEventWidget extends StatelessWidget {
         var oldBox = context.findRenderObject() as RenderBox;
         var oldPosition = oldBox.localToGlobal(Offset.zero);
         oldPositionY = oldPosition.dy;
+        oldVerticalOffset = plannerState?.mainVerticalController.offset ?? 0;
       },
       onDragUpdate: (details) {
-        manageHorizontalScroll(
-            plannerState?.mainHorizontalController, context, details);
+        manageHorizontalScroll(plannerState, context, details);
       },
       onDragEnd: (details) {
-        // find hour
-        var difference = details.offset.dy - oldPositionY;
-        var minutesDiff = event.endTime!.difference(event.startTime).inMinutes;
-        var minuteDiff = difference / heightPerMinute;
+        var renderBox = plannerState?.context.findRenderObject() as RenderBox;
+        var relativeOffset = renderBox.globalToLocal(details.offset);
 
         // find day
-        var scrollOffset = plannerState?.mainHorizontalController.offset ?? 0;
-        var releaseOffset = scrollOffset + details.offset.dx;
-        var index = (releaseOffset / (plannerState?.dayWidth ?? 0)).toInt();
+        var scrollOffsetX = plannerState?.mainHorizontalController.offset ?? 0;
+        var releaseOffsetX = scrollOffsetX + relativeOffset.dx;
+        var dayIndex = (releaseOffsetX / (plannerState?.dayWidth ?? 0)).toInt();
         // adjust negative index, because current day begin 0 and negative begin -1
-        var dayIndex = releaseOffset >= 0 ? index : index - 1;
+        var reallyDayIndex = releaseOffsetX >= 0 ? dayIndex : dayIndex - 1;
         var currentDay = plannerState?.initialDate
-                .add(Duration(days: dayIndex))
+                .add(Duration(days: reallyDayIndex))
                 .withoutTime ??
             event.startTime.withoutTime;
 
+        // find hour
+        var scrollOffsetY = plannerState?.mainVerticalController.offset ?? 0;
+        var difference = (details.offset.dy - oldPositionY) +
+            (scrollOffsetY - oldVerticalOffset);
+        var minuteDiff = difference / heightPerMinute;
+
         // exact event time
+        var duration = event.endTime!.difference(event.startTime).inMinutes;
         var exactStartDateTime = currentDay.add(
           Duration(
             minutes: event.startTime.totalMinutes + minuteDiff.toInt(),
@@ -91,7 +97,7 @@ class DraggableEventWidget extends StatelessWidget {
         );
         var exactEndDateTime = exactStartDateTime.add(
           Duration(
-            minutes: minutesDiff,
+            minutes: duration,
           ),
         );
 
@@ -106,7 +112,7 @@ class DraggableEventWidget extends StatelessWidget {
         );
         var roundEndDateTime = roundStartDateTime.add(
           Duration(
-            minutes: minutesDiff,
+            minutes: duration,
           ),
         );
 
@@ -121,16 +127,29 @@ class DraggableEventWidget extends StatelessWidget {
     );
   }
 
-  void manageHorizontalScroll(ScrollController? horizontalController,
-      BuildContext context, DragUpdateDetails details) {
-    if (horizontalController != null) {
-      var screenWidth = MediaQuery.of(context).size.width;
-      var dx = details.globalPosition.dx;
-      if (dx > (0.9 * screenWidth)) {
+  void manageHorizontalScroll(
+    EventsPlannerState? plannerState,
+    BuildContext context,
+    DragUpdateDetails details,
+  ) {
+    if (plannerState != null) {
+      var horizontalController = plannerState.mainHorizontalController;
+      var verticalController = plannerState.mainVerticalController;
+      var renderBox = plannerState.context.findRenderObject() as RenderBox;
+      var relativeOffset = renderBox.globalToLocal(details.globalPosition);
+
+      //var dx = details.localPosition.dx;
+      if (relativeOffset.dx > (0.9 * plannerState.width)) {
         horizontalController.jumpTo(horizontalController.offset + 20);
       }
-      if (dx < (0.1 * screenWidth)) {
+      if (relativeOffset.dx < (0.1 * plannerState.width)) {
         horizontalController.jumpTo(horizontalController.offset - 20);
+      }
+      if (relativeOffset.dy > (0.9 * plannerState.height)) {
+        verticalController.jumpTo(verticalController.offset + 10);
+      }
+      if (relativeOffset.dy < (0.1 * plannerState.height)) {
+        verticalController.jumpTo(verticalController.offset - 10);
       }
     }
   }

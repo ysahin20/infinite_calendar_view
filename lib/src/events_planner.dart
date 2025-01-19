@@ -122,6 +122,8 @@ class EventsPlannerState extends State<EventsPlanner> {
   final headersHorizontalController = ScrollController();
   late ScrollController mainVerticalController;
   late DateTime initialDate;
+  late double width;
+  late double height;
   late double dayWidth;
   late int currentIndex;
   late EventsController _controller;
@@ -234,7 +236,8 @@ class EventsPlannerState extends State<EventsPlanner> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        var width = constraints.maxWidth;
+        width = constraints.maxWidth;
+        height = constraints.maxHeight;
         var leftWidget = widget.timesIndicatorsParam.timesIndicatorsWidth;
         dayWidth = (width - leftWidget) / widget.daysShowed;
 
