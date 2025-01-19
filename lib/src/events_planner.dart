@@ -297,42 +297,48 @@ class EventsPlannerState extends State<EventsPlanner> {
         onPointerUp: isZoom ? (event) => _onPointerUp() : null,
         child: IgnorePointer(
           ignoring: isZoom ? _plannerPointerDownCount > 1 : false,
-          child: CustomScrollView(
-            physics: isZoom && _plannerPointerDownCount > 1
-                ? const NeverScrollableScrollPhysics()
-                : null,
-            controller: mainVerticalController,
-            slivers: [
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: 1,
-                  (context, index) {
-                    return SizedBox(
-                      height: plannerHeight,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // left Timeline
-                          getVerticalTimeIndicatorWidget(
-                            currentHourIndicatorColor,
-                          ),
-
-                          // day planning infinite list
-                          Expanded(
-                            child: getPlannerWidget(
-                              todayColor,
-                              daySeparationWidthPadding,
-                              plannerHeight,
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              scrollbars: false,
+              dragDevices: PointerDeviceKind.values.toSet(),
+            ),
+            child: CustomScrollView(
+              physics: isZoom && _plannerPointerDownCount > 1
+                  ? const NeverScrollableScrollPhysics()
+                  : null,
+              controller: mainVerticalController,
+              slivers: [
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: 1,
+                    (context, index) {
+                      return SizedBox(
+                        height: plannerHeight,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // left Timeline
+                            getVerticalTimeIndicatorWidget(
                               currentHourIndicatorColor,
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              )
-            ],
+
+                            // day planning infinite list
+                            Expanded(
+                              child: getPlannerWidget(
+                                todayColor,
+                                daySeparationWidthPadding,
+                                plannerHeight,
+                                currentHourIndicatorColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

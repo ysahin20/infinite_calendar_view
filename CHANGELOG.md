@@ -1,3 +1,9 @@
+# [2.0.2 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)
+
+- [bug] wheel scroll bug on web
+- [bug] pointer scroll support on web
+- [documentation] web demo
+
 # [2.0.1 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)
 
 - [improve] Complete Line Painter stroke option

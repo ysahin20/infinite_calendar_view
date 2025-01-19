@@ -24,7 +24,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   EventsController eventsController = EventsController();
-  var calendarMode = CalendarView.day3;
+  var calendarMode = CalendarView.day3Draggable;
   var darkMode = false;
 
   @override
@@ -62,18 +62,25 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
-      home: Scaffold(
-        appBar: CustomAppBar(
-          eventsController: eventsController,
-          onChangeCalendarView: (calendarMode) =>
-              setState(() => this.calendarMode = calendarMode),
-          onChangeDarkMode: (darkMode) =>
-              setState(() => this.darkMode = darkMode),
+      home: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: calendarMode == CalendarView.day7 ? double.infinity : 500,
+          ),
+          child: Scaffold(
+            appBar: CustomAppBar(
+              eventsController: eventsController,
+              onChangeCalendarView: (calendarMode) =>
+                  setState(() => this.calendarMode = calendarMode),
+              onChangeDarkMode: (darkMode) =>
+                  setState(() => this.darkMode = darkMode),
+            ),
+            body: CalendarViewWidget(
+                calendarMode: calendarMode,
+                controller: eventsController,
+                darkMode: darkMode),
+          ),
         ),
-        body: CalendarViewWidget(
-            calendarMode: calendarMode,
-            controller: eventsController,
-            darkMode: darkMode),
       ),
     );
   }
@@ -107,7 +114,7 @@ class CalendarViewWidget extends StatelessWidget {
           controller: controller,
           isDarkMode: darkMode,
         ),
-      CalendarView.draggableDay3 => EventsPlannerDraggableEventsView(
+      CalendarView.day3Draggable => EventsPlannerDraggableEventsView(
           key: UniqueKey(),
           controller: controller,
           daysShowed: 3,

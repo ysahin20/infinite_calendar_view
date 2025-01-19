@@ -6,6 +6,10 @@
 
 A Flutter package allows you to easily implement all calendar UI.
 
+## Web Demo
+
+https://pickywawa.github.io/infinite_calendar_view_demo/
+
 ## Features
 
 - 💙 **Inspired by Outlook and Teams mobile**. Easy to use
@@ -103,6 +107,10 @@ A Flutter package allows you to easily implement all calendar UI.
     ```
 
 ## Implementation
+
+Make sure to check
+out [examples](https://github.com/pickywawa/infinite_calendar_view/tree/main/example/lib/views)
+and [API docs](https://pub.dev/documentation/infinite_calendar_view/latest/) for more details.
 
 1. Init controller.
 
@@ -426,6 +434,15 @@ A Flutter package allows you to easily implement all calendar UI.
    );
    ```
 
+## Local
+
+The package does not support locales itself, so as not to import additional dependencies like intl
+which may cause dependency conflicts.
+
+However, all texts are easily customizable. You can use intl to translate the texts into the desired
+language.
+[Local example](https://github.com/pickywawa/infinite_calendar_view/blob/f0234f435ad3e133c190f5006ac283a22edb2c80/example/lib/views/events_planner_all_params_view.dart#L39C22-L39C32)
+
 ## Showcase
 
    <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase1.png" alt="drawing" width="300"/>
@@ -436,7 +453,7 @@ A Flutter package allows you to easily implement all calendar UI.
 ```text
 MIT License
 
-Copyright (c) 2024 Pickywawa
+Copyright (c) 2025 Pickywawa
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

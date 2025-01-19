@@ -63,11 +63,12 @@ class EventsMonths extends StatefulWidget {
 }
 
 class EventsMonthsState extends State<EventsMonths> {
-  late ScrollController mainVerticalController;
+  late ScrollController scrollController;
   late DateTime initialMonth;
   late DateTime _stickyMonth;
   late double _stickyPercent;
   late double _stickyOffset;
+  late double scrollStartOffset;
   bool _blockAdjustScroll = false;
   bool scrollIsStopped = true;
 
@@ -77,41 +78,45 @@ class EventsMonthsState extends State<EventsMonths> {
     var initialDay = widget.initialMonth ?? widget.controller.focusedDay;
     initialMonth = DateTime(initialDay.year, initialDay.month);
     _stickyMonth = initialMonth;
-    mainVerticalController = ScrollController();
+    scrollController = ScrollController();
 
     if (widget.automaticAdjustScrollToStartOfMonth) {
-      autoAdjustScrollToStartOfMonth();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.position.isScrollingNotifier.addListener(() {
+          scrollIsStopped =
+              !scrollController.position.isScrollingNotifier.value;
+          // when scroll end, auto adjust to start of month
+          // if it's small scroll, like mouse wheel (web), not adjust (only possibility to differentiates mouse wheel to finger scroll)
+          if (scrollIsStopped &&
+              ((scrollStartOffset - scrollController.offset).abs() > 10)) {
+            autoAdjustScrollToStartOfMonth();
+          }
+        });
+      });
     }
   }
 
-  void autoAdjustScrollToStartOfMonth() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      var scroll = mainVerticalController;
-      scroll.position.isScrollingNotifier.addListener(() {
-        scrollIsStopped = !scroll.position.isScrollingNotifier.value;
-        if (scrollIsStopped) {
-          if (!_blockAdjustScroll) {
-            var adjustedOffset = _stickyPercent < 0.5
-                ? scroll.offset - _stickyOffset
-                : scroll.offset +
-                    (((1 - _stickyPercent) * _stickyOffset) / _stickyPercent);
+  autoAdjustScrollToStartOfMonth() {
+    var scroll = scrollController;
+    if (!_blockAdjustScroll) {
+      var adjustedOffset = _stickyPercent < 0.5
+          ? scroll.offset - _stickyOffset
+          : scroll.offset +
+              (((1 - _stickyPercent) * _stickyOffset) / _stickyPercent);
 
-            Future.delayed(const Duration(milliseconds: 1), () {
-              if (scrollIsStopped) {
-                _blockAdjustScroll = true;
-                scroll.animateTo(
-                  adjustedOffset,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeIn,
-                );
-              }
-            });
-          } else {
-            _blockAdjustScroll = false;
-          }
+      Future.delayed(const Duration(milliseconds: 1), () {
+        if (scrollIsStopped) {
+          _blockAdjustScroll = true;
+          scroll.animateTo(
+            adjustedOffset,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeIn,
+          );
         }
       });
-    });
+    } else {
+      _blockAdjustScroll = false;
+    }
   }
 
   @override
@@ -128,36 +133,45 @@ class EventsMonthsState extends State<EventsMonths> {
               scrollbars: widget.showWebScrollBar,
               dragDevices: PointerDeviceKind.values.toSet(),
             ),
-            child: InfiniteList(
-              controller: mainVerticalController,
-              direction: InfiniteListDirection.multi,
-              negChildCount: widget.maxPreviousMonth,
-              posChildCount: widget.maxNextMonth,
-              physics: widget.verticalScrollPhysics,
-              builder: (context, index) {
-                var month =
-                    DateTime(initialMonth.year, initialMonth.month + index);
-                return InfiniteListItem(
-                  headerStateBuilder: (context, state) {
-                    if (state.sticky && _stickyMonth != month) {
-                      _stickyMonth = month;
-                      Future(() {
-                        widget.controller.updateFocusedDay(_stickyMonth);
-                        widget.onMonthChange?.call(_stickyMonth);
-                      });
-                    }
-                    _stickyPercent = state.position;
-                    _stickyOffset = state.offset;
-                    return SizedBox.shrink();
-                  },
-                  contentBuilder: (context) => Month(
-                    controller: widget.controller,
-                    month: month,
-                    weekParam: widget.weekParam,
-                    daysParam: widget.daysParam,
-                  ),
-                );
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (widget.automaticAdjustScrollToStartOfMonth &&
+                    notification is ScrollStartNotification) {
+                  scrollStartOffset = scrollController.offset;
+                }
+                return true;
               },
+              child: InfiniteList(
+                controller: scrollController,
+                direction: InfiniteListDirection.multi,
+                negChildCount: widget.maxPreviousMonth,
+                posChildCount: widget.maxNextMonth,
+                physics: widget.verticalScrollPhysics,
+                builder: (context, index) {
+                  var month =
+                      DateTime(initialMonth.year, initialMonth.month + index);
+                  return InfiniteListItem(
+                    headerStateBuilder: (context, state) {
+                      if (state.sticky && _stickyMonth != month) {
+                        _stickyMonth = month;
+                        Future(() {
+                          widget.controller.updateFocusedDay(_stickyMonth);
+                          widget.onMonthChange?.call(_stickyMonth);
+                        });
+                      }
+                      _stickyPercent = state.position;
+                      _stickyOffset = state.offset;
+                      return SizedBox.shrink();
+                    },
+                    contentBuilder: (context) => Month(
+                      controller: widget.controller,
+                      month: month,
+                      weekParam: widget.weekParam,
+                      daysParam: widget.daysParam,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -172,7 +186,7 @@ class EventsMonthsState extends State<EventsMonths> {
       setState(() {
         initialMonth = DateTime(date.year, date.month);
       });
-      mainVerticalController.jumpTo(0);
+      scrollController.jumpTo(0);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widget.controller.notifyListeners();

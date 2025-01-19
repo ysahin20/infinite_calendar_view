@@ -67,6 +67,7 @@ class DraggableEventWidget extends StatelessWidget {
             plannerState?.mainHorizontalController, context, details);
       },
       onDragEnd: (details) {
+        // find hour
         var difference = details.offset.dy - oldPositionY;
         var minutesDiff = event.endTime!.difference(event.startTime).inMinutes;
         var minuteDiff = difference / heightPerMinute;

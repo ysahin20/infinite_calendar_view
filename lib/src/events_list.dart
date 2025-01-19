@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
@@ -89,8 +91,10 @@ class EventsListState extends State<EventsList> {
   @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(
-      behavior: ScrollConfiguration.of(context)
-          .copyWith(scrollbars: widget.showWebScrollBar),
+      behavior: ScrollConfiguration.of(context).copyWith(
+        scrollbars: widget.showWebScrollBar,
+        dragDevices: PointerDeviceKind.values.toSet(),
+      ),
       child: InfiniteList(
         controller: mainVerticalController,
         direction: InfiniteListDirection.multi,
