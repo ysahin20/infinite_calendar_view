@@ -12,5 +12,5 @@ const defaultMonthAbrText = [
   "sept.",
   "oct.",
   "nov.",
-  "dev.",
+  "dec.",
 ];

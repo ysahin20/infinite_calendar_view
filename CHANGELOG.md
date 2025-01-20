@@ -1,3 +1,7 @@
+# [2.0.3 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)
+
+- [demo] month correction
+
 # [2.0.2 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)
 
 - [bug] wheel scroll bug on web

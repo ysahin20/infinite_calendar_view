@@ -149,7 +149,7 @@ List<Event> generateRandomEvents(int count) {
 
 List<Event> fullDayEvents = [
   Event(
-    title: "Vacation",
+    title: "Holiday",
     color: Colors.grey.pastel,
     textColor: Colors.grey.onPastel,
     startTime: _now.withoutTime,
@@ -185,6 +185,14 @@ List<Event> generateReservationRandomEvents(int count) {
     "Moore",
     "Dupont",
     "Muller",
+    "Durant",
+    "Hanks",
+    "Adams",
+    "Madison",
+    "Monroe",
+    "Lincoln",
+    "Grant",
+    "Arthur",
   ];
 
   var list = List.generate(count, (index) {
