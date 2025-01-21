@@ -24,7 +24,7 @@ class Event {
     }
   }
 
-  late UniqueKey uuid = UniqueKey();
+  late UniqueKey uniqueId = UniqueKey();
   final int columnIndex;
   final DateTime startTime;
   final DateTime? endTime;
@@ -65,7 +65,7 @@ class Event {
       eventType: eventType ?? this.eventType,
       daysIndex: daysIndex ?? this.daysIndex,
     );
-    event.uuid = uuid;
+    event.uniqueId = uniqueId;
     return event;
   }
 }

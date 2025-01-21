@@ -50,8 +50,8 @@ SplayTreeMap<UniqueKey, Map<int, Event>> getWeekMultiDaysEventsSortedMap(
   for (var day = 0; day < 7; day++) {
     var multiDaysEvents = weekEvents[day]?.where((e) => e.daysIndex != null);
     for (Event event in multiDaysEvents ?? []) {
-      multiDaysEventsMap[event.uuid] = {
-        ...multiDaysEventsMap[event.uuid] ?? {},
+      multiDaysEventsMap[event.uniqueId] = {
+        ...multiDaysEventsMap[event.uniqueId] ?? {},
         day: event
       };
     }

@@ -70,6 +70,7 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
         description: event.description,
         color: isDarkMode ? event.color.onPastel : event.color,
         textColor: isDarkMode ? event.textColor.pastel : event.textColor,
+        onTap: () => print("tap ${event.uniqueId}"),
       ),
     );
   }

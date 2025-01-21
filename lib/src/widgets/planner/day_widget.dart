@@ -403,7 +403,12 @@ class DefaultDayEvent extends StatelessWidget {
       margin: eventMargin,
       child: Material(
         child: InkWell(
-          onTap: () {},
+          onTap: onTap,
+          onTapDown: onTapDown,
+          onTapUp: onTapUp,
+          onTapCancel: onTapCancel,
+          onDoubleTap: onDoubleTap,
+          onLongPress: onLongPress,
           child: Ink(
             color: color,
             width: width,

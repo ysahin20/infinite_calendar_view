@@ -133,7 +133,7 @@ class CalendarData {
         : getDaysInBetween(
             event.startTime.withoutTime, event.endTime!.withoutTime);
     for (var day in days) {
-      dayEvents[day]?.removeWhere((e) => e.uuid == event.uuid);
+      dayEvents[day]?.removeWhere((e) => e.uniqueId == event.uniqueId);
     }
   }
 

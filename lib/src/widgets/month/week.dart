@@ -209,8 +209,8 @@ class _WeekState extends State<Week> {
       while (weekShowedEvents
               .getOrNull(dayOfWeek + duration)
               ?.getOrNull(eventIndex)
-              ?.uuid ==
-          event.uuid) {
+              ?.uniqueId ==
+          event.uniqueId) {
         duration++;
       }
       var eventWidth = (dayWidth * duration) - daySpacing;

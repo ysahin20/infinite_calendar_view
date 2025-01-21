@@ -1,8 +1,13 @@
-# [2.0.3 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)
+# [2.0.4 - 21 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.4)
+
+- [bug] https://github.com/pickywawa/infinite_calendar_view/issues/5
+- [bug] rename uuid to uniqueId
+
+# [2.0.3 - 20 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.3)
 
 - [demo] month correction
 
-# [2.0.2 - 16 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.1)
+# [2.0.2 - 19 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.2)
 
 - [bug] wheel scroll bug on web
 - [bug] pointer scroll support on web
