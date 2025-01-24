@@ -189,7 +189,7 @@ class _DayEventsState extends State<DayEvents> {
   // update day events when change
   void updateEvents() {
     if (mounted) {
-      var dayEvents = widget.controller.getFilteredDayEvents(widget.day);
+      var dayEvents = widget.controller.getSortedFilteredDayEvents(widget.day);
       // no update if no change for current day
       if (listEquals(dayEvents, events) == false) {
         setState(() {

@@ -58,6 +58,20 @@ class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
                 selectedDay = firstDay;
               });
             },
+            dayParam: DayParam(
+              dayEventBuilder: (event, height, width, heightPerMinute) {
+                return DefaultDayEvent(
+                  height: height,
+                  width: width,
+                  title: event.title,
+                  description: event.description,
+                  color: event.color,
+                  textColor: event.textColor,
+                  onTap: () => print("tap ${event.uniqueId}"),
+                  onTapDown: (details) => print("tapdown ${event.uniqueId}"),
+                );
+              },
+            ),
           ),
         ),
       ],

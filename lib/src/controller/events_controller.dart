@@ -115,7 +115,9 @@ class CalendarData {
     if (eventType != null) {
       dayEvents[day.withoutTime]?.removeWhere((e) => e.eventType == eventType);
     } else {
-      dayEvents[day.withoutTime]?.clear();
+      // remove all but not multi day event which start another day
+      dayEvents[day.withoutTime]
+          ?.removeWhere((e) => e.daysIndex == null || e.daysIndex == 1);
     }
     addEvents(events);
   }
