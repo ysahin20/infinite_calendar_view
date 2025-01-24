@@ -1,4 +1,4 @@
-# [2.0.5 - 24 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.5)
+# [2.0.6 - 24 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.6)
 
 - [bug] no replace multi day events in replaceDayEvents
 -

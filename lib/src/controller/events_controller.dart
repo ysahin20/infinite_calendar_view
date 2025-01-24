@@ -107,15 +107,17 @@ class CalendarData {
 
   /// replace all day events
   /// if eventType is entered, replace juste day event type
+  /// not remove multi day event which start another day
   void replaceDayEvents(
     DateTime day,
     List<Event> events, [
     final Object? eventType,
   ]) {
     if (eventType != null) {
-      dayEvents[day.withoutTime]?.removeWhere((e) => e.eventType == eventType);
+      dayEvents[day.withoutTime]?.removeWhere((e) =>
+          e.eventType == eventType &&
+          (e.daysIndex == null || e.daysIndex == 1));
     } else {
-      // remove all but not multi day event which start another day
       dayEvents[day.withoutTime]
           ?.removeWhere((e) => e.daysIndex == null || e.daysIndex == 1);
     }
