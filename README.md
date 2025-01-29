@@ -285,6 +285,9 @@ and [API docs](https://pub.dev/documentation/infinite_calendar_view/latest/) for
    <table>
       <tr>
          <td>
+             <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/columns1.png" alt="drawing" width="300"/>
+         </td>
+         <td>
              <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/columns.png" alt="drawing" width="300"/>
          </td>
          <td>
