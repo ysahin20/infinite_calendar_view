@@ -78,45 +78,63 @@ class DayWidget extends StatelessWidget {
         child: Stack(
           children: [
             // offSet all days painter
-            Container(
-              width: width,
-              height: plannerHeight,
-              decoration: BoxDecoration(color: dayBackgroundColor),
-              child: CustomPaint(
-                foregroundPainter: offTimesParam.offTimesAllDaysPainter?.call(
-                      isToday,
-                      heightPerMinute,
-                      offTimesParam.offTimesAllDaysRanges,
-                      offTimesParam.offTimesColor ?? offTimesDefaultColor,
-                    ) ??
-                    OffSetAllDaysPainter(
-                      isToday,
-                      heightPerMinute,
-                      offTimesParam.offTimesAllDaysRanges,
-                      offTimesParam.offTimesColor ?? offTimesDefaultColor,
+            Row(
+              children: [
+                for (var column = 0; column < columnsParam.columns; column++)
+                  Container(
+                    width: columnsParam.getColumSize(width, column),
+                    height: plannerHeight,
+                    decoration: BoxDecoration(color: dayBackgroundColor),
+                    child: CustomPaint(
+                      foregroundPainter: offTimesParam.offTimesAllDaysPainter
+                              ?.call(
+                            column,
+                            day,
+                            isToday,
+                            heightPerMinute,
+                            offTimesParam.offTimesAllDaysRanges,
+                            offTimesParam.offTimesColor ?? offTimesDefaultColor,
+                          ) ??
+                          OffSetAllDaysPainter(
+                            isToday,
+                            heightPerMinute,
+                            offTimesParam.offTimesAllDaysRanges,
+                            offTimesParam.offTimesColor ?? offTimesDefaultColor,
+                          ),
                     ),
-              ),
+                  ),
+              ],
             ),
 
             // offSet particular days painter
             if (offTimesOfDay != null)
-              SizedBox(
-                width: width,
-                height: plannerHeight,
-                child: CustomPaint(
-                  foregroundPainter: offTimesParam.offTimesDayPainter?.call(
-                        isToday,
-                        heightPerMinute,
-                        offTimesParam.offTimesAllDaysRanges,
-                        offTimesParam.offTimesColor ?? offTimesDefaultColor,
-                      ) ??
-                      OffSetAllDaysPainter(
-                        false,
-                        heightPerMinute,
-                        offTimesOfDay,
-                        offTimesParam.offTimesColor ?? offTimesDefaultColor,
+              Row(
+                children: [
+                  for (var column = 0; column < columnsParam.columns; column++)
+                    SizedBox(
+                      width: columnsParam.getColumSize(width, column),
+                      height: plannerHeight,
+                      child: CustomPaint(
+                        foregroundPainter:
+                            offTimesParam.offTimesDayPainter?.call(
+                                  column,
+                                  day,
+                                  isToday,
+                                  heightPerMinute,
+                                  offTimesOfDay,
+                                  offTimesParam.offTimesColor ??
+                                      offTimesDefaultColor,
+                                ) ??
+                                OffSetAllDaysPainter(
+                                  false,
+                                  heightPerMinute,
+                                  offTimesOfDay,
+                                  offTimesParam.offTimesColor ??
+                                      offTimesDefaultColor,
+                                ),
                       ),
-                ),
+                    ),
+                ],
               ),
 
             // lines painters
@@ -360,6 +378,7 @@ class DefaultDayEvent extends StatelessWidget {
     super.key,
     required this.height,
     required this.width,
+    this.child,
     this.title,
     this.description,
     this.color = Colors.blue,
@@ -369,6 +388,7 @@ class DefaultDayEvent extends StatelessWidget {
     this.horizontalPadding = 4,
     this.verticalPadding = 4,
     this.eventMargin = const EdgeInsets.all(1),
+    this.roundBorderRadius = 3,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -377,6 +397,7 @@ class DefaultDayEvent extends StatelessWidget {
     this.onTapCancel,
   });
 
+  final Widget? child;
   final String? title;
   final String? description;
   final Color color;
@@ -388,6 +409,7 @@ class DefaultDayEvent extends StatelessWidget {
   final double horizontalPadding;
   final double verticalPadding;
   final EdgeInsetsGeometry? eventMargin;
+  final double roundBorderRadius;
   final GestureTapCallback? onTap;
   final GestureTapDownCallback? onTapDown;
   final GestureTapUpCallback? onTapUp;
@@ -401,54 +423,58 @@ class DefaultDayEvent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: eventMargin,
-      child: Material(
-        child: InkWell(
-          onTap: onTap,
-          onTapDown: onTapDown,
-          onTapUp: onTapUp,
-          onTapCancel: onTapCancel,
-          onDoubleTap: onDoubleTap,
-          onLongPress: onLongPress,
-          child: Ink(
-            color: color,
-            width: width,
-            height: height,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: height > minHeight ? verticalPadding : 0,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (title?.isNotEmpty == true && height > 15)
-                    Flexible(
-                      child: Text(
-                        title!,
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: titleFontSize,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        maxLines: height > 40 ? 2 : 1,
-                      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(roundBorderRadius),
+        child: Material(
+          child: InkWell(
+            onTap: onTap,
+            onTapDown: onTapDown,
+            onTapUp: onTapUp,
+            onTapCancel: onTapCancel,
+            onDoubleTap: onDoubleTap,
+            onLongPress: onLongPress,
+            child: Ink(
+              color: color,
+              width: width,
+              height: height,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
+                  vertical: height > minHeight ? verticalPadding : 0,
+                ),
+                child: child ??
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (title?.isNotEmpty == true && height > 15)
+                          Flexible(
+                            child: Text(
+                              title!,
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: titleFontSize,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                              maxLines: height > 40 ? 2 : 1,
+                            ),
+                          ),
+                        if (description?.isNotEmpty == true && height > 40)
+                          Flexible(
+                            child: Text(
+                              description!,
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: descriptionFontSize,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                              maxLines: 4,
+                            ),
+                          ),
+                      ],
                     ),
-                  if (description?.isNotEmpty == true && height > 40)
-                    Flexible(
-                      child: Text(
-                        description!,
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: descriptionFontSize,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        maxLines: 4,
-                      ),
-                    ),
-                ],
               ),
             ),
           ),

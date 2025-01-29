@@ -1,7 +1,13 @@
+# [2.1.0 - 29 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.1.0)
+
+- [change] add custom round border to DefaultEventWidget with default value = 3
+- [change] add column and day in offsetTimes builder
+- [improve] paint offsetTimes per columns
+- [demo] add on day multi column view, with custom header (avatar) and custom offsetTimes
+
 # [2.0.6 - 24 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.6)
 
 - [bug] no replace multi day events in replaceDayEvents
--
 
 # [2.0.4 - 21 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.0.4)
 

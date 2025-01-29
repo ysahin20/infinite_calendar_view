@@ -9,6 +9,10 @@ List<Event> events = [
   ...generateRandomEvents(500),
   ...generateMultiDaysEvents(),
 ];
+List<Event> multiColumnEvents = [
+  ...generateRandomEvents(500, columnIndex: 0),
+  ...generateRandomEvents(500, columnIndex: 1),
+];
 
 List<Event> generateMultiDaysEvents() {
   return [
@@ -47,7 +51,7 @@ List<Event> generateMultiDaysEvents() {
   ];
 }
 
-List<Event> generateRandomEvents(int count) {
+List<Event> generateRandomEvents(int count, {int columnIndex = 0}) {
   final random = Random();
   final colors = [
     Colors.red,
@@ -143,6 +147,7 @@ List<Event> generateRandomEvents(int count) {
       endTime: endTime,
       color: color.pastel,
       textColor: color.onPastel,
+      columnIndex: columnIndex,
     );
   });
 }

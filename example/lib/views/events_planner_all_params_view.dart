@@ -62,12 +62,16 @@ class EventsPlannerAllParamView extends StatelessWidget {
           ],
         },
         offTimesColor: Color(0xFFF4F4F4),
-        offTimesAllDaysPainter: (isToday, heightPerMinute, ranges, color) =>
-            OffSetAllDaysPainter(
-                isToday, heightPerMinute, [], Color(0xFFF4F4F4)),
-        offTimesDayPainter: (isToday, heightPerMinute, ranges, color) =>
-            OffSetAllDaysPainter(
-                isToday, heightPerMinute, [], Color(0xFFF4F4F4)),
+        offTimesAllDaysPainter:
+            (column, day, isToday, heightPerMinute, ranges, color) {
+          return OffSetAllDaysPainter(
+              isToday, heightPerMinute, [], Color(0xFFF4F4F4));
+        },
+        offTimesDayPainter:
+            (column, day, isToday, heightPerMinute, ranges, color) {
+          return OffSetAllDaysPainter(
+              isToday, heightPerMinute, [], Color(0xFFF4F4F4));
+        },
       ),
       dayParam: DayParam(
         todayColor: Colors.black12,

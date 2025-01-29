@@ -195,17 +195,19 @@ class OffSetAllDaysPainter extends CustomPainter {
     this.isToday,
     this.heightPerMinute,
     this.offTimesRanges,
-    this.offTimesColor,
-  );
+    this.offTimesColor, {
+    this.paintToday = false,
+  });
 
   final bool isToday;
+  final bool paintToday;
   final double heightPerMinute;
   final List<OffTimeRange> offTimesRanges;
   final Color offTimesColor;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (!isToday) {
+    if (!isToday || paintToday) {
       final paint = Paint()..color = offTimesColor;
 
       for (var range in offTimesRanges) {

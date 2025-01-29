@@ -1,5 +1,6 @@
 import 'package:example/views/events_months_view.dart';
 import 'package:example/views/events_planner_multi_columns_view.dart';
+import 'package:example/views/events_planner_multi_columns_view2.dart';
 import 'package:example/views/events_planner_one_day_view.dart';
 import 'package:example/views/events_planner_three_days_view.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +127,11 @@ class CalendarViewWidget extends StatelessWidget {
           daysShowed: 7,
           isDarkMode: darkMode,
         ),
-      CalendarView.multi_column => EventsPlannerMultiColumnView(
+      CalendarView.multi_column2 => EventsPlannerMultiColumnView(
+          key: UniqueKey(),
+          isDarkMode: darkMode,
+        ),
+      CalendarView.multi_column1 => EventsPlannerMultiColumnSchedulerView(
           key: UniqueKey(),
           isDarkMode: darkMode,
         ),

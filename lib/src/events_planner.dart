@@ -646,12 +646,23 @@ class OffTimesParam {
   final Color? offTimesColor;
 
   /// off time custom painter
-  final CustomPainter Function(bool isToday, double heightPerMinute,
-      List<OffTimeRange> ranges, Color color)? offTimesAllDaysPainter;
+  final CustomPainter Function(
+    int column,
+    DateTime day,
+    bool isToday,
+    double heightPerMinute,
+    List<OffTimeRange> ranges,
+    Color color,
+  )? offTimesAllDaysPainter;
 
   /// off time on day custom painter
-  final CustomPainter Function(bool isToday, double heightPerMinute,
-      List<OffTimeRange> ranges, Color color)? offTimesDayPainter;
+  final CustomPainter Function(
+      int column,
+      DateTime day,
+      bool isToday,
+      double heightPerMinute,
+      List<OffTimeRange> ranges,
+      Color color)? offTimesDayPainter;
 }
 
 class OffTimeRange {
