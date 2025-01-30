@@ -761,6 +761,29 @@ class ColumnsParam {
         ? dayWidth * columnWidthRatio
         : dayWidth / columns;
   }
+
+  /// return column position in day width
+  /// [0] = startOffset
+  /// [1] = endOffset
+  List<double> getColumPositions(double dayWidth, int columnIndex) {
+    var startSize = 0.0;
+    for (var column = 0; column < columnIndex; column++) {
+      startSize += getColumSize(dayWidth, column);
+    }
+    return [startSize, startSize + getColumSize(dayWidth, columnIndex)];
+  }
+
+  int getColumnIndex(double dayWidth, double dx) {
+    var totalWidth = 0.0;
+    for (var column = 0; column < columns; column++) {
+      var columnSize = getColumSize(dayWidth, column);
+      if (totalWidth <= dx && dx < totalWidth + columnSize) {
+        return column;
+      }
+      totalWidth += columnSize;
+    }
+    return columns;
+  }
 }
 
 class DayParam {
@@ -810,14 +833,23 @@ class DayParam {
   final int onSlotMinutesRound;
 
   /// event when tap on free slot on day
-  final void Function(DateTime exactDateTime, DateTime roundDateTime)?
-      onSlotTap;
+  final void Function(
+    int columnIndex,
+    DateTime exactDateTime,
+    DateTime roundDateTime,
+  )? onSlotTap;
 
   /// event when long tap on free slot on day
-  final void Function(DateTime exactDateTime, DateTime roundDateTime)?
-      onSlotLongTap;
+  final void Function(
+    int columnIndex,
+    DateTime exactDateTime,
+    DateTime roundDateTime,
+  )? onSlotLongTap;
 
   /// event when double tap on free slot on day
-  final void Function(DateTime exactDateTime, DateTime roundDateTime)?
-      onSlotDoubleTap;
+  final void Function(
+    int columnIndex,
+    DateTime exactDateTime,
+    DateTime roundDateTime,
+  )? onSlotDoubleTap;
 }

@@ -64,14 +64,17 @@ class DayWidget extends StatelessWidget {
       ),
       child: GestureDetector(
         onTapUp: (details) => dayParam.onSlotTap?.call(
+          columnsParam.getColumnIndex(width, details.localPosition.dx),
           getExactDateTime(details.localPosition.dy),
           getRoundDateTime(details.localPosition.dy),
         ),
         onLongPressStart: (details) => dayParam.onSlotLongTap?.call(
+          columnsParam.getColumnIndex(width, details.localPosition.dx),
           getExactDateTime(details.localPosition.dy),
           getRoundDateTime(details.localPosition.dy),
         ),
         onDoubleTapDown: (details) => dayParam.onSlotDoubleTap?.call(
+          columnsParam.getColumnIndex(width, details.localPosition.dx),
           getExactDateTime(details.localPosition.dy),
           getRoundDateTime(details.localPosition.dy),
         ),

@@ -1,3 +1,10 @@
+# [2.2.0 - 30 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.2.0)
+
+- [improve] add colum index to drag and drop for multi-columns
+- [improve] add column in slot events https://github.com/pickywawa/infinite_calendar_view/issues/6
+- [bug] start of week in month view https://github.com/pickywawa/infinite_calendar_view/issues/7
+- [change] remove heightPerMinute in DragEventWidget (no necessary)
+
 # [2.1.0 - 29 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.1.0)
 
 - [change] add custom round border to DefaultEventWidget with default value = 3

@@ -1,5 +1,6 @@
 import 'package:example/data.dart';
 import 'package:example/extension.dart';
+import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
@@ -61,7 +62,9 @@ class _EventsPlannerMultiColumnSchedulerViewState
             // event cell
             dayParam: DayParam(
               dayEventBuilder: (event, height, width, heightPerMinute) =>
-                  EventWidget(height: height, width: width, event: event),
+                  EventWidget(controller, event, height, width),
+              onSlotTap: (columnIndex, exactDateTime, roundDateTime) =>
+                  showSnack(context, "Slot Tap column = ${columnIndex}"),
             ),
 
             // no full day events
@@ -105,18 +108,16 @@ class _EventsPlannerMultiColumnSchedulerViewState
     );
   }
 
-  List<OffTimeRange> getHalfTimeRange() {
-    return [
-      OffTimeRange(
-        TimeOfDay(hour: 0, minute: 0),
-        TimeOfDay(hour: 9, minute: 0),
-      ),
-      OffTimeRange(
-        TimeOfDay(hour: 13, minute: 0),
-        TimeOfDay(hour: 24, minute: 0),
-      ),
-    ];
-  }
+  List<OffTimeRange> getHalfTimeRange() => [
+        OffTimeRange(
+          TimeOfDay(hour: 0, minute: 0),
+          TimeOfDay(hour: 9, minute: 0),
+        ),
+        OffTimeRange(
+          TimeOfDay(hour: 13, minute: 0),
+          TimeOfDay(hour: 24, minute: 0),
+        ),
+      ];
 }
 
 class Avatar extends StatelessWidget {
@@ -150,57 +151,75 @@ class Avatar extends StatelessWidget {
 }
 
 class EventWidget extends StatelessWidget {
-  const EventWidget({
-    super.key,
-    required this.event,
-    required this.height,
-    required this.width,
-  });
+  const EventWidget(
+    this.controller,
+    this.event,
+    this.height,
+    this.width,
+  );
 
+  final EventsController controller;
   final Event event;
   final double height;
   final double width;
 
   @override
   Widget build(BuildContext context) {
-    return DefaultDayEvent(
+    return DraggableEventWidget(
+      event: event,
       height: height,
       width: width,
-      color: event.color.darken(0.12),
-      textColor: event.textColor,
-      eventMargin: EdgeInsets.all(2),
-      roundBorderRadius: 5,
-      onTap: () {},
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            child: Text(
-              getSlotHourText(event.startTime, event.endTime!),
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              style: TextStyle(fontSize: 11),
+      onDragEnd: (columnIndex, exactStart, exactEnd, roundStart, roundEnd) {
+        controller.updateCalendarData(
+          (data) => data.updateEvent(
+            oldEvent: event,
+            newEvent: event.copyWith(
+              columnIndex: columnIndex,
+              startTime: roundStart,
+              endTime: roundEnd,
             ),
           ),
-          Flexible(
-            child: Text(
-              event.title ?? "",
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              style: TextStyle(fontWeight: FontWeight.w500),
-              maxLines: 2,
+        );
+      },
+      child: DefaultDayEvent(
+        height: height,
+        width: width,
+        color: event.color.darken(0.12),
+        textColor: event.textColor,
+        eventMargin: EdgeInsets.all(2),
+        roundBorderRadius: 5,
+        onTap: () => showSnack(context, "Tap ${event.title}"),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Flexible(
+              child: Text(
+                getSlotHourText(event.startTime, event.endTime!),
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: TextStyle(fontSize: 11),
+              ),
             ),
-          ),
-          Flexible(
-            child: Text(
-              event.description ?? "",
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              style: TextStyle(fontSize: 11),
-              maxLines: 2,
+            Flexible(
+              child: Text(
+                event.title ?? "",
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: TextStyle(fontWeight: FontWeight.w500),
+                maxLines: 2,
+              ),
             ),
-          ),
-        ],
+            Flexible(
+              child: Text(
+                event.description ?? "",
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: TextStyle(fontSize: 11),
+                maxLines: 2,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

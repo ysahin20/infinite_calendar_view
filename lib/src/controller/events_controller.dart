@@ -130,6 +130,20 @@ class CalendarData {
     addEvents([newEvent]);
   }
 
+  void moveEvent(
+    Event event,
+    DateTime startTime,
+    DateTime endTime,
+  ) {
+    updateEvent(
+      oldEvent: event,
+      newEvent: event.copyWith(
+        startTime: startTime,
+        endTime: endTime,
+      ),
+    );
+  }
+
   void removeEvent(Event event) {
     var endTime = event.endTime;
     var days = endTime == null

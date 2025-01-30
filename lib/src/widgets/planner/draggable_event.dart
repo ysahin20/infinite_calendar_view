@@ -10,7 +10,6 @@ class DraggableEventWidget extends StatelessWidget {
     required this.event,
     required this.height,
     required this.width,
-    required this.heightPerMinute,
     required this.onDragEnd,
     this.onSlotMinutesRound = 15,
     this.draggableFeedback,
@@ -28,11 +27,9 @@ class DraggableEventWidget extends StatelessWidget {
   /// event width
   final double width;
 
-  /// current heightPerMinute
-  final double heightPerMinute;
-
   /// event when end drag
   final void Function(
+    int columnIndex,
     DateTime exactStartDateTime,
     DateTime exactEndDateTime,
     DateTime roundStartDateTime,
@@ -72,9 +69,11 @@ class DraggableEventWidget extends StatelessWidget {
         var relativeOffset = renderBox.globalToLocal(details.offset);
 
         // find day
+        var dayWidth = plannerState?.dayWidth ?? 0;
+        var heightPerMinute = plannerState?.heightPerMinute ?? 0;
         var scrollOffsetX = plannerState?.mainHorizontalController.offset ?? 0;
         var releaseOffsetX = scrollOffsetX + relativeOffset.dx;
-        var dayIndex = (releaseOffsetX / (plannerState?.dayWidth ?? 0)).toInt();
+        var dayIndex = (releaseOffsetX / dayWidth).toInt();
         // adjust negative index, because current day begin 0 and negative begin -1
         var reallyDayIndex = releaseOffsetX >= 0 ? dayIndex : dayIndex - 1;
         var currentDay = plannerState?.initialDate
@@ -116,7 +115,21 @@ class DraggableEventWidget extends StatelessWidget {
           ),
         );
 
+        // find column
+        var columnIndex = 0;
+        var dayPosition = (releaseOffsetX % dayWidth);
+        var columnsParam = plannerState?.widget.columnsParam;
+        if (columnsParam != null && columnsParam.columns > 0) {
+          for (var column = 0; column < columnsParam.columns; column++) {
+            var positions = columnsParam.getColumPositions(dayWidth, column);
+            if (positions[0] <= dayPosition && dayPosition <= positions[1]) {
+              columnIndex = column;
+            }
+          }
+        }
+
         onDragEnd.call(
+          columnIndex,
           exactStartDateTime,
           exactEndDateTime,
           roundStartDateTime,

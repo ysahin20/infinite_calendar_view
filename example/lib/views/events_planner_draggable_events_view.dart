@@ -26,9 +26,9 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
       heightPerMinute: heightPerMinute,
       initialVerticalScrollOffset: initialVerticalScrollOffset,
       dayParam: DayParam(
-        onSlotTap: (exactDateTime, roundDateTime) {},
+        onSlotTap: (columnIndex, exactDateTime, roundDateTime) {},
         dayEventBuilder: (event, height, width, heightPerMinute) {
-          return draggableEvent(event, height, width, heightPerMinute);
+          return draggableEvent(event, height, width);
         },
       ),
       daysHeaderParam: DaysHeaderParam(
@@ -52,16 +52,15 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
     Event event,
     double height,
     double width,
-    double heightPerMinute,
   ) {
     return DraggableEventWidget(
       event: event,
       height: height,
       width: width,
-      heightPerMinute: heightPerMinute,
-      onDragEnd: (exactStartDateTime, exactEndDateTime, roundStartDateTime,
-          roundEndDateTime) {
-        moveEvent(event, roundStartDateTime, roundEndDateTime);
+      onDragEnd: (columnIndex, exactStart, exactEnd, roundStart, roundEnd) {
+        controller.updateCalendarData(
+          (calendarData) => calendarData.moveEvent(event, roundStart, roundEnd),
+        );
       },
       child: DefaultDayEvent(
         height: height,
@@ -73,21 +72,5 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
         onTap: () => print("tap ${event.uniqueId}"),
       ),
     );
-  }
-
-  void moveEvent(
-    Event oldEvent,
-    DateTime roundStartDateTime,
-    DateTime roundEndDateTime,
-  ) {
-    controller.updateCalendarData((calendarData) {
-      calendarData.updateEvent(
-        oldEvent: oldEvent,
-        newEvent: oldEvent.copyWith(
-          startTime: roundStartDateTime,
-          endTime: roundEndDateTime,
-        ),
-      );
-    });
   }
 }

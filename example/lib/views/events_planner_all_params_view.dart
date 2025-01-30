@@ -78,9 +78,9 @@ class EventsPlannerAllParamView extends StatelessWidget {
         dayTopPadding: 10,
         dayBottomPadding: 15,
         onSlotMinutesRound: 15,
-        onSlotTap: (exactDateTime, roundDateTime) {},
-        onSlotLongTap: (exactDateTime, roundDateTime) {},
-        onSlotDoubleTap: (exactDateTime, roundDateTime) {},
+        onSlotTap: (columnIndex, exactDateTime, roundDateTime) {},
+        onSlotLongTap: (columnIndex, exactDateTime, roundDateTime) {},
+        onSlotDoubleTap: (columnIndex, exactDateTime, roundDateTime) {},
         onDayBuild: (day) {},
         dayEventBuilder: (event, height, width, heightPerMinute) {
           return DefaultDayEvent(
