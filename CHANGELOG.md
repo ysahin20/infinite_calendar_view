@@ -1,3 +1,8 @@
+# [2.2.1 - 01 Dev 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.2.1)
+
+- [bug] show column with only one column
+- [demo] improve multi column 2 demo
+
 # [2.2.0 - 30 Jan 2025](https://github.com/pickywawa/infinite_calendar_view/tree/2.2.0)
 
 - [improve] add colum index to drag and drop for multi-columns

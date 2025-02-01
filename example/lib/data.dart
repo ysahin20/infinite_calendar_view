@@ -12,6 +12,7 @@ List<Event> events = [
 List<Event> multiColumnEvents = [
   ...generateRandomEvents(500, columnIndex: 0),
   ...generateRandomEvents(500, columnIndex: 1),
+  ...generateRandomEvents(500, columnIndex: 2),
 ];
 
 List<Event> generateMultiDaysEvents() {

@@ -3,8 +3,8 @@ import 'package:example/extension.dart';
 import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
-import 'package:intl/intl.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class EventsPlannerMultiColumnSchedulerView extends StatefulWidget {
   const EventsPlannerMultiColumnSchedulerView({
@@ -21,17 +21,20 @@ class EventsPlannerMultiColumnSchedulerView extends StatefulWidget {
 
 class _EventsPlannerMultiColumnSchedulerViewState
     extends State<EventsPlannerMultiColumnSchedulerView> {
+  GlobalKey<EventsPlannerState> oneDayViewKey = GlobalKey<EventsPlannerState>();
+  late double heightPerMinute;
+  late double initialVerticalScrollOffset;
+  late DateTime day = DateTime.now();
+  late DateTime selectedDay;
   var controller = EventsController()
     ..updateCalendarData((calendarData) {
       calendarData.addEvents(multiColumnEvents);
     });
-  late double heightPerMinute;
-  late double initialVerticalScrollOffset;
-  late DateTime day = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    selectedDay = controller.focusedDay;
     heightPerMinute = 1.0;
     initialVerticalScrollOffset = heightPerMinute * 7 * 60;
   }
@@ -41,18 +44,12 @@ class _EventsPlannerMultiColumnSchedulerViewState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          width: double.infinity,
-          color: Theme.of(context).appBarTheme.backgroundColor,
-          child: Center(
-            child: Text(
-              DateFormat.MMMd().format(day).toUpperCase(),
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
+        SizedBox(height: 20),
+        tableCalendar(),
+        Divider(),
         Expanded(
           child: EventsPlanner(
+            key: oneDayViewKey,
             controller: controller,
             daysShowed: 1,
             heightPerMinute: heightPerMinute,
@@ -65,21 +62,31 @@ class _EventsPlannerMultiColumnSchedulerViewState
                   EventWidget(controller, event, height, width),
               onSlotTap: (columnIndex, exactDateTime, roundDateTime) =>
                   showSnack(context, "Slot Tap column = ${columnIndex}"),
+              todayColor: Theme.of(context).colorScheme.surface,
             ),
 
-            // no full day events
-            fullDayParam: FullDayParam(fullDayEventsBarVisibility: false),
+            fullDayParam: FullDayParam(
+              fullDayEventsBarDecoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                  bottom: BorderSide(color: Colors.black12),
+                ),
+              ),
+            ),
 
             // header
             daysHeaderParam: DaysHeaderParam(
-              daysHeaderHeight: 90,
-              dayHeaderBuilder: (day, isToday) => SizedBox.shrink(),
+              daysHeaderVisibility: false,
+              daysHeaderHeight: 70,
+              daysHeaderColor: Theme.of(context).colorScheme.surface,
             ),
 
             // personalize columns
             columnsParam: ColumnsParam(
-              columns: 2,
-              columnsWidthRatio: [1 / 2, 1 / 2],
+              columns: 3,
+              columnsWidthRatio: [1 / 3, 1 / 3, 1 / 3],
               columnHeaderBuilder: (day, isToday, columIndex, columnWidth) {
                 return Avatar(columnWidth: columnWidth, columIndex: columIndex);
               },
@@ -105,6 +112,41 @@ class _EventsPlannerMultiColumnSchedulerViewState
           ),
         ),
       ],
+    );
+  }
+
+  TableCalendar tableCalendar() {
+    return TableCalendar(
+      firstDay: selectedDay.subtract(Duration(days: 365)),
+      lastDay: selectedDay.add(Duration(days: 365)),
+      focusedDay: selectedDay,
+      calendarFormat: CalendarFormat.week,
+      selectedDayPredicate: (day) => isSameDay(selectedDay, day),
+      onDaySelected: (selectedDay, focusedDay) {
+        setState(() {
+          this.selectedDay = selectedDay;
+        });
+        controller.updateFocusedDay(selectedDay);
+        oneDayViewKey.currentState?.jumpToDate(selectedDay);
+      },
+      headerVisible: false,
+      weekNumbersVisible: true,
+      headerStyle: const HeaderStyle(
+        formatButtonVisible: false,
+        titleCentered: true,
+      ),
+      calendarStyle: CalendarStyle(
+        outsideDaysVisible: true,
+        markerSize: 7,
+        todayDecoration: BoxDecoration(
+          color: Colors.blueGrey,
+          shape: BoxShape.circle,
+        ),
+        selectedDecoration: BoxDecoration(
+          color: Colors.blue,
+          shape: BoxShape.circle,
+        ),
+      ),
     );
   }
 
@@ -136,14 +178,24 @@ class Avatar extends StatelessWidget {
       width: columnWidth,
       child: Column(
         children: [
-          SizedBox(height: 20),
           RandomAvatar(
-            columIndex == 0 ? 'Suzy' : 'Jose',
+            columIndex == 0
+                ? 'Suzy'
+                : columIndex == 1
+                    ? 'Jose'
+                    : 'Michelle',
             trBackground: false,
-            height: 60,
-            width: 60,
+            height: 35,
+            width: 35,
           ),
-          SizedBox(height: 10)
+          Text(
+            columIndex == 0
+                ? 'Suzy'
+                : columIndex == 1
+                    ? 'Jose'
+                    : 'Michelle',
+            style: TextStyle(fontSize: 12),
+          ),
         ],
       ),
     );
@@ -185,7 +237,6 @@ class EventWidget extends StatelessWidget {
         height: height,
         width: width,
         color: event.color.darken(0.12),
-        textColor: event.textColor,
         eventMargin: EdgeInsets.all(2),
         roundBorderRadius: 5,
         onTap: () => showSnack(context, "Tap ${event.title}"),
@@ -197,7 +248,10 @@ class EventWidget extends StatelessWidget {
                 getSlotHourText(event.startTime, event.endTime!),
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: TextStyle(fontSize: 11),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.black54,
+                ),
               ),
             ),
             Flexible(
@@ -205,7 +259,10 @@ class EventWidget extends StatelessWidget {
                 event.title ?? "",
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
                 maxLines: 2,
               ),
             ),
@@ -214,7 +271,10 @@ class EventWidget extends StatelessWidget {
                 event.description ?? "",
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: TextStyle(fontSize: 11),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.black87,
+                ),
                 maxLines: 2,
               ),
             ),

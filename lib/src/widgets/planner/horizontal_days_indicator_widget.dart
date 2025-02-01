@@ -59,11 +59,14 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        daysHeaderParam.dayHeaderBuilder != null
-                            ? daysHeaderParam.dayHeaderBuilder!
-                                .call(day, isToday)
-                            : getDefaultDayHeader(day, isToday),
-                        if (columnsParam.columns > 1)
+                        if (daysHeaderParam.daysHeaderVisibility)
+                          daysHeaderParam.dayHeaderBuilder != null
+                              ? daysHeaderParam.dayHeaderBuilder!
+                                  .call(day, isToday)
+                              : getDefaultDayHeader(day, isToday),
+                        if (columnsParam.columns > 1 ||
+                            columnsParam.columnHeaderBuilder != null ||
+                            columnsParam.columnsLabels.isNotEmpty)
                           getColumnsHeader(context, day, isToday)
                       ],
                     ),
