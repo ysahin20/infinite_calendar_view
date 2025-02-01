@@ -24,7 +24,6 @@ class _EventsPlannerMultiColumnSchedulerViewState
   GlobalKey<EventsPlannerState> oneDayViewKey = GlobalKey<EventsPlannerState>();
   late double heightPerMinute;
   late double initialVerticalScrollOffset;
-  late DateTime day = DateTime.now();
   late DateTime selectedDay;
   var controller = EventsController()
     ..updateCalendarData((calendarData) {
@@ -108,7 +107,7 @@ class _EventsPlannerMultiColumnSchedulerViewState
                 );
               },
             ),
-            onDayChange: (newDay) => setState(() => day = newDay),
+            onDayChange: (newDay) => setState(() => selectedDay = newDay),
           ),
         ),
       ],
