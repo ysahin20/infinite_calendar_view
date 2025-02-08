@@ -279,7 +279,8 @@ class DaysParam {
   /// day header builder
   final Widget Function(DateTime day)? dayHeaderBuilder;
 
-  final Widget Function(Event event)? dayEventBuilder;
+  final Widget Function(Event event, double? width, double? height)?
+      dayEventBuilder;
 
   final Widget Function(int count)? dayMoreEventsBuilder;
 

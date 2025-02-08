@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_calendar_view/src/utils/event_helder.dart';
 
 import '../events/event.dart';
 import '../utils/extension.dart';
@@ -89,6 +88,8 @@ class CalendarData {
         var newEvents = event.copyWith(
           startTime: startTime,
           endTime: endTime,
+          effectiveStartTime: event.startTime,
+          effectiveEndTime: event.endTime,
           daysIndex: days > 0 ? i : null,
         );
         _addDayEvent(day, newEvents);
@@ -130,28 +131,34 @@ class CalendarData {
     addEvents([newEvent]);
   }
 
-  void moveEvent(
-    Event event,
-    DateTime startTime,
-    DateTime endTime,
-  ) {
+  void moveEvent(Event event, DateTime newStartTime, [DateTime? newEndTime]) {
     updateEvent(
       oldEvent: event,
       newEvent: event.copyWith(
-        startTime: startTime,
-        endTime: endTime,
+        startTime: newStartTime,
+        endTime: event.endTime == null
+            ? null
+            : newEndTime ?? newStartTime.add(event.getDuration() ?? Duration()),
       ),
     );
   }
 
+  /// remove event
+  /// if event is multi days event, remove all occurrence for each day
   void removeEvent(Event event) {
-    var endTime = event.endTime;
-    var days = endTime == null
-        ? [event.startTime.withoutTime]
-        : getDaysInBetween(
-            event.startTime.withoutTime, event.endTime!.withoutTime);
-    for (var day in days) {
-      dayEvents[day]?.removeWhere((e) => e.uniqueId == event.uniqueId);
+    // remove event for event day and previous day for same event (multi day events)
+    var previousDay = event.startTime.withoutTime;
+    while (dayEvents[previousDay]?.any((e) => e.uniqueId == event.uniqueId) ==
+        true) {
+      dayEvents[previousDay]?.removeWhere((e) => e.uniqueId == event.uniqueId);
+      previousDay = previousDay.subtract(Duration(days: 1));
+    }
+    // remove next same event (multi day events)
+    var nextDay = event.startTime.withoutTime.add(Duration(days: 1));
+    while (
+        dayEvents[nextDay]?.any((e) => e.uniqueId == event.uniqueId) == true) {
+      dayEvents[nextDay]?.removeWhere((e) => e.uniqueId == event.uniqueId);
+      nextDay = nextDay.add(Duration(days: 1));
     }
   }
 

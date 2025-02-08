@@ -24,20 +24,50 @@ class Event {
     }
   }
 
+  // generated unique id
   late UniqueKey uniqueId = UniqueKey();
+
+  // column index in planner mode, 0 if not multiple column
   final int columnIndex;
+
+  // event start time.
+  // for full day event, set start of day
   final DateTime startTime;
+
+  // event end time.
+  // for full day event, set null
+  // for multi days event, set dateTime of other day
   final DateTime? endTime;
+
+  // full day event
   final bool isFullDay;
+
+  // title showed in default event widget (can be overridden)
   final String? title;
+
+  // description showed in default event widget (can be overridden)
   final String? description;
+
+  // background color showed in default event widget (can be overridden)
   final Color color;
+
+  // text color showed in default event widget (can be overridden)
   final Color textColor;
+
+  // transported data for event
   final Object? data;
+
+  // event type : generic object to easy manipulate event (arranger, widget...)
   final Object eventType;
 
-  // multi days finder
+  // multi days index
   final int? daysIndex;
+
+  // effective start time for multi days events (startTime is for one day)
+  DateTime? effectiveStartTime;
+
+  // effective end time for multi days events (end is for one day)
+  DateTime? effectiveEndTime;
 
   Event copyWith({
     final int? columnIndex,
@@ -51,6 +81,8 @@ class Event {
     final Object? data,
     final Object? eventType,
     final int? daysIndex,
+    final DateTime? effectiveStartTime,
+    final DateTime? effectiveEndTime,
   }) {
     var event = Event(
       columnIndex: columnIndex ?? this.columnIndex,
@@ -66,6 +98,18 @@ class Event {
       daysIndex: daysIndex ?? this.daysIndex,
     );
     event.uniqueId = uniqueId;
+    event.effectiveStartTime = effectiveStartTime ?? this.effectiveStartTime;
+    event.effectiveEndTime = effectiveEndTime ?? this.effectiveEndTime;
     return event;
+  }
+
+  Duration? getDuration() {
+    if (effectiveStartTime != null && effectiveEndTime != null) {
+      return effectiveEndTime!.difference(effectiveStartTime!);
+    }
+    if (endTime != null) {
+      return endTime!.difference(startTime);
+    }
+    return null;
   }
 }

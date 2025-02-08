@@ -59,7 +59,7 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
       width: width,
       onDragEnd: (columnIndex, exactStart, exactEnd, roundStart, roundEnd) {
         controller.updateCalendarData(
-          (calendarData) => calendarData.moveEvent(event, roundStart, roundEnd),
+          (calendarData) => calendarData.moveEvent(event, roundStart),
         );
       },
       child: DefaultDayEvent(

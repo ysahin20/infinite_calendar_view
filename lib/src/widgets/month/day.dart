@@ -88,6 +88,37 @@ class DefaultNotShowedMonthEventsWidget extends StatelessWidget {
   }
 }
 
+class DraggableMonthEvent extends StatelessWidget {
+  const DraggableMonthEvent({
+    super.key,
+    required this.child,
+    this.draggableFeedback,
+    required this.onDragEnd,
+  });
+
+  static double defaultDraggableOpacity = 0.7;
+  final Widget child;
+  final Widget? draggableFeedback;
+  final void Function(DateTime day) onDragEnd;
+
+  @override
+  Widget build(BuildContext context) {
+    return Draggable(
+      data: onDragEnd,
+      child: child,
+      feedback: draggableFeedback ?? getDefaultDraggableFeedback(),
+      childWhenDragging: SizedBox.shrink(),
+    );
+  }
+
+  Widget getDefaultDraggableFeedback() {
+    return Opacity(
+      opacity: defaultDraggableOpacity,
+      child: child,
+    );
+  }
+}
+
 /// default event showed
 class DefaultMonthDayEvent extends StatelessWidget {
   const DefaultMonthDayEvent({
@@ -96,31 +127,57 @@ class DefaultMonthDayEvent extends StatelessWidget {
     this.fontSize = 10,
     this.fontWeight = FontWeight.w400,
     this.padding = const EdgeInsets.all(2),
+    this.roundBorderRadius = 3,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onTapDown,
+    this.onTapUp,
+    this.onTapCancel,
   });
 
   final Event event;
   final double fontSize;
   final FontWeight fontWeight;
   final EdgeInsets padding;
+  final double roundBorderRadius;
+  final GestureTapCallback? onTap;
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapCallback? onTapCancel;
+  final GestureTapCallback? onDoubleTap;
+  final GestureLongPressCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: event.color,
-        borderRadius: BorderRadius.circular(2),
-        border: event.isFullDay
-            ? Border(left: BorderSide(color: event.textColor, width: 3))
-            : null,
-      ),
-      child: Padding(
-        padding: padding,
-        child: Text(
-          event.title ?? "",
-          style: TextStyle().copyWith(
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-            color: event.textColor,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(roundBorderRadius),
+      child: Material(
+        child: InkWell(
+          onTap: onTap,
+          onTapDown: onTapDown,
+          onTapUp: onTapUp,
+          onTapCancel: onTapCancel,
+          onDoubleTap: onDoubleTap,
+          onLongPress: onLongPress,
+          child: Ink(
+            decoration: BoxDecoration(
+              color: event.color,
+              border: event.isFullDay
+                  ? Border(left: BorderSide(color: event.textColor, width: 3))
+                  : null,
+            ),
+            child: Padding(
+              padding: padding,
+              child: Text(
+                event.title ?? "",
+                style: TextStyle().copyWith(
+                  fontSize: fontSize,
+                  fontWeight: fontWeight,
+                  color: event.textColor,
+                ),
+              ),
+            ),
           ),
         ),
       ),
