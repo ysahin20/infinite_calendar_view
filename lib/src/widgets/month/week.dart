@@ -13,14 +13,18 @@ class Week extends StatefulWidget {
     super.key,
     required this.controller,
     required this.weekParam,
+    required this.weekHeight,
     required this.daysParam,
     required this.startOfWeek,
+    required this.maxEventsShowed,
   });
 
   final DateTime startOfWeek;
   final WeekParam weekParam;
+  final double weekHeight;
   final DaysParam daysParam;
   final EventsController controller;
+  final int maxEventsShowed;
 
   @override
   State<Week> createState() => _WeekState();
@@ -28,14 +32,12 @@ class Week extends StatefulWidget {
 
 class _WeekState extends State<Week> {
   late VoidCallback eventListener;
-  int maxEventsShowed = 0;
   List<List<Event>?> weekEvents = [];
   List<List<Event?>> weekShowedEvents = [];
 
   @override
   void initState() {
     super.initState();
-    maxEventsShowed = getMaxEventsCanBeShowed();
     updateEvents();
     eventListener = () => updateEvents();
     widget.controller.addListener(eventListener);
@@ -47,24 +49,12 @@ class _WeekState extends State<Week> {
     widget.controller.removeListener(eventListener);
   }
 
-  /// get max row (events) can be showed to each day
-  int getMaxEventsCanBeShowed() {
-    var dayParam = widget.daysParam;
-    var dayHeight = widget.weekParam.weekHeight;
-    var headerHeight = dayParam.headerHeight;
-    var eventHeight = dayParam.eventHeight;
-    var space = dayParam.eventSpacing;
-    var beforeEventSpacing = dayParam.spaceBetweenHeaderAndEvents;
-    return ((dayHeight - headerHeight - beforeEventSpacing + space) /
-            (eventHeight + space))
-        .toInt();
-  }
-
   // update day events when change
   void updateEvents() {
     if (mounted) {
       var weekEvents = getWeekEvents();
-      var weekShowedEvents = getShowedWeekEvents(weekEvents, maxEventsShowed);
+      var weekShowedEvents =
+          getShowedWeekEvents(weekEvents, widget.maxEventsShowed);
       // no update if no change for current day
       if (listEquals(weekShowedEvents, this.weekShowedEvents) == false) {
         setState(() {
@@ -92,7 +82,7 @@ class _WeekState extends State<Week> {
       decoration: widget.weekParam.weekDecoration ??
           WeekParam.defaultWeekDecoration(context),
       child: Container(
-        height: widget.weekParam.weekHeight,
+        height: widget.weekHeight,
         child: LayoutBuilder(builder: (context, constraints) {
           var width = constraints.maxWidth;
           var dayWidth = width / 7;
@@ -100,9 +90,10 @@ class _WeekState extends State<Week> {
           return DragTarget(
             onAcceptWithDetails: (details) {
               var onDragEnd = details.data as Function(DateTime);
-              var dragDay = getPositionDay(
-                  Offset(details.offset.dx + dayWidth / 2, details.offset.dy),
-                  dayWidth);
+              var renderBox = context.findRenderObject() as RenderBox;
+              var relativeOffset = renderBox.globalToLocal(
+                  Offset(details.offset.dx + dayWidth / 2, details.offset.dy));
+              var dragDay = getPositionDay(relativeOffset, dayWidth);
               onDragEnd.call(dragDay);
             },
             builder: (context, candidateData, rejectedData) {
@@ -128,15 +119,14 @@ class _WeekState extends State<Week> {
 
                     // week events
                     Container(
-                      height: widget.weekParam.weekHeight -
-                          widget.daysParam.headerHeight,
+                      height: widget.weekHeight - widget.daysParam.headerHeight,
                       child: Stack(
                         children: [
                           for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
                             for (var eventIndex = 0;
                                 eventIndex < weekShowedEvents[dayOfWeek].length;
                                 eventIndex++)
-                              if (eventIndex < maxEventsShowed)
+                              if (eventIndex < widget.maxEventsShowed)
                                 ...getEventOrMoreEventsWidget(
                                     dayOfWeek, eventIndex, dayWidth),
                         ],
@@ -191,13 +181,13 @@ class _WeekState extends State<Week> {
     var eventsLength = weekEvents[dayOfWeek]?.length ?? 0;
 
     // More widget
-    var isLastSlot = eventIndex == maxEventsShowed - 1;
-    var notShowedEventsCount = (eventsLength - maxEventsShowed) + 1;
+    var isLastSlot = eventIndex == widget.maxEventsShowed - 1;
+    var notShowedEventsCount = (eventsLength - widget.maxEventsShowed) + 1;
     if (isLastSlot && notShowedEventsCount > 1) {
       return [
         Positioned(
           left: left,
-          top: (maxEventsShowed - 1) * (eventHeight + eventSpacing),
+          top: (widget.maxEventsShowed - 1) * (eventHeight + eventSpacing),
           width: dayWidth - daySpacing,
           height: eventHeight,
           child: widget.daysParam.dayMoreEventsBuilder

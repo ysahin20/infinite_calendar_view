@@ -1,3 +1,14 @@
+## 2.4.0
+
+- [new] pinch to zoom in month view
+- [new] limit day range : add scroll day min and max offset for planner view
+- [change] remove InkWell in default month event for performance issue
+- [debug] change DraggableMonthEvent to LongPressDraggable
+
+## 2.3.1
+
+- [bug] debug month event drag and drop local position (for no fullscreen view)
+
 ## 2.3.0
 
 - [new] add DraggableMonthEvent for drag and drop month event

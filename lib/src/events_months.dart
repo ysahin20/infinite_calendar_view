@@ -24,6 +24,7 @@ class EventsMonths extends StatefulWidget {
       decelerationRate: ScrollDecelerationRate.fast,
     ),
     this.showWebScrollBar = false,
+    this.pinchToZoomParam = const PinchToZoom(),
   });
 
   /// data controller
@@ -58,6 +59,8 @@ class EventsMonths extends StatefulWidget {
   /// show scroll bar for web
   final bool showWebScrollBar;
 
+  final PinchToZoom pinchToZoomParam;
+
   @override
   State createState() => EventsMonthsState();
 }
@@ -69,113 +72,147 @@ class EventsMonthsState extends State<EventsMonths> {
   late double _stickyPercent;
   late double _stickyOffset;
   late double scrollStartOffset;
+  late double weekHeight;
+  late double weekHeightScaleStart;
+  late double scrollControllerOffsetScaleStart;
+  late VoidCallback automaticScrollAdjustListener;
   bool _blockAdjustScroll = false;
   bool scrollIsStopped = true;
+  int maxEventsShowed = 0;
+  int _pointerDownCount = 0;
 
   @override
   void initState() {
     super.initState();
+    weekHeight = widget.weekParam.weekHeight;
     var initialDay = widget.initialMonth ?? widget.controller.focusedDay;
     initialMonth = DateTime(initialDay.year, initialDay.month);
     _stickyMonth = initialMonth;
     scrollController = ScrollController();
+    maxEventsShowed = getMaxEventsCanBeShowed();
 
     if (widget.automaticAdjustScrollToStartOfMonth) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        scrollController.position.isScrollingNotifier.addListener(() {
-          scrollIsStopped =
-              !scrollController.position.isScrollingNotifier.value;
-          // when scroll end, auto adjust to start of month
-          // if it's small scroll, like mouse wheel (web), not adjust (only possibility to differentiates mouse wheel to finger scroll)
-          if (scrollIsStopped &&
-              ((scrollStartOffset - scrollController.offset).abs() > 10)) {
-            autoAdjustScrollToStartOfMonth();
-          }
-        });
+        automaticScrollAdjustListener = getAutomaticScrollAdjustListener();
+        scrollController.position.isScrollingNotifier
+            .addListener(automaticScrollAdjustListener);
       });
     }
   }
 
-  autoAdjustScrollToStartOfMonth() {
-    var scroll = scrollController;
-    if (!_blockAdjustScroll) {
-      var adjustedOffset = _stickyPercent < 0.5
-          ? scroll.offset - _stickyOffset
-          : scroll.offset +
-              (((1 - _stickyPercent) * _stickyOffset) / _stickyPercent);
+  // when scroll end, auto adjust to start of month
+  // if it's small scroll, like mouse wheel (web), not adjust (only possibility to differentiates mouse wheel to finger scroll)
+  VoidCallback getAutomaticScrollAdjustListener() {
+    return () {
+      scrollIsStopped = !scrollController.position.isScrollingNotifier.value;
+      if (scrollIsStopped &&
+          ((scrollStartOffset - scrollController.offset).abs() > 10)) {
+        var scroll = scrollController;
+        if (!_blockAdjustScroll) {
+          var adjustedOffset = _stickyPercent < 0.5
+              ? scroll.offset - _stickyOffset
+              : scroll.offset +
+                  (((1 - _stickyPercent) * _stickyOffset) / _stickyPercent);
 
-      Future.delayed(const Duration(milliseconds: 1), () {
-        if (scrollIsStopped) {
-          _blockAdjustScroll = true;
-          scroll.animateTo(
-            adjustedOffset,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeIn,
-          );
+          Future.delayed(const Duration(milliseconds: 1), () {
+            if (scrollIsStopped) {
+              _blockAdjustScroll = true;
+              scroll.animateTo(
+                adjustedOffset,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeIn,
+              );
+            }
+          });
+        } else {
+          _blockAdjustScroll = false;
         }
-      });
-    } else {
-      _blockAdjustScroll = false;
-    }
+      }
+    };
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // week header
-        MonthHeader(weekParam: widget.weekParam),
+    var zoom = widget.pinchToZoomParam;
+    var isZoom = zoom.pinchToZoom;
 
-        // months
-        Expanded(
-          child: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(
-              scrollbars: widget.showWebScrollBar,
-              dragDevices: PointerDeviceKind.values.toSet(),
-            ),
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (notification) {
-                if (widget.automaticAdjustScrollToStartOfMonth &&
-                    notification is ScrollStartNotification) {
-                  scrollStartOffset = scrollController.offset;
-                }
-                return true;
-              },
-              child: InfiniteList(
-                controller: scrollController,
-                direction: InfiniteListDirection.multi,
-                negChildCount: widget.maxPreviousMonth,
-                posChildCount: widget.maxNextMonth,
-                physics: widget.verticalScrollPhysics,
-                builder: (context, index) {
-                  var month =
-                      DateTime(initialMonth.year, initialMonth.month + index);
-                  return InfiniteListItem(
-                    headerStateBuilder: (context, state) {
-                      if (state.sticky && _stickyMonth != month) {
-                        _stickyMonth = month;
-                        Future(() {
-                          widget.controller.updateFocusedDay(_stickyMonth);
-                          widget.onMonthChange?.call(_stickyMonth);
-                        });
-                      }
-                      _stickyPercent = state.position;
-                      _stickyOffset = state.offset;
-                      return SizedBox.shrink();
-                    },
-                    contentBuilder: (context) => Month(
-                      controller: widget.controller,
-                      month: month,
-                      weekParam: widget.weekParam,
-                      daysParam: widget.daysParam,
+    return GestureDetector(
+      onScaleStart: isZoom ? zoom.onScaleStart ?? _onScaleStart : null,
+      onScaleUpdate: isZoom ? zoom.onScaleUpdate ?? _onScaleUpdate : null,
+      onScaleEnd: isZoom ? zoom.onScaleEnd ?? _onScaleEnd : null,
+      child: Listener(
+        onPointerDown: isZoom ? (event) => _onPointerDown() : null,
+        onPointerCancel: isZoom ? (event) => _onPointerUp() : null,
+        onPointerUp: isZoom ? (event) => _onPointerUp() : null,
+        child: Column(
+          children: [
+            // week header
+            MonthHeader(weekParam: widget.weekParam),
+
+            // months
+            Expanded(
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  scrollbars: widget.showWebScrollBar,
+                  dragDevices: PointerDeviceKind.values.toSet(),
+                ),
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    if (widget.automaticAdjustScrollToStartOfMonth &&
+                        notification is ScrollStartNotification) {
+                      scrollStartOffset = scrollController.offset;
+                    }
+                    return true;
+                  },
+                  child: AbsorbPointer(
+                    absorbing: isZoom ? _pointerDownCount > 1 : false,
+                    child: InfiniteList(
+                      controller: scrollController,
+                      direction: InfiniteListDirection.multi,
+                      negChildCount: widget.maxPreviousMonth,
+                      posChildCount: widget.maxNextMonth,
+                      physics: isZoom && _pointerDownCount > 1
+                          ? const NeverScrollableScrollPhysics()
+                          : widget.verticalScrollPhysics,
+                      builder: (context, index) {
+                        var month = DateTime(
+                          initialMonth.year,
+                          initialMonth.month + index,
+                        );
+                        return InfiniteListItem(
+                          headerStateBuilder: (context, state) {
+                            if (state.sticky && _stickyMonth != month) {
+                              _stickyMonth = month;
+                              Future(() {
+                                widget.controller
+                                    .updateFocusedDay(_stickyMonth);
+                                widget.onMonthChange?.call(_stickyMonth);
+                              });
+                            }
+                            _stickyPercent = state.position;
+                            _stickyOffset = state.offset;
+                            return SizedBox.shrink();
+                          },
+                          contentBuilder: (context) {
+                            return Month(
+                              controller: widget.controller,
+                              month: month,
+                              weekParam: widget.weekParam,
+                              weekHeight: weekHeight,
+                              daysParam: widget.daysParam,
+                              maxEventsShowed: maxEventsShowed,
+                            );
+                          },
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -192,6 +229,68 @@ class EventsMonthsState extends State<EventsMonths> {
         widget.controller.notifyListeners();
       });
     }
+  }
+
+  /// get max row (events) can be showed to each day
+  int getMaxEventsCanBeShowed() {
+    var dayParam = widget.daysParam;
+    var dayHeight = weekHeight;
+    var headerHeight = dayParam.headerHeight;
+    var eventHeight = dayParam.eventHeight;
+    var space = dayParam.eventSpacing;
+    var beforeEventSpacing = dayParam.spaceBetweenHeaderAndEvents;
+    return ((dayHeight - headerHeight - beforeEventSpacing + space) /
+            (eventHeight + space))
+        .toInt();
+  }
+
+  void _onScaleStart(ScaleStartDetails details) {
+    if (details.pointerCount == 2) {
+      weekHeightScaleStart = weekHeight;
+      scrollControllerOffsetScaleStart = scrollController.offset;
+    }
+  }
+
+  void _onScaleUpdate(ScaleUpdateDetails details) {
+    if (details.pointerCount == 2) {
+      var speed = widget.pinchToZoomParam.pinchToZoomSpeed;
+      var scale = (((details.scale - 1) * speed) + 1);
+      var newWeekHeight = weekHeightScaleStart * scale;
+      var minZoom = widget.pinchToZoomParam.pinchToZoomMinWeekHeight;
+      var maxZoom = widget.pinchToZoomParam.pinchToZoomMaxWeekHeight;
+      if (minZoom <= newWeekHeight && newWeekHeight <= maxZoom) {
+        setState(() {
+          weekHeight = newWeekHeight;
+          scrollController.jumpTo(scrollControllerOffsetScaleStart * scale);
+          maxEventsShowed = getMaxEventsCanBeShowed();
+        });
+      }
+    }
+  }
+
+  void _onScaleEnd(ScaleEndDetails details) {
+    widget.controller.notifyListeners();
+    widget.pinchToZoomParam.onZoomChange?.call(weekHeight);
+    if (widget.automaticAdjustScrollToStartOfMonth) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.position.isScrollingNotifier
+            .removeListener(automaticScrollAdjustListener);
+        scrollController.position.isScrollingNotifier
+            .addListener(automaticScrollAdjustListener);
+      });
+    }
+  }
+
+  void _onPointerDown() {
+    setState(() {
+      _pointerDownCount++;
+    });
+  }
+
+  void _onPointerUp() {
+    setState(() {
+      _pointerDownCount--;
+    });
   }
 }
 
@@ -287,4 +386,42 @@ class DaysParam {
   final void Function(DateTime day)? onDayTapDown;
 
   final void Function(DateTime day)? onDayTapUp;
+}
+
+class PinchToZoom {
+  const PinchToZoom({
+    this.pinchToZoom = true,
+    this.pinchToZoomSpeed = 1,
+    this.pinchToZoomMinWeekHeight = 80,
+    this.pinchToZoomMaxWeekHeight = 160,
+    this.onZoomChange,
+    this.onScaleStart,
+    this.onScaleUpdate,
+    this.onScaleEnd,
+  });
+
+  /// active pinchToZoom (scale) on planner
+  /// update heightPerMinute when zoom
+  final bool pinchToZoom;
+
+  /// pinchToZoom : speed of scale
+  final double pinchToZoomSpeed;
+
+  /// pinchToZoom : min week height
+  final double pinchToZoomMinWeekHeight;
+
+  /// pinchToZoom : max week height
+  final double pinchToZoomMaxWeekHeight;
+
+  /// call when pinchToZoom finished. Return new heightPerMinute
+  final void Function(double heightPerMinute)? onZoomChange;
+
+  /// on scale start when scale is active
+  final void Function(ScaleStartDetails details)? onScaleStart;
+
+  /// on scale update when scale is active
+  final void Function(ScaleUpdateDetails details)? onScaleUpdate;
+
+  /// on scale end when scale is active
+  final void Function(ScaleEndDetails details)? onScaleEnd;
 }

@@ -103,7 +103,7 @@ class DraggableMonthEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Draggable(
+    return LongPressDraggable(
       data: onDragEnd,
       child: child,
       feedback: draggableFeedback ?? getDefaultDraggableFeedback(),
@@ -152,30 +152,28 @@ class DefaultMonthDayEvent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(roundBorderRadius),
-      child: Material(
-        child: InkWell(
-          onTap: onTap,
-          onTapDown: onTapDown,
-          onTapUp: onTapUp,
-          onTapCancel: onTapCancel,
-          onDoubleTap: onDoubleTap,
-          onLongPress: onLongPress,
-          child: Ink(
-            decoration: BoxDecoration(
-              color: event.color,
-              border: event.isFullDay
-                  ? Border(left: BorderSide(color: event.textColor, width: 3))
-                  : null,
-            ),
-            child: Padding(
-              padding: padding,
-              child: Text(
-                event.title ?? "",
-                style: TextStyle().copyWith(
-                  fontSize: fontSize,
-                  fontWeight: fontWeight,
-                  color: event.textColor,
-                ),
+      child: GestureDetector(
+        onTap: onTap,
+        onTapDown: onTapDown,
+        onTapUp: onTapUp,
+        onTapCancel: onTapCancel,
+        onDoubleTap: onDoubleTap,
+        onLongPress: onLongPress,
+        child: Container(
+          decoration: BoxDecoration(
+            color: event.color,
+            border: event.isFullDay
+                ? Border(left: BorderSide(color: event.textColor, width: 3))
+                : null,
+          ),
+          child: Padding(
+            padding: padding,
+            child: Text(
+              event.title ?? "",
+              style: TextStyle().copyWith(
+                fontSize: fontSize,
+                fontWeight: fontWeight,
+                color: event.textColor,
               ),
             ),
           ),

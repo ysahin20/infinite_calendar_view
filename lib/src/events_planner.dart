@@ -28,6 +28,8 @@ class EventsPlanner extends StatefulWidget {
     this.dayEventsArranger = const SideEventArranger(),
     this.onDayChange,
     this.initialVerticalScrollOffset = 0,
+    this.minVerticalScrollOffset,
+    this.maxVerticalScrollOffset,
     this.onVerticalScrollChange,
     this.horizontalScrollPhysics = const BouncingScrollPhysics(
       decelerationRate: ScrollDecelerationRate.fast,
@@ -76,6 +78,14 @@ class EventsPlanner extends StatefulWidget {
 
   /// initial time scroll (vertical) : hour of day = heightPerMinute * $total_minutes
   final double initialVerticalScrollOffset;
+
+  /// min time scroll (vertical) : hour of day = heightPerMinute * $total_minutes
+  /// used to limit day time range (example 8->20h)
+  final double? minVerticalScrollOffset;
+
+  /// max time scroll (vertical) : hour of day = heightPerMinute * $total_minutes
+  /// used to limit day time range (example 8->20h)
+  final double? maxVerticalScrollOffset;
 
   /// call when vertical scroll change
   final void Function(double offset)? onVerticalScrollChange;
@@ -170,6 +180,30 @@ class EventsPlannerState extends State<EventsPlanner> {
         mainVerticalController.position.isScrollingNotifier.addListener(() {
           if (!mainVerticalController.position.isScrollingNotifier.value) {
             widget.onVerticalScrollChange?.call(mainVerticalController.offset);
+          }
+        });
+      }
+
+      // limit day range
+      if (widget.minVerticalScrollOffset != null ||
+          widget.maxVerticalScrollOffset != null) {
+        mainVerticalController.addListener(() {
+          var minOffset = widget.minVerticalScrollOffset;
+          var maxOffset = widget.maxVerticalScrollOffset;
+          if (_plannerPointerDownCount < 2) {
+            if (minOffset != null &&
+                mainVerticalController.offset < minOffset) {
+              mainVerticalController.jumpTo(minOffset);
+            }
+            if (maxOffset != null) {
+              var maxScrollExtent =
+                  mainVerticalController.position.maxScrollExtent;
+              var dayOffset = heightPerMinute * 60 * 24;
+              var maxOffsetExtend = maxScrollExtent - (dayOffset - maxOffset);
+              if (mainVerticalController.offset > maxOffsetExtend) {
+                mainVerticalController.jumpTo(maxOffsetExtend);
+              }
+            }
           }
         });
       }
@@ -472,27 +506,25 @@ class EventsPlannerState extends State<EventsPlanner> {
   void _onScaleEnd(ScaleEndDetails details) {
     widget.controller.notifyListeners();
     widget.pinchToZoomParam.onZoomChange?.call(heightPerMinute);
+    if (widget.automaticAdjustHorizontalScrollToDay) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        mainHorizontalController.position.isScrollingNotifier
+            .removeListener(automaticScrollAdjustListener);
+        mainHorizontalController.position.isScrollingNotifier
+            .addListener(automaticScrollAdjustListener);
+      });
+    }
   }
 
   void _onPointerDown() {
     setState(() {
       _plannerPointerDownCount++;
-      if (_plannerPointerDownCount > 1 &&
-          widget.automaticAdjustHorizontalScrollToDay) {
-        mainHorizontalController.position.isScrollingNotifier
-            .removeListener(automaticScrollAdjustListener);
-      }
     });
   }
 
   void _onPointerUp() {
     setState(() {
       _plannerPointerDownCount--;
-      if (_plannerPointerDownCount == 0 &&
-          widget.automaticAdjustHorizontalScrollToDay) {
-        mainHorizontalController.position.isScrollingNotifier
-            .addListener(automaticScrollAdjustListener);
-      }
     });
   }
 
@@ -582,10 +614,10 @@ class PinchToZoomParameters {
   /// pinchToZoom : speed of scale
   final double pinchToZoomSpeed;
 
-  /// pinchToZoom : max possible HeightPerMinute when scale
+  /// pinchToZoom : min possible HeightPerMinute when scale
   final double pinchToZoomMinHeightPerMinute;
 
-  /// pinchToZoom : min possible HeightPerMinute when scale
+  /// pinchToZoom : max possible HeightPerMinute when scale
   final double pinchToZoomMaxHeightPerMinute;
 
   /// call when pinchToZoom finished. Return new heightPerMinute

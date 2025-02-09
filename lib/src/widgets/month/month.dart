@@ -10,13 +10,17 @@ class Month extends StatelessWidget {
     required this.controller,
     required this.month,
     required this.weekParam,
+    required this.weekHeight,
     required this.daysParam,
+    required this.maxEventsShowed,
   });
 
   final EventsController controller;
   final DateTime month;
   final WeekParam weekParam;
+  final double weekHeight;
   final DaysParam daysParam;
+  final int maxEventsShowed;
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +38,10 @@ class Month extends StatelessWidget {
           Week(
             controller: controller,
             weekParam: weekParam,
+            weekHeight: weekHeight,
             daysParam: daysParam,
             startOfWeek: startOfWeek,
+            maxEventsShowed: maxEventsShowed,
           )
       ],
     );
