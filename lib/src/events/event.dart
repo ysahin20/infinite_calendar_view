@@ -69,6 +69,8 @@ class Event {
   // effective end time for multi days events (end is for one day)
   DateTime? effectiveEndTime;
 
+  bool get isMultiDay => daysIndex != null;
+
   Event copyWith({
     final int? columnIndex,
     final DateTime? startTime,

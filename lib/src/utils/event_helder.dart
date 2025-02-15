@@ -13,7 +13,7 @@ List<List<Event?>> getShowedWeekEvents(
 
   // place no multi days events to show
   List<List<Event?>> daysEventsList = List.generate(7, (index) {
-    var events = (weekEvents[index] ?? []).where((e) => e.daysIndex == null);
+    var events = (weekEvents[index] ?? []).where((e) => !e.isMultiDay);
     return List.generate(maxEventsShowed, (i) => events.getOrNull(i));
   });
 
@@ -48,7 +48,7 @@ SplayTreeMap<UniqueKey, Map<int, Event>> getWeekMultiDaysEventsSortedMap(
   // generate map of all multi days events
   Map<UniqueKey, Map<int, Event>> multiDaysEventsMap = {};
   for (var day = 0; day < 7; day++) {
-    var multiDaysEvents = weekEvents[day]?.where((e) => e.daysIndex != null);
+    var multiDaysEvents = weekEvents[day]?.where((e) => e.isMultiDay);
     for (Event event in multiDaysEvents ?? []) {
       multiDaysEventsMap[event.uniqueId] = {
         ...multiDaysEventsMap[event.uniqueId] ?? {},

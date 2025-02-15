@@ -50,10 +50,8 @@ class EventsController extends ChangeNotifier {
     var dayEvents = calendarData.dayEvents[date.withoutTime];
     var dayEventsByType = dayEvents
         ?.where((e) => e.isFullDay
-            ? (e.daysIndex == null
-                ? returnFullDayEvent
-                : returnMultiFullDayEvents)
-            : (e.daysIndex == null ? returnDayEvents : returnMultiDayEvents))
+            ? (e.isMultiDay ? returnMultiFullDayEvents : returnFullDayEvent)
+            : (e.isMultiDay ? returnMultiDayEvents : returnDayEvents))
         .toList();
     return dayEventsFilter.call(date, dayEventsByType);
   }
@@ -114,14 +112,7 @@ class CalendarData {
     List<Event> events, [
     final Object? eventType,
   ]) {
-    if (eventType != null) {
-      dayEvents[day.withoutTime]?.removeWhere((e) =>
-          e.eventType == eventType &&
-          (e.daysIndex == null || e.daysIndex == 1));
-    } else {
-      dayEvents[day.withoutTime]
-          ?.removeWhere((e) => e.daysIndex == null || e.daysIndex == 1);
-    }
+    removeDayEvents(day, eventType);
     addEvents(events);
   }
 
@@ -143,9 +134,38 @@ class CalendarData {
     );
   }
 
+  /// remove all event for day
+  /// if eventType is entered, remove juste day event type
+  /// does not delete multi-day events that do not start on that day
+  void removeDayEvents(DateTime day, [final Object? eventType]) {
+    for (var event in dayEvents[day.withoutTime] ?? []) {
+      // remove only type
+      if (eventType == null || (event.eventType == eventType)) {
+        // remove multi day event only first event
+        if (!event.isMultiDay || event.daysIndex == 1) {
+          removeEvent(event);
+        }
+      }
+    }
+  }
+
   /// remove event
   /// if event is multi days event, remove all occurrence for each day
   void removeEvent(Event event) {
+    // remove multi days event
+    if (event.isMultiDay) {
+      removeMultiDayEvent(event);
+    }
+    // remove simple event or full day event
+    else {
+      dayEvents[event.startTime.withoutTime]
+          ?.removeWhere((e) => e.uniqueId == event.uniqueId);
+    }
+  }
+
+  /// remove multi day event
+  /// remove all occurrence for each day
+  void removeMultiDayEvent(Event event) {
     // remove event for event day and previous day for same event (multi day events)
     var previousDay = event.startTime.withoutTime;
     while (dayEvents[previousDay]?.any((e) => e.uniqueId == event.uniqueId) ==

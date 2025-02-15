@@ -35,6 +35,9 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
         daysHeaderVisibility: daysShowed != 1,
         dayHeaderTextBuilder: (day) => DateFormat("E d").format(day),
       ),
+      fullDayParam: FullDayParam(
+        fullDayEventsBarHeight: 50,
+      ),
     );
   }
 

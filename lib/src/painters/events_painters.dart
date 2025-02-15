@@ -99,6 +99,7 @@ class HoursPainter extends CustomPainter {
     this.currentHourIndicatorColor = Colors.black12,
     this.halfHourMinHeightPerMinute = 1.3,
     this.quarterHourMinHeightPerMinute = 2,
+    this.textPainterBuilder,
   });
 
   final double heightPerMinute;
@@ -109,6 +110,8 @@ class HoursPainter extends CustomPainter {
   final Color currentHourIndicatorColor;
   final double halfHourMinHeightPerMinute;
   final double quarterHourMinHeightPerMinute;
+  final TextPainter Function(TimeOfDay time, Color defaultColor)?
+      textPainterBuilder;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -166,8 +169,23 @@ class HoursPainter extends CustomPainter {
   }
 
   void drawHour(
-      Canvas canvas, Size size, TimeOfDay time, double y, Color color) {
-    var textPainter = TextPainter(
+    Canvas canvas,
+    Size size,
+    TimeOfDay time,
+    double y,
+    Color color,
+  ) {
+    var textPainter = textPainterBuilder?.call(time, color) ??
+        getDefaultTextPainter(time, color);
+    textPainter.layout(
+      minWidth: size.width,
+      maxWidth: size.width,
+    );
+    textPainter.paint(canvas, Offset(0, y));
+  }
+
+  TextPainter getDefaultTextPainter(TimeOfDay time, Color color) {
+    return TextPainter(
       text: TextSpan(
         text:
             "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}",
@@ -179,11 +197,6 @@ class HoursPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.right,
     );
-    textPainter.layout(
-      minWidth: size.width,
-      maxWidth: size.width,
-    );
-    textPainter.paint(canvas, Offset(0, y));
   }
 
   @override

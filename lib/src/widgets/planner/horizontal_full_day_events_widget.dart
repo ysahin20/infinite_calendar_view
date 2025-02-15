@@ -145,11 +145,14 @@ class _FullDayEventsWidgetState extends State<FullDayEventsWidget> {
 
   void updateEvents() {
     if (mounted) {
-      var fullDayEvents = widget.controller.getFilteredDayEvents(
-        widget.day,
-        returnDayEvents: false,
-        returnMultiDayEvents: widget.fullDayParam.showMultiDayEvents,
-      );
+      var fullDayEvents = widget.controller
+          .getFilteredDayEvents(
+            widget.day,
+            returnDayEvents: false,
+            returnMultiDayEvents: widget.fullDayParam.showMultiDayEvents,
+          )
+          ?.reversed
+          .toList();
 
       // no update if no change for current day
       if (listEquals(fullDayEvents, events) == false) {

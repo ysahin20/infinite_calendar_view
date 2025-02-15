@@ -34,6 +34,7 @@ class EventsPlanner extends StatefulWidget {
     this.horizontalScrollPhysics = const BouncingScrollPhysics(
       decelerationRate: ScrollDecelerationRate.fast,
     ),
+    this.verticalScrollPhysics,
     this.automaticAdjustHorizontalScrollToDay = true,
     this.onAutomaticAdjustHorizontalScroll,
     this.dayParam = const DayParam(),
@@ -92,6 +93,9 @@ class EventsPlanner extends StatefulWidget {
 
   /// Horizontal day scroll physics
   final ScrollPhysics horizontalScrollPhysics;
+
+  /// Vertical day scroll physics
+  final ScrollPhysics? verticalScrollPhysics;
 
   /// Automatic adjust horizontal scroll to nearest day and background
   final bool automaticAdjustHorizontalScrollToDay;
@@ -342,7 +346,7 @@ class EventsPlannerState extends State<EventsPlanner> {
             child: CustomScrollView(
               physics: isZoom && _plannerPointerDownCount > 1
                   ? const NeverScrollableScrollPhysics()
-                  : null,
+                  : widget.verticalScrollPhysics,
               controller: mainVerticalController,
               slivers: [
                 SliverList(

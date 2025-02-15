@@ -1,3 +1,13 @@
+## 2.5.0
+
+- [new] add textPainterBuilder in HoursPainter for easy custom hour text and style
+- [change] reverse fullDay events list to be displayed in order
+- [bug] debug replaceDayEvents in CalendarData for multi-days events
+- [new] add removeDayEvents and removeMultiDayEvent in CalendarData
+- [new] add verticalScrollPhysics in EventsPlanner
+- [new] add gesture in DefaultDetailEvent
+- [new] debug timeText/durationText parameters + change duration default text in DefaultDetailEvent
+
 ## 2.4.0
 
 - [new] pinch to zoom in month view

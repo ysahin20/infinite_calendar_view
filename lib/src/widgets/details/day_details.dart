@@ -77,11 +77,18 @@ class DefaultDayEvents extends StatelessWidget {
   }
 }
 
+/// Default detail event
+/// can be replaced in dayEventsBuilder -> eventBuilder
 class DefaultDetailEvent extends StatelessWidget {
   const DefaultDetailEvent({
     super.key,
     required this.event,
     this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onTapDown,
+    this.onTapUp,
+    this.onTapCancel,
     this.leftWidget,
     this.centerWidget,
     this.rightWidget,
@@ -94,27 +101,54 @@ class DefaultDetailEvent extends StatelessWidget {
   static const defaultColoredCircleFit = 2;
   static const defaultContentFit = 14;
 
+  /// Event
   final Event event;
+
+  /// InkWell tap gesture
   final GestureTapCallback? onTap;
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapCallback? onTapCancel;
+  final GestureTapCallback? onDoubleTap;
+  final GestureLongPressCallback? onLongPress;
+
+  /// to custom left widget
   final Widget? leftWidget;
+
+  /// to custom center widget
   final Widget? centerWidget;
+
+  /// to custom right widget
   final Widget? rightWidget;
+
+  /// to custom default hour/minute
   final String? timeText;
+
+  /// to custom default duration
   final String? durationText;
 
   @override
   Widget build(BuildContext context) {
-    String? durationText = this.durationText;
-    var timeText = this.timeText ?? defaultFullDayText;
     var event = this.event;
-    if (!event.isFullDay) {
+
+    String? durationText;
+    String? timeText;
+    if (event.isFullDay) {
+      timeText = this.timeText ?? defaultFullDayText;
+    } else {
       var startTime = event.startTime;
-      timeText = this.timeText ??
-          "${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}";
-      durationText = this.getDurationText(event.startTime, event.endTime!);
+      timeText = this.timeText ?? getDefaultTimeText(startTime);
+      durationText = this.durationText ??
+          this.getDefaultDurationText(event.startTime, event.endTime!);
     }
+
     return InkWell(
-      onTap: () => onTap?.call(),
+      onTap: onTap,
+      onTapDown: onTapDown,
+      onTapUp: onTapUp,
+      onTapCancel: onTapCancel,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: DefaultDayEvents.defaultHorizontalPadding,
@@ -179,7 +213,10 @@ class DefaultDetailEvent extends StatelessWidget {
   }
 
   Flexible getHour(
-      String timeText, String? durationText, BuildContext context) {
+    String timeText,
+    String? durationText,
+    BuildContext context,
+  ) {
     return Flexible(
       flex: defaultDateFit,
       fit: FlexFit.tight,
@@ -201,7 +238,11 @@ class DefaultDetailEvent extends StatelessWidget {
     );
   }
 
-  String getDurationText(DateTime startDate, DateTime endDate) {
+  String getDefaultTimeText(DateTime startTime) {
+    return "${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}";
+  }
+
+  String getDefaultDurationText(DateTime startDate, DateTime endDate) {
     var duration = endDate.difference(startDate);
     var element = <String>[];
     if (duration.inHours > 0) {
@@ -209,7 +250,7 @@ class DefaultDetailEvent extends StatelessWidget {
     }
     var minutes = duration.inMinutes.remainder(60);
     if (minutes > 0) {
-      element.add("${minutes}m");
+      element.add("${minutes}${duration.inHours == 0 ? "m" : ""}");
     }
     return element.join("");
   }
