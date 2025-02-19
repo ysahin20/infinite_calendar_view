@@ -1,3 +1,7 @@
+## 2.5.2
+
+- [bug] remove all day event method for multi-days events
+
 ## 2.5.1
 
 - [bug] remove all day event method
