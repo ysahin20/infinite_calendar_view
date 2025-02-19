@@ -1,4 +1,4 @@
-![Plugin Banner](https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/infinite2.png)
+![Plugin Banner](https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/main/readme_assets/infinite2.png)
 
 # infinite_calendar_view
 
