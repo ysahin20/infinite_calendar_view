@@ -8,7 +8,11 @@ A Flutter package allows you to easily implement all calendar UI.
 
 ## Web Demo
 
+<div style="text-align: center;">
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/demo-icon.png" alt="drawing" width="100"/>
+
 https://pickywawa.github.io/infinite_calendar_view_demo/
+</div>
 
 ## Features
 
@@ -30,53 +34,41 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 
 <table>
    <tr>
-      <td colspan="2" style="background: #0054de;color: white;text-align:center;">
-          <div class=""><b>Planner View</b></div>
+      <td colspan="4" style="text-align:center;">
+          <div class=""><b>Calendar views</b></div>
       </td>
    </tr>
    <tr>
       <td>
          <div style="text-align:center;"><b>1 day</b></div>
          <div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/one_day.gif" alt="drawing" width="300"/>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/one_day.gif" alt="drawing" width="150"/>
          </div>
       </td>
       <td>
          <div style="text-align:center;"><b>3 days</b></div>
          <div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/three_days.gif" alt="drawing" width="300"/>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/three_days.gif" alt="drawing" width="150"/>
+         </div>
+      </td>
+      <td>
+         <div style="text-align:center;"><b>Month</b></div>
+         <div>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/month.png" alt="drawing" width="150"/>
+         </div>
+      </td>
+      <td>
+         <div style="text-align:center;"><b>List</b></div>
+         <div>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/events-list.gif" alt="drawing" width="150"/>
          </div>
       </td>
    </tr>
    <tr>
-      <td colspan="2">
+      <td colspan="4">
          <div style="text-align:center;">
             <div style="text-align:center;"><b>7 day (web or tablet)</b></div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/dark-tablet.png" alt="drawing" />
-         </div>
-      </td>
-   </tr>
-   <tr>
-      <td colspan="2" style="background: #0054de;color: white;text-align:center;">
-          <div class=""><b>Month View</b></div>
-      </td>
-   </tr>
-   <tr>
-      <td colspan="2">
-         <div style="text-align:center;">
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/month.png" alt="drawing" width="500"/>
-         </div>
-      </td>
-   </tr>
-   <tr>
-      <td colspan="2" style="background: #0054de;color: white;text-align:center;">
-          <div class=""><b>List View</b></div>
-      </td>
-   </tr>
-   <tr>
-      <td colspan="2">
-         <div style="text-align:center;">
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/events-list.gif" alt="drawing" width="300"/>
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/dark-tablet.png" alt="drawing"  />
          </div>
       </td>
    </tr>
