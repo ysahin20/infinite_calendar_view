@@ -138,15 +138,9 @@ class CalendarData {
   /// if eventType is entered, remove juste day event type
   /// does not delete multi-day events that do not start on that day
   void removeDayEvents(DateTime day, [final Object? eventType]) {
-    for (var event in dayEvents[day.withoutTime] ?? []) {
-      // remove only type
-      if (eventType == null || (event.eventType == eventType)) {
-        // remove multi day event only first event
-        if (!event.isMultiDay || event.daysIndex == 1) {
-          removeEvent(event);
-        }
-      }
-    }
+    dayEvents[day.withoutTime]?.removeWhere((e) =>
+        (eventType == null || (e.eventType == eventType)) &&
+        (!e.isMultiDay || e.daysIndex == 1));
   }
 
   /// remove event

@@ -1,3 +1,7 @@
+## 2.5.1
+
+- [bug] remove all day event method
+
 ## 2.5.0
 
 - [new] add textPainterBuilder in HoursPainter for easy custom hour text and style
