@@ -41,26 +41,26 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
    <tr>
       <td>
          <div style="text-align:center;"><b>1 day</b></div>
-         <div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/one_day.gif" alt="drawing" width="150"/>
+         <div style="text-align:center;">
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/one_day.gif" alt="drawing" width="200"/>
          </div>
       </td>
       <td>
          <div style="text-align:center;"><b>3 days</b></div>
-         <div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/three_days.gif" alt="drawing" width="150"/>
+         <div style="text-align:center;">
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/three_days.gif" alt="drawing" width="200"/>
          </div>
       </td>
       <td>
          <div style="text-align:center;"><b>Month</b></div>
-         <div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/month.png" alt="drawing" width="150"/>
+         <div style="text-align:center;">
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/month.png" alt="drawing" width="200"/>
          </div>
       </td>
       <td>
          <div style="text-align:center;"><b>List</b></div>
-         <div>
-            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/events-list.gif" alt="drawing" width="150"/>
+         <div style="text-align:center;">
+            <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/events-list.gif" alt="drawing" width="200"/>
          </div>
       </td>
    </tr>
