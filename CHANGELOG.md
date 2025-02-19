@@ -1,3 +1,7 @@
+## 2.5.3
+
+- [demo] change image preview, banner and icon
+
 ## 2.5.2
 
 - [bug] remove all day event method for multi-days events
