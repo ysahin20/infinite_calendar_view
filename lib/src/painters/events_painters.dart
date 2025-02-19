@@ -130,7 +130,7 @@ class HoursPainter extends CustomPainter {
     }
 
     // draw normal hour
-    for (var i = 0; i <= 24; i++) {
+    for (var i = 0; i <= 23; i++) {
       // hour
       final hourY = (i * cellHeight) + 4;
       if (!isHideByCurrentTime(currentTime, hourY)) {
@@ -160,6 +160,12 @@ class HoursPainter extends CustomPainter {
         drawHour(canvas, size, TimeOfDay(hour: i, minute: 45), quarterY45,
             quarterHourColor);
       }
+    }
+
+    // 24:00 hour
+    final hourY = (24 * cellHeight) + 4;
+    if (!isHideByCurrentTime(currentTime, hourY)) {
+      drawHour(canvas, size, TimeOfDay(hour: 24, minute: 0), hourY, hourColor);
     }
   }
 

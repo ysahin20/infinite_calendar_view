@@ -1,6 +1,7 @@
 ## 2.5.1
 
 - [bug] remove all day event method
+- [bug] no show quarter and half hour after 24:00
 
 ## 2.5.0
 
