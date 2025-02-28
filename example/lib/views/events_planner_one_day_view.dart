@@ -49,6 +49,7 @@ class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
             daysShowed: 1,
             heightPerMinute: heightPerMinute,
             initialVerticalScrollOffset: initialVerticalScrollOffset,
+            horizontalScrollPhysics: PageScrollPhysics(),
             daysHeaderParam: DaysHeaderParam(
               daysHeaderVisibility: false,
               dayHeaderTextBuilder: (day) => DateFormat("E d").format(day),

@@ -76,7 +76,11 @@ class EventsList extends StatefulWidget {
 class EventsListState extends State<EventsList> {
   late ScrollController mainVerticalController;
   late DateTime initialDay;
+
+  // current day
+  var key = UniqueKey();
   late DateTime stickyDay;
+  var currentIndex = 0;
   bool listenScroll = true;
 
   @override
@@ -91,6 +95,7 @@ class EventsListState extends State<EventsList> {
   @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(
+      key: key,
       behavior: ScrollConfiguration.of(context).copyWith(
         scrollbars: widget.showWebScrollBar,
         dragDevices: PointerDeviceKind.values.toSet(),
@@ -110,9 +115,12 @@ class EventsListState extends State<EventsList> {
               if (state.sticky && listenScroll) {
                 if (stickyDay != day) {
                   stickyDay = day;
+                  currentIndex = state.index;
                   Future(() {
-                    widget.onDayChange?.call(stickyDay);
-                    widget.controller.updateFocusedDay(stickyDay);
+                    if (listenScroll == true) {
+                      widget.onDayChange?.call(stickyDay);
+                      widget.controller.updateFocusedDay(stickyDay);
+                    }
                   });
                 }
               }
@@ -138,12 +146,14 @@ class EventsListState extends State<EventsList> {
   /// change initial date and redraw all list
   void jumpToDate(DateTime date) {
     if (context.mounted) {
-      listenScroll = false;
       setState(() {
+        // change key to force rebuild
+        key = UniqueKey();
+        // change initial day
         initialDay = date.withoutTime;
+        // reset scroll
+        mainVerticalController = ScrollController();
       });
-      listenScroll = true;
-      mainVerticalController.jumpTo(0);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widget.controller.notifyListeners();

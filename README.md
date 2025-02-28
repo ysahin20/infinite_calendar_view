@@ -178,7 +178,7 @@ and [API docs](https://pub.dev/documentation/infinite_calendar_view/latest/) for
 
 4. Use `GlobalKey` to jump to a specific date.
    ```dart
-    GlobalKey<InfiniteEventPlannerState> key = GlobalKey<InfiniteEventPlannerState>();
+    GlobalKey<EventsPlannerState> key = GlobalKey<EventsPlannerState>();
    ```
    Add key in EventsPlanner or EventsList
    ```dart
@@ -354,9 +354,9 @@ and [API docs](https://pub.dev/documentation/infinite_calendar_view/latest/) for
         dayTopPadding: 10,
         dayBottomPadding: 15,
         onSlotMinutesRound: 15,
-        onSlotTap: (exactDateTime, roundDateTime) {},
-        onSlotLongTap: (exactDateTime, roundDateTime) {},
-        onSlotDoubleTap: (exactDateTime, roundDateTime) {},
+        onSlotTap: (columnIndex, exactDateTime, roundDateTime) {},
+        onSlotLongTap: (columnIndex, exactDateTime, roundDateTime) {},
+        onSlotDoubleTap: (columnIndex, exactDateTime, roundDateTime) {},
         onDayBuild: (day) {},
         dayEventBuilder: (event, height, width, heightPerMinute) {
           return DefaultDayEvent(
@@ -407,6 +407,26 @@ and [API docs](https://pub.dev/documentation/infinite_calendar_view/latest/) for
         pinchToZoomMinHeightPerMinute: 0.5,
         pinchToZoomMaxHeightPerMinute: 2.5,
         pinchToZoomSpeed: 1,
+      ),
+      columnsParam: ColumnsParam(
+        columns: 2,
+        columnsLabels: ["Tennis", "Foot"],
+        columnsColors: [Colors.blue, Colors.red],
+        columnsForegroundColors: [Colors.white, Colors.white],
+        columnsWidthRatio: [1 / 2, 1 / 2],
+        columnHeaderBuilder: (day, isToday, columIndex, columnWidth) {
+          return DefaultColumnHeader(
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.white,
+            columnText: ["Tennis", "Foot"].elementAt(columIndex),
+            columnWidth: columnWidth,
+          );
+        },
+        columnCustomPainter : (double width, int colum) => ColumnPainter(
+           width: width,
+           columnsParam: columnsParam,
+           lineColor: Colors.gray,
+        ),
       ),
    );
    ```

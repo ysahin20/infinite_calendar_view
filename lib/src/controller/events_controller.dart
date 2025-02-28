@@ -142,8 +142,8 @@ class CalendarData {
             (eventType == null || (e.eventType == eventType)) &&
             (!e.isMultiDay || e.daysIndex == 0)) ??
         [];
-    for (var event in eventsToRemove) {
-      removeEvent(event);
+    for (var event in [...eventsToRemove]) {
+      removeEvent(event.copyWith());
     }
   }
 

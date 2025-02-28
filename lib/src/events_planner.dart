@@ -353,26 +353,32 @@ class EventsPlannerState extends State<EventsPlanner> {
                   delegate: SliverChildBuilderDelegate(
                     childCount: 1,
                     (context, index) {
-                      return SizedBox(
-                        height: plannerHeight,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // left Timeline
-                            getVerticalTimeIndicatorWidget(
-                              currentHourIndicatorColor,
-                            ),
-
-                            // day planning infinite list
-                            Expanded(
-                              child: getPlannerWidget(
-                                todayColor,
-                                daySeparationWidthPadding,
-                                plannerHeight,
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 0,
+                          top: 0,
+                        ),
+                        child: SizedBox(
+                          height: plannerHeight,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // left Timeline
+                              getVerticalTimeIndicatorWidget(
                                 currentHourIndicatorColor,
                               ),
-                            ),
-                          ],
+
+                              // day planning infinite list
+                              Expanded(
+                                child: getPlannerWidget(
+                                  todayColor,
+                                  daySeparationWidthPadding,
+                                  plannerHeight,
+                                  currentHourIndicatorColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -827,7 +833,7 @@ class DayParam {
     this.todayColor,
     this.dayColor,
     this.dayTopPadding = 10,
-    this.dayBottomPadding = 15,
+    this.dayBottomPadding = 20,
     this.dayCustomPainter,
     this.dayEventBuilder,
     this.onSlotMinutesRound = 15,

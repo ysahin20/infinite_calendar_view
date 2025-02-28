@@ -1,3 +1,11 @@
+## 2.5.4
+
+- [bug] debug jumpToDate in EventsList
+- [readme] correction of past modifications
+- [demo] use calendar_view in EventsListView example
+- [demo] use PageScrollPhysics in EventsPlannerOneDayView example
+- [debug] secure removeDayEvents against "Concurrent modification during iteration"
+
 ## 2.5.3
 
 - [demo] change image preview, banner and icon
