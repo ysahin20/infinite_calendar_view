@@ -381,7 +381,7 @@ class DaysParam {
   final Widget Function(Event event, double? width, double? height)?
       dayEventBuilder;
 
-  final Widget Function(int count)? dayMoreEventsBuilder;
+  final Widget Function(int count, DateTime day)? dayMoreEventsBuilder;
 
   final void Function(DateTime day)? onDayTapDown;
 

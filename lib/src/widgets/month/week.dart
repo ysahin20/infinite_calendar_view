@@ -179,6 +179,7 @@ class _WeekState extends State<Week> {
     var eventHeight = widget.daysParam.eventHeight;
     var left = dayOfWeek * dayWidth + (daySpacing / 2);
     var eventsLength = weekEvents[dayOfWeek]?.length ?? 0;
+    var day = widget.startOfWeek.add(Duration(days: dayOfWeek));
 
     // More widget
     var isLastSlot = eventIndex == widget.maxEventsShowed - 1;
@@ -191,7 +192,7 @@ class _WeekState extends State<Week> {
           width: dayWidth - daySpacing,
           height: eventHeight,
           child: widget.daysParam.dayMoreEventsBuilder
-                  ?.call(notShowedEventsCount) ??
+                  ?.call(notShowedEventsCount, day) ??
               DefaultNotShowedMonthEventsWidget(
                 context: context,
                 eventHeight: eventHeight,

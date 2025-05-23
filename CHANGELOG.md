@@ -1,5 +1,10 @@
 ## 2.5.4
 
+- [improve] add day parameter into
+  dayMoreEventsBuilder https://github.com/pickywawa/infinite_calendar_view/issues/14
+
+## 2.5.4
+
 - [bug] debug jumpToDate in EventsList
 - [readme] correction of past modifications
 - [demo] use calendar_view in EventsListView example
