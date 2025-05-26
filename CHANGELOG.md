@@ -1,4 +1,4 @@
-## 2.5.4
+## 2.5.5
 
 - [improve] add day parameter into
   dayMoreEventsBuilder https://github.com/pickywawa/infinite_calendar_view/issues/14
