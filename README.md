@@ -22,13 +22,17 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 - 🚀 **Good performance**. With several dozen appointments per day
 - ✏️ **All configurable**. Everything is configurable!
 - 🗂️ **Events filter**. Easy filter day events
-- 🗓️ **Events types**. Managing all-day events and multi-day events
+- 🗓️ **Events types**. Managing all-day events and multi-day events. Possibility of having several
+  types of events with different placement
+  algorithms
 - 🎲 **Customizable number of days**. Depending on the screen size
-- 🤏 **Pinch to zoom**. Change the time scale with two fingers
+- 🤏 **Pinch to zoom**. Change the time scale with two fingers or ctrl/cmd + mouse wheel
 - 👆🏼 **Drag and drop**. Move appointments easily
 - 👩‍👧‍👦 **Multi columns**. Manage multiple calendars in the same view !
-- 🗓️ **Events arranger**. Customize the placement of appointments in the schedule
-- ♾️ **...**
+- 🗓️ **Events arranger**. Customize the placement of appointments (for each event type) in the
+  schedule
+- ♾️ **many other features**
+- 🇫🇷 **Made by Pickywawa with ❤️**
 
 ## Preview
 
@@ -469,8 +473,18 @@ language.
 
 ## Showcase
 
+multi-columns :
+
+   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase3.png" alt="drawing" width="300"/>
+
+classical :
+
    <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase1.png" alt="drawing" width="300"/>
    <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase2.png" alt="drawing" width="300"/>
+
+Different type (unavailable and time slot on the left)
+
+   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase4.png" alt="drawing" width="300"/>
 
 ## License
 

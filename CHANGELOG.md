@@ -1,3 +1,9 @@
+## 2.6.0
+
+- [new] add zoom with ctrl/cmd + mouse
+  wheel https://github.com/pickywawa/infinite_calendar_view/issues/17
+- [readme] add description + add showcase
+
 ## 2.5.5
 
 - [improve] add day parameter into

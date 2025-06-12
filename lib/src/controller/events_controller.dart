@@ -74,7 +74,10 @@ class CalendarData {
   /// add all events and cuts up appointments if they are over several days
   void addEvents(List<Event> events) {
     for (var event in events) {
-      var days = event.endTime?.difference(event.startTime).inDays ?? 0;
+      var days = event.endTime?.withoutTime
+              .difference(event.startTime.withoutTime)
+              .inDays ??
+          0;
 
       // if event is multi days, dispatch in all events days
       for (int i = 0; i <= days; i++) {

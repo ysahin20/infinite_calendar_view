@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:infinite_calendar_view/src/utils/default_text.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
 import 'package:sticky_infinite_list/widget.dart';
@@ -147,6 +149,7 @@ class EventsPlannerState extends State<EventsPlanner> {
   late double mainVerticalControllerOffsetScaleStart;
   bool listenHorizontalScrollDayChange = true;
   int _plannerPointerDownCount = 0;
+  bool isKeyboardZoomActive = false;
 
   @override
   void initState() {
@@ -211,7 +214,16 @@ class EventsPlannerState extends State<EventsPlanner> {
           }
         });
       }
+
+      // listen keyboard for zoom in web/desktop
+      HardwareKeyboard.instance.addHandler(_handleKeyEvent);
     });
+  }
+
+  @override
+  void dispose() {
+    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
+    super.dispose();
   }
 
   /// listen mainHorizontalController and call onFirstDayChange when day change
@@ -258,6 +270,23 @@ class EventsPlannerState extends State<EventsPlanner> {
         }
       }
     };
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    final pressed = HardwareKeyboard.instance.logicalKeysPressed;
+
+    //  listen ctrl or cmd key to zoom in web/desktop
+    if (widget.pinchToZoomParam.pinchToZoom) {
+      final isModifierPressed =
+          pressed.contains(LogicalKeyboardKey.controlLeft) ||
+              pressed.contains(LogicalKeyboardKey.controlRight) ||
+              pressed.contains(LogicalKeyboardKey.metaLeft) ||
+              pressed.contains(LogicalKeyboardKey.metaRight);
+      if (isModifierPressed != isKeyboardZoomActive) {
+        setState(() => isKeyboardZoomActive = isModifierPressed);
+      }
+    }
+    return false;
   }
 
   @override
@@ -320,31 +349,34 @@ class EventsPlannerState extends State<EventsPlanner> {
         : Theme.of(context).colorScheme.primary.darken();
   }
 
-  GestureDetector getPlannerAndTimesWidget(
+  Widget getPlannerAndTimesWidget(
     double plannerHeight,
     Color currentHourIndicatorColor,
     Color todayColor,
     double daySeparationWidthPadding,
   ) {
     var zoom = widget.pinchToZoomParam;
-    var isZoom = zoom.pinchToZoom;
+    var canZoom = zoom.pinchToZoom;
     return GestureDetector(
-      onScaleStart: isZoom ? zoom.onScaleStart ?? _onScaleStart : null,
-      onScaleUpdate: isZoom ? zoom.onScaleUpdate ?? _onScaleUpdate : null,
-      onScaleEnd: isZoom ? zoom.onScaleEnd ?? _onScaleEnd : null,
+      onScaleStart: canZoom ? zoom.onScaleStart ?? _onScaleStart : null,
+      onScaleUpdate: canZoom ? zoom.onScaleUpdate ?? _onScaleUpdate : null,
+      onScaleEnd: canZoom ? zoom.onScaleEnd ?? _onScaleEnd : null,
       child: Listener(
-        onPointerDown: isZoom ? (event) => _onPointerDown() : null,
-        onPointerCancel: isZoom ? (event) => _onPointerUp() : null,
-        onPointerUp: isZoom ? (event) => _onPointerUp() : null,
+        // zoom on web
+        onPointerSignal: isKeyboardZoomActive ? _onPointerSignal : null,
+        onPointerDown: canZoom ? (event) => _onPointerDown() : null,
+        onPointerCancel: canZoom ? (event) => _onPointerUp() : null,
+        onPointerUp: canZoom ? (event) => _onPointerUp() : null,
         child: IgnorePointer(
-          ignoring: isZoom ? _plannerPointerDownCount > 1 : false,
+          ignoring: canZoom ? _plannerPointerDownCount > 1 : false,
           child: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(
               scrollbars: false,
               dragDevices: PointerDeviceKind.values.toSet(),
             ),
             child: CustomScrollView(
-              physics: isZoom && _plannerPointerDownCount > 1
+              physics: canZoom &&
+                      (_plannerPointerDownCount > 1 || isKeyboardZoomActive)
                   ? const NeverScrollableScrollPhysics()
                   : widget.verticalScrollPhysics,
               controller: mainVerticalController,
@@ -487,6 +519,25 @@ class EventsPlannerState extends State<EventsPlanner> {
       dayWidth: dayWidth,
       timesIndicatorsWidth: widget.timesIndicatorsParam.timesIndicatorsWidth,
     );
+  }
+
+  void _onPointerSignal(PointerSignalEvent event) {
+    if (event is PointerScrollEvent) {
+      var minZoom = widget.pinchToZoomParam.pinchToZoomMinHeightPerMinute;
+      var maxZoom = widget.pinchToZoomParam.pinchToZoomMaxHeightPerMinute;
+      var speed = widget.pinchToZoomParam.pinchToZoomSpeed;
+      var zoom = event.scrollDelta.dy * -0.001 * speed;
+      var newHeightPerMinute = heightPerMinute + zoom;
+      var scale = newHeightPerMinute / heightPerMinute;
+
+      if (minZoom <= newHeightPerMinute && newHeightPerMinute <= maxZoom) {
+        setState(() {
+          heightPerMinute = newHeightPerMinute;
+          widget.pinchToZoomParam.onZoomChange?.call(heightPerMinute);
+          mainVerticalController.jumpTo(mainVerticalController.offset * scale);
+        });
+      }
+    }
   }
 
   void _onScaleStart(ScaleStartDetails details) {
