@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/src/utils/extension.dart';
 import 'package:sticky_infinite_list/models/alignments.dart';
@@ -8,8 +10,11 @@ import '../../../infinite_calendar_view.dart';
 class HorizontalDaysIndicatorWidget extends StatelessWidget {
   const HorizontalDaysIndicatorWidget({
     super.key,
+    required this.topLeftCellValueNotifier,
     required this.daysHeaderParam,
     required this.columnsParam,
+    required this.startColumnIndex,
+    required this.onColumnIndexChanged,
     required this.timesIndicatorsWidth,
     required this.dayHorizontalController,
     required this.maxPreviousDays,
@@ -18,8 +23,11 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
     required this.dayWidth,
   });
 
+  final ValueNotifier<DateTime> topLeftCellValueNotifier;
   final DaysHeaderParam daysHeaderParam;
   final ColumnsParam columnsParam;
+  final int startColumnIndex;
+  final Function(int newStartColumnIndex) onColumnIndexChanged;
   final double timesIndicatorsWidth;
   final ScrollController dayHorizontalController;
   final int? maxPreviousDays;
@@ -37,45 +45,62 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: daysHeaderParam.daysHeaderColor ?? defaultHeaderBackgroundColor,
       ),
-      child: Padding(
-        padding: EdgeInsets.only(left: timesIndicatorsWidth),
-        child: SizedBox(
-          height: daysHeaderParam.daysHeaderHeight,
-          child: InfiniteList(
-            controller: dayHorizontalController,
-            physics: const NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            direction: InfiniteListDirection.multi,
-            negChildCount: maxPreviousDays,
-            posChildCount: maxNextDays,
-            builder: (context, index) {
-              var day = initialDate.add(Duration(days: index));
-              var isToday = DateUtils.isSameDay(day, DateTime.now());
+      child: Row(
+        children: [
+          SizedBox(
+            height: daysHeaderParam.daysHeaderHeight,
+            width: timesIndicatorsWidth,
+            child: TopLeftCell(
+              topLeftCellValueNotifier: topLeftCellValueNotifier,
+              topLeftCellBuilder: daysHeaderParam.topLeftCellBuilder,
+            ),
+          ),
+          Expanded(
+            child: SizedBox(
+              height: daysHeaderParam.daysHeaderHeight,
+              child: InfiniteList(
+                controller: dayHorizontalController,
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                direction: InfiniteListDirection.multi,
+                negChildCount: maxPreviousDays,
+                posChildCount: maxNextDays,
+                builder: (context, index) {
+                  var day = initialDate.add(Duration(days: index));
+                  var isToday = DateUtils.isSameDay(day, DateTime.now());
 
-              return InfiniteListItem(
-                contentBuilder: (context) {
-                  return SizedBox(
-                    width: dayWidth,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        if (daysHeaderParam.daysHeaderVisibility)
-                          daysHeaderParam.dayHeaderBuilder != null
-                              ? daysHeaderParam.dayHeaderBuilder!
-                                  .call(day, isToday)
-                              : getDefaultDayHeader(day, isToday),
-                        if (columnsParam.columns > 1 ||
-                            columnsParam.columnHeaderBuilder != null ||
-                            columnsParam.columnsLabels.isNotEmpty)
-                          getColumnsHeader(context, day, isToday)
-                      ],
-                    ),
+                  return InfiniteListItem(
+                    contentBuilder: (context) {
+                      return SizedBox(
+                        width: dayWidth,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            if (daysHeaderParam.daysHeaderVisibility)
+                              daysHeaderParam.dayHeaderBuilder != null
+                                  ? daysHeaderParam.dayHeaderBuilder!
+                                      .call(day, isToday)
+                                  : getDefaultDayHeader(day, isToday),
+                            if (columnsParam.columns > 1 ||
+                                columnsParam.columnHeaderBuilder != null ||
+                                columnsParam.columnsLabels.isNotEmpty)
+                              getColumnsHeader(
+                                context,
+                                startColumnIndex,
+                                onColumnIndexChanged,
+                                day,
+                                isToday,
+                              )
+                          ],
+                        ),
+                      );
+                    },
                   );
                 },
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -89,26 +114,86 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
     );
   }
 
-  Row getColumnsHeader(BuildContext context, DateTime day, bool isToday) {
+  Widget getColumnsHeader(
+    BuildContext context,
+    int startColumnIndex,
+    Function(int newStartColumnIndex) onColumnIndexChanged,
+    DateTime day,
+    bool isToday,
+  ) {
     var colorScheme = Theme.of(context).colorScheme;
     var bgColor = colorScheme.surface;
     var builder = columnsParam.columnHeaderBuilder;
-    return Row(
+    var endColumnIndex = min(
+        columnsParam.maxColumns != null
+            ? startColumnIndex + columnsParam.maxColumns!
+            : columnsParam.columns,
+        columnsParam.columns);
+    return Stack(
       children: [
-        for (var column = 0; column < columnsParam.columns; column++)
-          if (builder != null)
-            builder.call(day, isToday, column,
-                columnsParam.getColumSize(dayWidth, column))
-          else
-            DefaultColumnHeader(
-              columnText: columnsParam.columnsLabels[column],
-              columnWidth: columnsParam.getColumSize(dayWidth, column),
-              backgroundColor: columnsParam.columnsColors.isNotEmpty
-                  ? columnsParam.columnsColors[column]
-                  : bgColor,
-              foregroundColor: columnsParam.columnsForegroundColors?[column] ??
-                  colorScheme.primary,
-            )
+        // left previous columns icons
+        if (startColumnIndex > 0 && columnsParam.maxColumns != null)
+          Positioned(
+            left: 0,
+            child: IconButton(
+              icon: columnsParam.previousColumnsIcon ??
+                  Icon(
+                    Icons.arrow_back_ios_rounded,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+              onPressed: () {
+                var newStartColumnIndex =
+                    max(0, startColumnIndex - columnsParam.maxColumns!);
+                onColumnIndexChanged.call(newStartColumnIndex);
+              },
+            ),
+          ),
+
+        // right next columns icon
+        if (endColumnIndex < columnsParam.columns &&
+            columnsParam.maxColumns != null)
+          Positioned(
+            right: 0,
+            child: IconButton(
+              icon: columnsParam.nextColumnsIcon ??
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+              onPressed: () {
+                var newStartColumnIndex = min(
+                  columnsParam.columns - columnsParam.maxColumns!,
+                  startColumnIndex + columnsParam.maxColumns!,
+                );
+                onColumnIndexChanged.call(newStartColumnIndex);
+              },
+            ),
+          ),
+
+        // columns
+        Row(
+          children: [
+            for (var column = startColumnIndex;
+                column < endColumnIndex;
+                column++)
+              if (builder != null)
+                builder.call(day, isToday, column,
+                    columnsParam.getColumSize(dayWidth, column))
+              else
+                DefaultColumnHeader(
+                  columnText: columnsParam.columnsLabels[column],
+                  columnWidth: columnsParam.getColumSize(dayWidth, column),
+                  backgroundColor: columnsParam.columnsColors.isNotEmpty
+                      ? columnsParam.columnsColors[column]
+                      : bgColor,
+                  foregroundColor:
+                      columnsParam.columnsForegroundColors?[column] ??
+                          colorScheme.primary,
+                )
+          ],
+        ),
       ],
     );
   }
@@ -223,6 +308,40 @@ class DefaultDayHeader extends StatelessWidget {
       fontSize: 12,
       fontWeight: FontWeight.w500,
       color: fgColor,
+    );
+  }
+}
+
+class TopLeftCell extends StatefulWidget {
+  const TopLeftCell({
+    super.key,
+    required this.topLeftCellValueNotifier,
+    this.topLeftCellBuilder,
+  });
+
+  final ValueNotifier<DateTime> topLeftCellValueNotifier;
+  final Widget Function(DateTime day)? topLeftCellBuilder;
+
+  @override
+  State<TopLeftCell> createState() => TopLeftCellState();
+}
+
+class TopLeftCellState extends State<TopLeftCell> {
+  @override
+  void initState() {
+    super.initState();
+
+    // rebuild when day change
+    widget.topLeftCellValueNotifier.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: widget.topLeftCellBuilder
+          ?.call(widget.topLeftCellValueNotifier.value),
     );
   }
 }

@@ -136,6 +136,7 @@ class EventsPlanner extends StatefulWidget {
 class EventsPlannerState extends State<EventsPlanner> {
   final mainHorizontalController = ScrollController();
   final headersHorizontalController = ScrollController();
+  final topLeftCellValueNotifier = ValueNotifier<DateTime>(DateTime.now());
   late ScrollController mainVerticalController;
   late DateTime initialDate;
   late double width;
@@ -147,9 +148,10 @@ class EventsPlannerState extends State<EventsPlanner> {
   late double heightPerMinute;
   late double heightPerMinuteScaleStart;
   late double mainVerticalControllerOffsetScaleStart;
-  bool listenHorizontalScrollDayChange = true;
-  int _plannerPointerDownCount = 0;
-  bool isKeyboardZoomActive = false;
+  var _listenHorizontalScrollDayChange = true;
+  var _plannerPointerDownCount = 0;
+  var _isKeyboardZoomActive = false;
+  var _startColumnIndex = 0;
 
   @override
   void initState() {
@@ -231,7 +233,7 @@ class EventsPlannerState extends State<EventsPlanner> {
     var halfDayWidth = (dayWidth / 2);
     var scroll = mainHorizontalController;
     scroll.addListener(() {
-      if (listenHorizontalScrollDayChange) {
+      if (_listenHorizontalScrollDayChange) {
         var halfDay = scroll.offset >= 0 ? halfDayWidth : -halfDayWidth;
         var index = ((scroll.offset + halfDay) / dayWidth).toInt();
         // only when index has changed
@@ -240,6 +242,7 @@ class EventsPlannerState extends State<EventsPlanner> {
           var currentDay = initialDate.add(Duration(days: currentIndex));
           widget.onDayChange?.call(currentDay);
           widget.controller.updateFocusedDay(currentDay);
+          topLeftCellValueNotifier.value = currentDay;
         }
       }
     });
@@ -252,7 +255,7 @@ class EventsPlannerState extends State<EventsPlanner> {
       // when scroll stopped
       var scroll = mainHorizontalController;
       var stopScroll = !scroll.position.isScrollingNotifier.value;
-      if (listenHorizontalScrollDayChange && stopScroll) {
+      if (_listenHorizontalScrollDayChange && stopScroll) {
         // Round to nearest day
         var nearestDayOffset = dayWidth * (scroll.offset / dayWidth).round();
         if (nearestDayOffset != scroll.offset) {
@@ -282,8 +285,8 @@ class EventsPlannerState extends State<EventsPlanner> {
               pressed.contains(LogicalKeyboardKey.controlRight) ||
               pressed.contains(LogicalKeyboardKey.metaLeft) ||
               pressed.contains(LogicalKeyboardKey.metaRight);
-      if (isModifierPressed != isKeyboardZoomActive) {
-        setState(() => isKeyboardZoomActive = isModifierPressed);
+      if (isModifierPressed != _isKeyboardZoomActive) {
+        setState(() => _isKeyboardZoomActive = isModifierPressed);
       }
     }
     return false;
@@ -291,13 +294,13 @@ class EventsPlannerState extends State<EventsPlanner> {
 
   @override
   Widget build(BuildContext context) {
-    var dayParam = widget.dayParam;
-    var plannerHeight = (heightPerMinute * 60 * 24) +
-        dayParam.dayTopPadding +
-        dayParam.dayBottomPadding;
-    var daySeparationWidthPadding = widget.daySeparationWidth / 2;
-    var todayColor = dayParam.todayColor ?? getDefaultTodayColor(context);
-    var currentHourIndicatorColor =
+    var _dayParam = widget.dayParam;
+    var _plannerHeight = (heightPerMinute * 60 * 24) +
+        _dayParam.dayTopPadding +
+        _dayParam.dayBottomPadding;
+    var _daySeparationWidthPadding = widget.daySeparationWidth / 2;
+    var _todayColor = _dayParam.todayColor ?? getDefaultTodayColor(context);
+    var _currentHourIndicatorColor =
         widget.currentHourIndicatorParam.currentHourIndicatorColor ??
             getDefaultHourIndicatorColor(context);
 
@@ -307,28 +310,36 @@ class EventsPlannerState extends State<EventsPlanner> {
         height = constraints.maxHeight;
         var leftWidget = widget.timesIndicatorsParam.timesIndicatorsWidth;
         dayWidth = (width - leftWidget) / widget.daysShowed;
+        var _onColumnIndexChanged = (int newStartColumnIndex) {
+          setState(() {
+            _startColumnIndex = newStartColumnIndex;
+          });
+        };
 
         return Column(
           children: [
             // top days header
             if (widget.daysHeaderParam.daysHeaderVisibility ||
                 widget.columnsParam.columns > 1)
-              getHorizontalDaysIndicatorWidget(),
+              getHorizontalDaysIndicatorWidget(
+                _startColumnIndex,
+                _onColumnIndexChanged,
+              ),
 
             // full day events
             if (widget.fullDayParam.fullDayEventsBarVisibility)
               getHorizontalFullDayEventsWidget(
-                daySeparationWidthPadding,
-                todayColor,
+                _daySeparationWidthPadding,
+                _todayColor,
               ),
 
             // days content
             Expanded(
               child: getPlannerAndTimesWidget(
-                plannerHeight,
-                currentHourIndicatorColor,
-                todayColor,
-                daySeparationWidthPadding,
+                _plannerHeight,
+                _currentHourIndicatorColor,
+                _todayColor,
+                _daySeparationWidthPadding,
               ),
             ),
           ],
@@ -363,7 +374,7 @@ class EventsPlannerState extends State<EventsPlanner> {
       onScaleEnd: canZoom ? zoom.onScaleEnd ?? _onScaleEnd : null,
       child: Listener(
         // zoom on web
-        onPointerSignal: isKeyboardZoomActive ? _onPointerSignal : null,
+        onPointerSignal: _isKeyboardZoomActive ? _onPointerSignal : null,
         onPointerDown: canZoom ? (event) => _onPointerDown() : null,
         onPointerCancel: canZoom ? (event) => _onPointerUp() : null,
         onPointerUp: canZoom ? (event) => _onPointerUp() : null,
@@ -376,7 +387,7 @@ class EventsPlannerState extends State<EventsPlanner> {
             ),
             child: CustomScrollView(
               physics: canZoom &&
-                      (_plannerPointerDownCount > 1 || isKeyboardZoomActive)
+                      (_plannerPointerDownCount > 1 || _isKeyboardZoomActive)
                   ? const NeverScrollableScrollPhysics()
                   : widget.verticalScrollPhysics,
               controller: mainVerticalController,
@@ -465,6 +476,7 @@ class EventsPlannerState extends State<EventsPlanner> {
                 dayEventsArranger: widget.dayEventsArranger,
                 dayParam: widget.dayParam,
                 columnsParam: widget.columnsParam,
+                startColumnIndex: _startColumnIndex,
                 currentHourIndicatorParam: widget.currentHourIndicatorParam,
                 currentHourIndicatorColor: currentHourIndicatorColor,
                 offTimesParam: widget.offTimesParam,
@@ -508,10 +520,16 @@ class EventsPlannerState extends State<EventsPlanner> {
     );
   }
 
-  HorizontalDaysIndicatorWidget getHorizontalDaysIndicatorWidget() {
+  HorizontalDaysIndicatorWidget getHorizontalDaysIndicatorWidget(
+    int _startColumnIndex,
+    Function(int newStartColumnIndex) onColumnIndexChanged,
+  ) {
     return HorizontalDaysIndicatorWidget(
+      topLeftCellValueNotifier: topLeftCellValueNotifier,
       daysHeaderParam: widget.daysHeaderParam,
       columnsParam: widget.columnsParam,
+      startColumnIndex: _startColumnIndex,
+      onColumnIndexChanged: onColumnIndexChanged,
       dayHorizontalController: headersHorizontalController,
       maxPreviousDays: widget.maxPreviousDays,
       maxNextDays: widget.maxNextDays,
@@ -602,10 +620,10 @@ class EventsPlannerState extends State<EventsPlanner> {
   void jumpToDate(DateTime date) {
     if (context.mounted) {
       // stop scroll listener for avoid change day listener
-      listenHorizontalScrollDayChange = false;
+      _listenHorizontalScrollDayChange = false;
       var index = date.withoutTime.getDayDifference(initialDate);
       mainHorizontalController.jumpTo(index * dayWidth);
-      listenHorizontalScrollDayChange = true;
+      _listenHorizontalScrollDayChange = true;
     }
   }
 }
@@ -773,6 +791,7 @@ class DaysHeaderParam {
     this.daysHeaderForegroundColor,
     this.dayHeaderBuilder,
     this.dayHeaderTextBuilder,
+    this.topLeftCellBuilder,
   });
 
   /// visibility of days top bar
@@ -792,6 +811,9 @@ class DaysHeaderParam {
 
   /// day text builder
   final String Function(DateTime day)? dayHeaderTextBuilder;
+
+  /// top left cell builder
+  final Widget Function(DateTime day)? topLeftCellBuilder;
 }
 
 class TimesIndicatorsParam {
@@ -815,16 +837,22 @@ class TimesIndicatorsParam {
 class ColumnsParam {
   const ColumnsParam({
     this.columns = 1,
+    this.maxColumns = 3,
     this.columnsLabels = const [],
     this.columnsColors = const [],
     this.columnsForegroundColors,
     this.columnsWidthRatio,
     this.columnHeaderBuilder,
     this.columnCustomPainter,
+    this.previousColumnsIcon,
+    this.nextColumnsIcon,
   });
 
   /// number of columns per day
   final int columns;
+
+  /// max number of columns per day : show arrow if columns > maxColumns
+  final int? maxColumns;
 
   /// label of column showed in header
   final List<String> columnsLabels;
@@ -836,6 +864,12 @@ class ColumnsParam {
 
   /// ratio of dayWidth of each column
   final List<double>? columnsWidthRatio;
+
+  /// left icon to change displayed columns
+  final Icon? previousColumnsIcon;
+
+  /// right icon to change displayed columns
+  final Icon? nextColumnsIcon;
 
   /// column custom builder in top bar
   final Widget Function(

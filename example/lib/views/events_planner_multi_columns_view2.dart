@@ -3,7 +3,6 @@ import 'package:example/extension.dart';
 import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
-import 'package:random_avatar/random_avatar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class EventsPlannerMultiColumnSchedulerView extends StatefulWidget {
@@ -55,6 +54,31 @@ class _EventsPlannerMultiColumnSchedulerViewState
             initialVerticalScrollOffset: initialVerticalScrollOffset,
             daySeparationWidth: 10,
 
+            // header
+            daysHeaderParam: DaysHeaderParam(
+              daysHeaderVisibility: false,
+              daysHeaderHeight: 70,
+              daysHeaderColor: Theme.of(context).colorScheme.surface,
+            ),
+
+            // custom column bar decoration
+            fullDayParam: FullDayParam(
+              fullDayEventsBarDecoration: customColumsBarDecoration(context),
+            ),
+
+            // personalize columns
+            columnsParam: ColumnsParam(
+              columns: 7,
+              columnsWidthRatio: List.generate(7, (i) => 1 / 3),
+              columnHeaderBuilder: (day, isToday, columIndex, columnWidth) {
+                return Avatar(columnWidth: columnWidth, columIndex: columIndex);
+              },
+            ),
+
+            // personalize offTimes per column
+            offTimesParam: customColumnOffTimes(context),
+            onDayChange: (newDay) => setState(() => selectedDay = newDay),
+
             // event cell
             dayParam: DayParam(
               dayEventBuilder: (event, height, width, heightPerMinute) =>
@@ -63,54 +87,38 @@ class _EventsPlannerMultiColumnSchedulerViewState
                   showSnack(context, "Slot Tap column = ${columnIndex}"),
               todayColor: Theme.of(context).colorScheme.surface,
             ),
-
-            fullDayParam: FullDayParam(
-              fullDayEventsBarDecoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                  bottom: BorderSide(color: Colors.black12),
-                ),
-              ),
-            ),
-
-            // header
-            daysHeaderParam: DaysHeaderParam(
-              daysHeaderVisibility: false,
-              daysHeaderHeight: 70,
-              daysHeaderColor: Theme.of(context).colorScheme.surface,
-            ),
-
-            // personalize columns
-            columnsParam: ColumnsParam(
-              columns: 3,
-              columnsWidthRatio: [1 / 3, 1 / 3, 1 / 3],
-              columnHeaderBuilder: (day, isToday, columIndex, columnWidth) {
-                return Avatar(columnWidth: columnWidth, columIndex: columIndex);
-              },
-            ),
-
-            // personalize offTimes per column
-            offTimesParam: OffTimesParam(
-              offTimesAllDaysPainter:
-                  (column, day, isToday, heightPerMinute, ranges, color) {
-                var offTimesDefaultColor = widget.isDarkMode
-                    ? Theme.of(context).colorScheme.surface.lighten(0.03)
-                    : const Color(0xFFF4F4F4);
-                return OffSetAllDaysPainter(
-                  isToday,
-                  paintToday: true,
-                  heightPerMinute,
-                  column == 0 ? ranges : getHalfTimeRange(),
-                  offTimesDefaultColor,
-                );
-              },
-            ),
-            onDayChange: (newDay) => setState(() => selectedDay = newDay),
           ),
         ),
       ],
+    );
+  }
+
+  BoxDecoration customColumsBarDecoration(BuildContext context) {
+    return BoxDecoration(
+      border: Border(
+        top: BorderSide(
+          color: Theme.of(context).colorScheme.outlineVariant,
+        ),
+        bottom: BorderSide(color: Colors.black12),
+      ),
+    );
+  }
+
+  OffTimesParam customColumnOffTimes(BuildContext context) {
+    return OffTimesParam(
+      offTimesAllDaysPainter:
+          (column, day, isToday, heightPerMinute, ranges, color) {
+        var offTimesDefaultColor = widget.isDarkMode
+            ? Theme.of(context).colorScheme.surface.lighten(0.03)
+            : const Color(0xFFF4F4F4);
+        return OffSetAllDaysPainter(
+          isToday,
+          paintToday: true,
+          heightPerMinute,
+          column == 0 ? ranges : getHalfTimeRange(),
+          offTimesDefaultColor,
+        );
+      },
     );
   }
 
@@ -173,28 +181,40 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var name = switch (columIndex) {
+      0 => 'Suzy',
+      1 => 'Jose',
+      2 => 'Michelle',
+      3 => 'John',
+      4 => 'Blaise',
+      5 => 'Jane',
+      6 => 'Alfred',
+      int() => '',
+    };
+    var imageUrl = switch (columIndex) {
+      0 => 'https://randomuser.me/api/portraits/thumb/women/88.jpg',
+      1 => 'https://randomuser.me/api/portraits/thumb/men/11.jpg',
+      2 => 'https://randomuser.me/api/portraits/thumb/women/85.jpg',
+      3 => 'https://randomuser.me/api/portraits/thumb/men/88.jpg',
+      4 => 'https://randomuser.me/api/portraits/thumb/men/12.jpg',
+      5 => 'https://randomuser.me/api/portraits/thumb/women/18.jpg',
+      6 => 'https://randomuser.me/api/portraits/thumb/men/90.jpg',
+      int() => '',
+    };
+
     return Container(
       width: columnWidth,
       child: Column(
         children: [
-          RandomAvatar(
-            columIndex == 0
-                ? 'Suzy'
-                : columIndex == 1
-                    ? 'Jose'
-                    : 'Michelle',
-            trBackground: false,
-            height: 35,
-            width: 35,
+          ClipOval(
+            child: Image.network(
+              imageUrl,
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+            ),
           ),
-          Text(
-            columIndex == 0
-                ? 'Suzy'
-                : columIndex == 1
-                    ? 'Jose'
-                    : 'Michelle',
-            style: TextStyle(fontSize: 12),
-          ),
+          Text(name, style: TextStyle(fontSize: 12)),
         ],
       ),
     );
@@ -232,52 +252,71 @@ class EventWidget extends StatelessWidget {
           ),
         );
       },
-      child: DefaultDayEvent(
-        height: height,
-        width: width,
-        color: event.color.darken(0.12),
-        eventMargin: EdgeInsets.all(2),
-        roundBorderRadius: 5,
-        onTap: () => showSnack(context, "Tap ${event.title}"),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flexible(
-              child: Text(
-                getSlotHourText(event.startTime, event.endTime!),
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.black54,
+      child: Card(
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: Container(
+            height: height,
+            width: width,
+            color: Theme.of(context).colorScheme.surface,
+            child: Row(
+              children: [
+                Container(
+                  width: 5,
+                  color: event.color,
                 ),
-              ),
-            ),
-            Flexible(
-              child: Text(
-                event.title ?? "",
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            getSlotHourText(event.startTime, event.endTime!),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            event.title ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            maxLines: 2,
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            event.description ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            maxLines: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                maxLines: 2,
-              ),
+              ],
             ),
-            Flexible(
-              child: Text(
-                event.description ?? "",
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.black87,
-                ),
-                maxLines: 2,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

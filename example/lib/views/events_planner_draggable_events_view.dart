@@ -34,6 +34,12 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
       daysHeaderParam: DaysHeaderParam(
         daysHeaderVisibility: daysShowed != 1,
         dayHeaderTextBuilder: (day) => DateFormat("E d").format(day),
+        topLeftCellBuilder: (day) => Center(
+          child: Text(
+            DateFormat("MMM").format(day),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
       fullDayParam: FullDayParam(
         fullDayEventsBarHeight: 50,

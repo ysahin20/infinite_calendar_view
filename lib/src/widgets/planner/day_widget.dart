@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class DayWidget extends StatelessWidget {
     required this.dayEventsArranger,
     required this.dayParam,
     required this.columnsParam,
+    required this.startColumnIndex,
     required this.currentHourIndicatorParam,
     required this.currentHourIndicatorColor,
     required this.offTimesParam,
@@ -39,6 +41,7 @@ class DayWidget extends StatelessWidget {
   final EventArranger dayEventsArranger;
   final DayParam dayParam;
   final ColumnsParam columnsParam;
+  final int startColumnIndex;
   final CurrentHourIndicatorParam currentHourIndicatorParam;
   final Color currentHourIndicatorColor;
   final OffTimesParam offTimesParam;
@@ -50,6 +53,11 @@ class DayWidget extends StatelessWidget {
     var dayBackgroundColor =
         isToday && todayColor != null ? todayColor : dayParam.dayColor;
     var width = dayWidth - (daySeparationWidthPadding * 2);
+    var endColumnIndex = min(
+        columnsParam.maxColumns != null
+            ? startColumnIndex + columnsParam.maxColumns!
+            : columnsParam.columns,
+        columnsParam.columns);
     var offTimesOfDay = offTimesParam.offTimesDayRanges[day];
     var offTimesDefaultColor = context.isDarkMode
         ? Theme.of(context).colorScheme.surface.lighten(0.03)
@@ -83,7 +91,9 @@ class DayWidget extends StatelessWidget {
             // offSet all days painter
             Row(
               children: [
-                for (var column = 0; column < columnsParam.columns; column++)
+                for (var column = startColumnIndex;
+                    column < endColumnIndex;
+                    column++)
                   Container(
                     width: columnsParam.getColumSize(width, column),
                     height: plannerHeight,
@@ -113,7 +123,9 @@ class DayWidget extends StatelessWidget {
             if (offTimesOfDay != null)
               Row(
                 children: [
-                  for (var column = 0; column < columnsParam.columns; column++)
+                  for (var column = startColumnIndex;
+                      column < endColumnIndex;
+                      column++)
                     SizedBox(
                       width: columnsParam.getColumSize(width, column),
                       height: plannerHeight,
@@ -165,7 +177,8 @@ class DayWidget extends StatelessWidget {
                 child: CustomPaint(
                   foregroundPainter: columnsParam.columnCustomPainter?.call(
                         width,
-                        columnsParam.columns,
+                        min(columnsParam.maxColumns ?? columnsParam.columns,
+                            columnsParam.columns),
                       ) ??
                       ColumnPainter(
                         width: width,
@@ -178,8 +191,12 @@ class DayWidget extends StatelessWidget {
             // events
             Row(
               children: [
-                for (var column = 0; column < columnsParam.columns; column++)
+                for (var column = startColumnIndex;
+                    column < endColumnIndex;
+                    column++)
                   EventsListWidget(
+                    // rebuild when column index change
+                    key: ValueKey(column),
                     controller: controller,
                     columIndex: column,
                     day: day,

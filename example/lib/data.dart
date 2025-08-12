@@ -10,9 +10,13 @@ List<Event> events = [
   ...generateMultiDaysEvents(),
 ];
 List<Event> multiColumnEvents = [
-  ...generateRandomEvents(500, columnIndex: 0),
-  ...generateRandomEvents(500, columnIndex: 1),
-  ...generateRandomEvents(500, columnIndex: 2),
+  ...generateRandomEvents(300, columnIndex: 0),
+  ...generateRandomEvents(300, columnIndex: 1),
+  ...generateRandomEvents(300, columnIndex: 2),
+  ...generateRandomEvents(200, columnIndex: 3),
+  ...generateRandomEvents(200, columnIndex: 4),
+  ...generateRandomEvents(200, columnIndex: 5),
+  ...generateRandomEvents(100, columnIndex: 6),
 ];
 
 List<Event> generateMultiDaysEvents() {

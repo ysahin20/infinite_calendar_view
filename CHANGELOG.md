@@ -1,3 +1,9 @@
+## 2.7.0
+
+- [new] custom top left cell https://github.com/pickywawa/infinite_calendar_view/issues/20
+- [new] any number of persons in multi
+  column https://github.com/pickywawa/infinite_calendar_view/issues/19
+
 ## 2.6.0
 
 - [new] add zoom with ctrl/cmd + mouse
