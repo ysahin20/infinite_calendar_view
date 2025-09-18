@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
 
+import '../utils.dart';
+
 class EventsPlannerDraggableEventsView extends StatelessWidget {
   const EventsPlannerDraggableEventsView({
     super.key,
@@ -28,7 +30,7 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
       dayParam: DayParam(
         onSlotTap: (columnIndex, exactDateTime, roundDateTime) {},
         dayEventBuilder: (event, height, width, heightPerMinute) {
-          return draggableEvent(event, height, width);
+          return draggableEvent(context, event, height, width);
         },
       ),
       daysHeaderParam: DaysHeaderParam(
@@ -58,6 +60,7 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
   }
 
   DraggableEventWidget draggableEvent(
+    BuildContext context,
     Event event,
     double height,
     double width,
@@ -78,7 +81,7 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
         description: event.description,
         color: isDarkMode ? event.color.onPastel : event.color,
         textColor: isDarkMode ? event.textColor.pastel : event.textColor,
-        onTap: () => print("tap ${event.uniqueId}"),
+        onTap: () => showSnack(context, "Tap = ${event.title}"),
       ),
     );
   }

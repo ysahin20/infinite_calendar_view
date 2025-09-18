@@ -14,3 +14,13 @@ showSnack(BuildContext context, String text) {
     ),
   );
 }
+
+String getSlotHourText(DateTime start, DateTime end) {
+  return start.hour.toString().padLeft(2, '0') +
+      ":" +
+      start.hour.toString().padLeft(2, '0') +
+      "\n" +
+      end.hour.toString().padLeft(2, '0') +
+      ":" +
+      end.hour.toString().padLeft(2, '0');
+}

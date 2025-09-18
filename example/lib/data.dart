@@ -241,3 +241,14 @@ List<Event> generateReservationRandomEvents(int count) {
 
   return list.distinctBy((e) => e.startTime).toList();
 }
+
+List<OffTimeRange> getHalfTimeRange() => [
+      OffTimeRange(
+        TimeOfDay(hour: 0, minute: 0),
+        TimeOfDay(hour: 9, minute: 0),
+      ),
+      OffTimeRange(
+        TimeOfDay(hour: 13, minute: 0),
+        TimeOfDay(hour: 24, minute: 0),
+      ),
+    ];
