@@ -1,3 +1,9 @@
+## 2.7.1
+
+- [bug] onMonthChange send wrong month when scrolling up on EventsMonths with
+  automaticAdjustScrollToStartOfMonth =
+  true https://github.com/pickywawa/infinite_calendar_view/issues/25
+
 ## 2.7.0
 
 - [new] custom top left cell https://github.com/pickywawa/infinite_calendar_view/issues/20

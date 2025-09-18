@@ -110,9 +110,10 @@ class EventsMonthsState extends State<EventsMonths> {
         var scroll = scrollController;
         if (!_blockAdjustScroll) {
           var adjustedOffset = _stickyPercent < 0.5
-              ? scroll.offset - _stickyOffset
+              ? scroll.offset - _stickyOffset + 1
               : scroll.offset +
-                  (((1 - _stickyPercent) * _stickyOffset) / _stickyPercent);
+                  (((1 - _stickyPercent) * _stickyOffset) / _stickyPercent) +
+                  1;
 
           Future.delayed(const Duration(milliseconds: 1), () {
             if (scrollIsStopped) {
@@ -352,7 +353,6 @@ class DaysParam {
     this.eventHeight = 20.0,
     this.eventSpacing = 2.0,
     this.spaceBetweenHeaderAndEvents = 6.0,
-    this.onMonthChange,
     this.dayHeaderBuilder,
     this.dayEventBuilder,
     this.dayMoreEventsBuilder,
@@ -371,9 +371,6 @@ class DaysParam {
 
   /// space between header and events
   final double spaceBetweenHeaderAndEvents;
-
-  /// Callback when month change during vertical scroll
-  final void Function(DateTime month)? onMonthChange;
 
   /// day header builder
   final Widget Function(DateTime day)? dayHeaderBuilder;
