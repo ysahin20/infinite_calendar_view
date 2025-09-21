@@ -10,7 +10,7 @@ import '../../../infinite_calendar_view.dart';
 class HorizontalDaysIndicatorWidget extends StatelessWidget {
   const HorizontalDaysIndicatorWidget({
     super.key,
-    required this.topLeftCellValueNotifier,
+    this.textDirection = TextDirection.ltr,
     required this.daysHeaderParam,
     required this.columnsParam,
     required this.startColumnIndex,
@@ -21,9 +21,10 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
     required this.maxNextDays,
     required this.initialDate,
     required this.dayWidth,
+    required this.topLeftCellValueNotifier,
   });
 
-  final ValueNotifier<DateTime> topLeftCellValueNotifier;
+  final TextDirection textDirection;
   final DaysHeaderParam daysHeaderParam;
   final ColumnsParam columnsParam;
   final int startColumnIndex;
@@ -34,6 +35,7 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
   final int? maxNextDays;
   final DateTime initialDate;
   final double dayWidth;
+  final ValueNotifier<DateTime> topLeftCellValueNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
         color: daysHeaderParam.daysHeaderColor ?? defaultHeaderBackgroundColor,
       ),
       child: Row(
+        textDirection: textDirection,
         children: [
           SizedBox(
             height: daysHeaderParam.daysHeaderHeight,
@@ -66,7 +69,9 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
                 negChildCount: maxPreviousDays,
                 posChildCount: maxNextDays,
                 builder: (context, index) {
-                  var day = initialDate.add(Duration(days: index));
+                  var day = textDirection == TextDirection.ltr
+                      ? initialDate.add(Duration(days: index))
+                      : initialDate.subtract(Duration(days: index));
                   var isToday = DateUtils.isSameDay(day, DateTime.now());
 
                   return InfiniteListItem(

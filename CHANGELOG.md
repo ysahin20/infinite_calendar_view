@@ -1,3 +1,7 @@
+## 2.8.0
+
+- [new] RTL support (Arabic, Hindi, Hebrew... text direction)
+
 ## 2.7.1
 
 - [bug] onMonthChange send wrong month when scrolling up on EventsMonths with

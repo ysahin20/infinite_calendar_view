@@ -14,6 +14,7 @@ class EventsMonths extends StatefulWidget {
     super.key,
     required this.controller,
     this.initialMonth,
+    this.textDirection = TextDirection.ltr,
     this.maxPreviousMonth = 120,
     this.maxNextMonth = 120,
     this.weekParam = const WeekParam(),
@@ -32,6 +33,10 @@ class EventsMonths extends StatefulWidget {
 
   /// initial first day
   final DateTime? initialMonth;
+
+  // Arabic, Hindi, Hebrew text direction
+  // Text direction : change position of elements and scroll direction
+  final TextDirection textDirection;
 
   /// max horizontal previous days scroll
   /// Null for infinite
@@ -148,7 +153,10 @@ class EventsMonthsState extends State<EventsMonths> {
         child: Column(
           children: [
             // week header
-            MonthHeader(weekParam: widget.weekParam),
+            MonthHeader(
+              textDirection: widget.textDirection,
+              weekParam: widget.weekParam,
+            ),
 
             // months
             Expanded(
@@ -197,6 +205,7 @@ class EventsMonthsState extends State<EventsMonths> {
                           contentBuilder: (context) {
                             return Month(
                               controller: widget.controller,
+                              textDirection: widget.textDirection,
                               month: month,
                               weekParam: widget.weekParam,
                               weekHeight: weekHeight,
@@ -327,13 +336,13 @@ class WeekParam {
   final TextStyle? headerStyle;
 
   /// top header (day of week) day builder
-  final Widget Function(int dayOfWeek)? headerDayBuilder;
+  final Widget Function(int dayOfMonth)? headerDayBuilder;
 
   /// top header (day of week) day text
-  final String Function(int dayOfWeek)? headerDayText;
+  final String Function(int dayOfMonth)? headerDayText;
 
   /// top header (day of week) text color
-  final Color Function(int dayOfWeek)? headerDayTextColor;
+  final Color Function(int dayOfMonth)? headerDayTextColor;
 
   static BoxDecoration defaultWeekDecoration(BuildContext context) {
     return BoxDecoration(
@@ -354,6 +363,7 @@ class DaysParam {
     this.eventSpacing = 2.0,
     this.spaceBetweenHeaderAndEvents = 6.0,
     this.dayHeaderBuilder,
+    this.dayHeaderTextBuilder,
     this.dayEventBuilder,
     this.dayMoreEventsBuilder,
     this.onDayTapDown,
@@ -374,6 +384,9 @@ class DaysParam {
 
   /// day header builder
   final Widget Function(DateTime day)? dayHeaderBuilder;
+
+  /// day header text builder without change style
+  final String Function(DateTime day)? dayHeaderTextBuilder;
 
   final Widget Function(Event event, double? width, double? height)?
       dayEventBuilder;

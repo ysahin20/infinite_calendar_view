@@ -8,6 +8,7 @@ class Month extends StatelessWidget {
   const Month({
     super.key,
     required this.controller,
+    required this.textDirection,
     required this.month,
     required this.weekParam,
     required this.weekHeight,
@@ -16,6 +17,7 @@ class Month extends StatelessWidget {
   });
 
   final EventsController controller;
+  final TextDirection textDirection;
   final DateTime month;
   final WeekParam weekParam;
   final double weekHeight;
@@ -37,6 +39,7 @@ class Month extends StatelessWidget {
         for (var startOfWeek in startOfWeeks)
           Week(
             controller: controller,
+            textDirection: textDirection,
             weekParam: weekParam,
             weekHeight: weekHeight,
             daysParam: daysParam,

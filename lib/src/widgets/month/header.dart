@@ -6,9 +6,11 @@ import 'package:infinite_calendar_view/src/utils/extension.dart';
 class MonthHeader extends StatelessWidget {
   const MonthHeader({
     super.key,
+    required this.textDirection,
     required this.weekParam,
   });
 
+  final TextDirection textDirection;
   final WeekParam weekParam;
 
   @override
@@ -21,6 +23,7 @@ class MonthHeader extends StatelessWidget {
         color: Theme.of(context).appBarTheme.backgroundColor,
       ),
       child: Row(
+        textDirection: textDirection,
         mainAxisSize: MainAxisSize.max,
         children: [
           for (var dayOfWeek = startOfWeek;

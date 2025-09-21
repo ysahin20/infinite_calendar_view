@@ -21,6 +21,7 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 - ♾️ **Infinite scroll**. Lazy build and best user experience
 - 🚀 **Good performance**. With several dozen appointments per day
 - ✏️ **All configurable**. Everything is configurable!
+- 🌍 **RTL Support (Arabic, Hindi, Hebrew... text/scroll direction)**
 - 🗂️ **Events filter**. Easy filter day events
 - 🗓️ **Events types**. Managing all-day events and multi-day events. Possibility of having several
   types of events with different placement
@@ -31,7 +32,7 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 - 👩‍👧‍👦 **Multi columns**. Manage multiple calendars in the same view !
 - 🗓️ **Events arranger**. Customize the placement of appointments (for each event type) in the
   schedule
-- ♾️ **many other features**
+- ➕ **many other features**
 - 🇫🇷 **Made by Pickywawa with ❤️**
 
 ## Preview

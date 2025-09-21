@@ -92,6 +92,7 @@ class TimeIndicatorPainter extends CustomPainter {
 class HoursPainter extends CustomPainter {
   const HoursPainter({
     required this.heightPerMinute,
+    this.textDirection = TextDirection.ltr,
     this.showCurrentHour = true,
     this.hourColor = Colors.black12,
     this.halfHourColor = Colors.black12,
@@ -103,6 +104,7 @@ class HoursPainter extends CustomPainter {
   });
 
   final double heightPerMinute;
+  final TextDirection textDirection;
   final bool showCurrentHour;
   final Color hourColor;
   final Color halfHourColor;
@@ -200,8 +202,9 @@ class HoursPainter extends CustomPainter {
           fontSize: 12,
         ),
       ),
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.right,
+      textDirection: textDirection,
+      textAlign:
+          textDirection == TextDirection.ltr ? TextAlign.right : TextAlign.left,
     );
   }
 

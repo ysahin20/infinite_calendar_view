@@ -1,10 +1,13 @@
 import 'package:example/views/events_months_view.dart';
+import 'package:example/views/events_months_view_rtl.dart';
 import 'package:example/views/events_planner_multi_columns_view.dart';
 import 'package:example/views/events_planner_multi_columns_view2.dart';
 import 'package:example/views/events_planner_one_day_view.dart';
 import 'package:example/views/events_planner_three_days_view.dart';
+import 'package:example/views/events_planner_view_rtl.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'app_bar.dart';
 import 'data.dart';
@@ -31,6 +34,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting("ar_TN");
     eventsController.updateCalendarData((calendarData) {
       calendarData.addEvents(events);
       calendarData.addEvents(fullDayEvents);
@@ -136,6 +140,15 @@ class CalendarViewWidget extends StatelessWidget {
           isDarkMode: darkMode,
         ),
       CalendarView.month => EventsMonthsView(
+          controller: controller,
+        ),
+      CalendarView.day3RTL => EventsPlannerRTL(
+          key: UniqueKey(),
+          controller: controller,
+          isDarkMode: darkMode,
+        ),
+      CalendarView.monthRTL => EventsMonthsViewRTL(
+          key: UniqueKey(),
           controller: controller,
         ),
     };

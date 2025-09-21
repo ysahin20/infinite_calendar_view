@@ -23,6 +23,7 @@ class EventsPlanner extends StatefulWidget {
     required this.controller,
     this.initialDate,
     this.daysShowed = 3,
+    this.textDirection = TextDirection.ltr,
     this.maxPreviousDays = 365,
     this.maxNextDays = 365,
     this.heightPerMinute = 0.9,
@@ -57,6 +58,10 @@ class EventsPlanner extends StatefulWidget {
 
   /// Number of day showing in same time
   final int daysShowed;
+
+  // Arabic, Hindi, Hebrew text direction
+  // Text direction : change position of elements and scroll direction
+  final TextDirection textDirection;
 
   /// max horizontal previous days scroll
   /// Null for infinite
@@ -239,7 +244,10 @@ class EventsPlannerState extends State<EventsPlanner> {
         // only when index has changed
         if (index != currentIndex) {
           currentIndex = index;
-          var currentDay = initialDate.add(Duration(days: currentIndex));
+          var currentDay = widget.textDirection == TextDirection.ltr
+              ? initialDate.add(Duration(days: currentIndex))
+              : initialDate.subtract(
+                  Duration(days: currentIndex + widget.daysShowed - 1));
           widget.onDayChange?.call(currentDay);
           widget.controller.updateFocusedDay(currentDay);
           topLeftCellValueNotifier.value = currentDay;
@@ -404,6 +412,7 @@ class EventsPlannerState extends State<EventsPlanner> {
                         child: SizedBox(
                           height: plannerHeight,
                           child: Row(
+                            textDirection: widget.textDirection,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // left Timeline
@@ -458,7 +467,9 @@ class EventsPlannerState extends State<EventsPlanner> {
         negChildCount: widget.maxPreviousDays,
         posChildCount: widget.maxNextDays,
         builder: (context, index) {
-          var day = initialDate.add(Duration(days: index));
+          var day = widget.textDirection == TextDirection.ltr
+              ? initialDate.add(Duration(days: index))
+              : initialDate.subtract(Duration(days: index));
 
           // notify day will be build
           Future(() => widget.dayParam.onDayBuild?.call(day));
@@ -467,6 +478,7 @@ class EventsPlannerState extends State<EventsPlanner> {
             contentBuilder: (context) {
               return DayWidget(
                 controller: _controller,
+                textDirection: widget.textDirection,
                 day: day,
                 todayColor: todayColor,
                 daySeparationWidthPadding: daySeparationWidthPadding,
@@ -493,6 +505,7 @@ class EventsPlannerState extends State<EventsPlanner> {
     Color currentHourIndicatorColor,
   ) {
     return VerticalTimeIndicatorWidget(
+      textDirection: widget.textDirection,
       timesIndicatorsParam: widget.timesIndicatorsParam,
       heightPerMinute: heightPerMinute,
       currentHourIndicatorHourVisibility:
@@ -507,6 +520,7 @@ class EventsPlannerState extends State<EventsPlanner> {
   ) {
     return HorizontalFullDayEventsWidget(
       controller: _controller,
+      textDirection: widget.textDirection,
       fullDayParam: widget.fullDayParam,
       columnsParam: widget.columnsParam,
       daySeparationWidthPadding: daySeparationWidthPadding,
@@ -525,7 +539,7 @@ class EventsPlannerState extends State<EventsPlanner> {
     Function(int newStartColumnIndex) onColumnIndexChanged,
   ) {
     return HorizontalDaysIndicatorWidget(
-      topLeftCellValueNotifier: topLeftCellValueNotifier,
+      textDirection: widget.textDirection,
       daysHeaderParam: widget.daysHeaderParam,
       columnsParam: widget.columnsParam,
       startColumnIndex: _startColumnIndex,
@@ -536,6 +550,7 @@ class EventsPlannerState extends State<EventsPlanner> {
       initialDate: initialDate,
       dayWidth: dayWidth,
       timesIndicatorsWidth: widget.timesIndicatorsParam.timesIndicatorsWidth,
+      topLeftCellValueNotifier: topLeftCellValueNotifier,
     );
   }
 
@@ -622,7 +637,11 @@ class EventsPlannerState extends State<EventsPlanner> {
       // stop scroll listener for avoid change day listener
       _listenHorizontalScrollDayChange = false;
       var index = date.withoutTime.getDayDifference(initialDate);
-      mainHorizontalController.jumpTo(index * dayWidth);
+      var offset = index * dayWidth;
+      if (widget.textDirection == TextDirection.rtl) {
+        offset = -offset;
+      }
+      mainHorizontalController.jumpTo(offset);
       _listenHorizontalScrollDayChange = true;
     }
   }

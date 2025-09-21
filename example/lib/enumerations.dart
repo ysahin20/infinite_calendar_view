@@ -8,7 +8,10 @@ enum CalendarView {
   month("Month", Icons.calendar_month),
   multi_column2("Multi columns 1", Icons.view_column_outlined),
   multi_column1("Multi columns 2", Icons.view_column_outlined),
-  day7("Seven days (web or tablet)", Icons.calendar_view_week);
+  day7("Seven days (web or tablet)", Icons.calendar_view_week),
+  day3RTL("Three days RTL (Hindi or Arabic)", Icons.view_column),
+  monthRTL("Month RTL (Hindi or Arabic)", Icons.calendar_month),
+  ;
 
   const CalendarView(
     this.text,

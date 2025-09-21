@@ -12,6 +12,7 @@ class Week extends StatefulWidget {
   const Week({
     super.key,
     required this.controller,
+    required this.textDirection,
     required this.weekParam,
     required this.weekHeight,
     required this.daysParam,
@@ -19,11 +20,12 @@ class Week extends StatefulWidget {
     required this.maxEventsShowed,
   });
 
+  final EventsController controller;
+  final TextDirection textDirection;
   final DateTime startOfWeek;
   final WeekParam weekParam;
   final double weekHeight;
   final DaysParam daysParam;
-  final EventsController controller;
   final int maxEventsShowed;
 
   @override
@@ -109,6 +111,7 @@ class _WeekState extends State<Week> {
                     Container(
                       height: widget.daysParam.headerHeight,
                       child: Row(
+                        textDirection: widget.textDirection,
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
@@ -144,8 +147,10 @@ class _WeekState extends State<Week> {
 
   DateTime getPositionDay(Offset localPosition, double dayWidth) {
     var x = localPosition.dx;
-    var dayIndex = (x / dayWidth).toInt();
-    var day = widget.startOfWeek.add(Duration(days: dayIndex));
+    var position = (x / dayWidth).toInt();
+    var dayOfWeek =
+        widget.textDirection == TextDirection.ltr ? position : 6 - position;
+    var day = widget.startOfWeek.add(Duration(days: dayOfWeek));
     return day;
   }
 
@@ -158,9 +163,10 @@ class _WeekState extends State<Week> {
       height: widget.daysParam.headerHeight,
       child: widget.daysParam.dayHeaderBuilder?.call(day) ??
           DefaultMonthDayHeader(
-            text: isStartOfMonth
-                ? "${defaultMonthAbrText[day.month - 1]} 1"
-                : day.day.toString(),
+            text: widget.daysParam.dayHeaderTextBuilder?.call(day) ??
+                (isStartOfMonth
+                    ? "${defaultMonthAbrText[day.month - 1]} 1"
+                    : day.day.toString()),
             isToday: DateUtils.isSameDay(day, DateTime.now()),
             textColor:
                 isStartOfMonth ? colorScheme.onSurface : colorScheme.outline,
@@ -177,7 +183,7 @@ class _WeekState extends State<Week> {
     var daySpacing = widget.weekParam.daySpacing;
     var eventSpacing = widget.daysParam.eventSpacing;
     var eventHeight = widget.daysParam.eventHeight;
-    var left = dayOfWeek * dayWidth + (daySpacing / 2);
+    var horizontalPosition = dayOfWeek * dayWidth + (daySpacing / 2);
     var eventsLength = weekEvents[dayOfWeek]?.length ?? 0;
     var day = widget.startOfWeek.add(Duration(days: dayOfWeek));
 
@@ -187,7 +193,12 @@ class _WeekState extends State<Week> {
     if (isLastSlot && notShowedEventsCount > 1) {
       return [
         Positioned(
-          left: left,
+          left: widget.textDirection == TextDirection.ltr
+              ? horizontalPosition
+              : null,
+          right: widget.textDirection == TextDirection.rtl
+              ? horizontalPosition
+              : null,
           top: (widget.maxEventsShowed - 1) * (eventHeight + eventSpacing),
           width: dayWidth - daySpacing,
           height: eventHeight,
@@ -220,7 +231,12 @@ class _WeekState extends State<Week> {
           (eventHeight + eventSpacing);
       return [
         Positioned(
-            left: left,
+            left: widget.textDirection == TextDirection.ltr
+                ? horizontalPosition
+                : null,
+            right: widget.textDirection == TextDirection.rtl
+                ? horizontalPosition
+                : null,
             top: top,
             width: eventWidth,
             height: eventHeight,

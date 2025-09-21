@@ -15,6 +15,7 @@ class DayWidget extends StatelessWidget {
   const DayWidget({
     super.key,
     required this.controller,
+    required this.textDirection,
     required this.day,
     required this.todayColor,
     required this.daySeparationWidthPadding,
@@ -32,6 +33,7 @@ class DayWidget extends StatelessWidget {
   });
 
   final EventsController controller;
+  final TextDirection textDirection;
   final DateTime day;
   final Color? todayColor;
   final double daySeparationWidthPadding;
@@ -90,6 +92,7 @@ class DayWidget extends StatelessWidget {
           children: [
             // offSet all days painter
             Row(
+              textDirection: textDirection,
               children: [
                 for (var column = startColumnIndex;
                     column < endColumnIndex;
@@ -122,6 +125,7 @@ class DayWidget extends StatelessWidget {
             // offSet particular days painter
             if (offTimesOfDay != null)
               Row(
+                textDirection: textDirection,
                 children: [
                   for (var column = startColumnIndex;
                       column < endColumnIndex;
@@ -190,6 +194,7 @@ class DayWidget extends StatelessWidget {
 
             // events
             Row(
+              textDirection: textDirection,
               children: [
                 for (var column = startColumnIndex;
                     column < endColumnIndex;

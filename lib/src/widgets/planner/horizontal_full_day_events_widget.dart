@@ -9,6 +9,7 @@ class HorizontalFullDayEventsWidget extends StatelessWidget {
   const HorizontalFullDayEventsWidget({
     super.key,
     required this.controller,
+    this.textDirection = TextDirection.ltr,
     required this.fullDayParam,
     required this.columnsParam,
     required this.daySeparationWidthPadding,
@@ -22,6 +23,7 @@ class HorizontalFullDayEventsWidget extends StatelessWidget {
   });
 
   final EventsController controller;
+  final TextDirection textDirection;
   final FullDayParam fullDayParam;
   final ColumnsParam columnsParam;
   final double daySeparationWidthPadding;
@@ -38,6 +40,7 @@ class HorizontalFullDayEventsWidget extends StatelessWidget {
     return Container(
       decoration: fullDayParam.fullDayEventsBarDecoration,
       child: Row(
+        textDirection: textDirection,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
@@ -67,7 +70,9 @@ class HorizontalFullDayEventsWidget extends StatelessWidget {
                   negChildCount: maxPreviousDays,
                   posChildCount: maxNextDays,
                   builder: (context, index) {
-                    var day = initialDate.add(Duration(days: index));
+                    var day = textDirection == TextDirection.ltr
+                        ? initialDate.add(Duration(days: index))
+                        : initialDate.subtract(Duration(days: index));
                     var isToday = DateUtils.isSameDay(day, DateTime.now());
                     return InfiniteListItem(
                       contentBuilder: (context) {

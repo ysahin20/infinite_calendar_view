@@ -6,12 +6,14 @@ import '../../painters/events_painters.dart';
 class VerticalTimeIndicatorWidget extends StatelessWidget {
   const VerticalTimeIndicatorWidget({
     super.key,
+    this.textDirection = TextDirection.ltr,
     required this.timesIndicatorsParam,
     required this.heightPerMinute,
     required this.currentHourIndicatorHourVisibility,
     required this.currentHourIndicatorColor,
   });
 
+  final TextDirection textDirection;
   final TimesIndicatorsParam timesIndicatorsParam;
   final double heightPerMinute;
   final bool currentHourIndicatorHourVisibility;
@@ -29,6 +31,7 @@ class VerticalTimeIndicatorWidget extends StatelessWidget {
                   ?.call(heightPerMinute) ??
               HoursPainter(
                 heightPerMinute: heightPerMinute,
+                textDirection: textDirection,
                 showCurrentHour: currentHourIndicatorHourVisibility,
                 hourColor: Theme.of(context).colorScheme.outline,
                 halfHourColor: Theme.of(context).colorScheme.outlineVariant,
