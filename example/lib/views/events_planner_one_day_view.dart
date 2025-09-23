@@ -1,7 +1,7 @@
+import 'package:example/views/widgets/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class EventsPlannerOneDayView extends StatefulWidget {
   const EventsPlannerOneDayView({
@@ -36,7 +36,7 @@ class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
     return Column(
       children: [
         const SizedBox(height: 8.0),
-        tableCalendar(),
+        buildCalendar(),
         const SizedBox(height: 4.0),
         Divider(
           color: Theme.of(context).colorScheme.outlineVariant,
@@ -68,6 +68,9 @@ class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
                   description: event.description,
                   color: event.color,
                   textColor: event.textColor,
+                  roundBorderRadius: 15,
+                  horizontalPadding: 8,
+                  verticalPadding: 8,
                   onTap: () => print("tap ${event.uniqueId}"),
                   onTapDown: (details) => print("tapdown ${event.uniqueId}"),
                 );
@@ -79,38 +82,16 @@ class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
     );
   }
 
-  TableCalendar tableCalendar() {
-    return TableCalendar(
-      firstDay: selectedDay.subtract(Duration(days: 365)),
-      lastDay: selectedDay.add(Duration(days: 365)),
-      focusedDay: selectedDay,
-      calendarFormat: CalendarFormat.week,
-      selectedDayPredicate: (day) => isSameDay(selectedDay, day),
-      onDaySelected: (selectedDay, focusedDay) {
+  Calendar buildCalendar() {
+    return Calendar(
+      selectedDay: selectedDay,
+      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
         setState(() {
           this.selectedDay = selectedDay;
         });
         widget.controller.updateFocusedDay(selectedDay);
         oneDayViewKey.currentState?.jumpToDate(selectedDay);
       },
-      headerVisible: false,
-      weekNumbersVisible: true,
-      headerStyle: const HeaderStyle(
-        formatButtonVisible: false,
-        titleCentered: true,
-      ),
-      calendarStyle: CalendarStyle(
-        outsideDaysVisible: true,
-        markerSize: 7,
-        todayDecoration: BoxDecoration(
-          color: Colors.blueGrey,
-          shape: BoxShape.circle,
-        ),
-        selectedDecoration: BoxDecoration(
-          color: Colors.blue,
-          shape: BoxShape.circle,
-        ),
-      ),
     );
   }
 }

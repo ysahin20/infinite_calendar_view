@@ -35,6 +35,20 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 - ➕ **many other features**
 - 🇫🇷 **Made by Pickywawa with ❤️**
 
+## Showcase
+
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase1.png" alt="drawing" width="200"/>
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase9.png" alt="drawing" width="190"/>
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase7.png" alt="drawing" width="190"/>
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase8.png" alt="drawing" width="190"/>
+
+Multi-columns or multi-types :
+
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase5.png" alt="drawing" width="190"/>
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase6.png" alt="drawing" width="190"/>
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase4.png" alt="drawing" width="190"/>
+<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase3.png" alt="drawing" width="150"/>
+
 ## Preview
 
 <table>
@@ -471,21 +485,6 @@ which may cause dependency conflicts.
 However, all texts are easily customizable. You can use intl to translate the texts into the desired
 language.
 [Local example](https://github.com/pickywawa/infinite_calendar_view/blob/f0234f435ad3e133c190f5006ac283a22edb2c80/example/lib/views/events_planner_all_params_view.dart#L39C22-L39C32)
-
-## Showcase
-
-multi-columns :
-
-   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase3.png" alt="drawing" width="300"/>
-
-classical :
-
-   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase1.png" alt="drawing" width="300"/>
-   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase2.png" alt="drawing" width="300"/>
-
-Different type (unavailable and time slot on the left)
-
-   <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase4.png" alt="drawing" width="300"/>
 
 ## License
 

@@ -34,7 +34,7 @@ class EventsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateFocusedDay(DateTime day) {
+  void updateFocusedDay(DateTime day) {
     focusedDay = day;
     onFocusedDayChange?.call(day);
   }
@@ -184,7 +184,7 @@ class CalendarData {
   }
 
   // clear all data
-  clearAll() {
+  void clearAll() {
     dayEvents.clear();
   }
 }

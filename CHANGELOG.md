@@ -1,3 +1,8 @@
+## 2.8.1
+
+- [documentation] Showcase
+- [lint] Clean warning
+
 ## 2.8.0
 
 - [new] RTL support (Arabic, Hindi, Hebrew... text direction)

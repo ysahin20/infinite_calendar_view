@@ -45,16 +45,7 @@ class _EventsPlannerMultiColumnSchedulerViewState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(height: 20),
-        Calendar(
-          selectedDay: selectedDay,
-          onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
-            setState(() {
-              this.selectedDay = selectedDay;
-            });
-            controller.updateFocusedDay(selectedDay);
-            oneDayViewKey.currentState?.jumpToDate(selectedDay);
-          },
-        ),
+        buildCalendar(),
         Divider(),
         Expanded(
           child: EventsPlanner(
@@ -105,6 +96,19 @@ class _EventsPlannerMultiColumnSchedulerViewState
           ),
         ),
       ],
+    );
+  }
+
+  Calendar buildCalendar() {
+    return Calendar(
+      selectedDay: selectedDay,
+      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+        setState(() {
+          this.selectedDay = selectedDay;
+        });
+        controller.updateFocusedDay(selectedDay);
+        oneDayViewKey.currentState?.jumpToDate(selectedDay);
+      },
     );
   }
 }
