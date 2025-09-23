@@ -37,17 +37,44 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 
 ## Showcase
 
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase1.png" alt="drawing" width="200"/>
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase9.png" alt="drawing" width="190"/>
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase7.png" alt="drawing" width="190"/>
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase8.png" alt="drawing" width="190"/>
-
-Multi-columns or multi-types :
-
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase5.png" alt="drawing" width="190"/>
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase6.png" alt="drawing" width="190"/>
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase4.png" alt="drawing" width="190"/>
-<img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase3.png" alt="drawing" width="150"/>
+<table>
+   <tr>
+      <td>
+         <div style="text-align:center;">One day</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase1.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Multi days</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase9.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">List with sticky header</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase7.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Month</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase8.png" alt="drawing" width="170"/>
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <div style="text-align:center;">Multi event types</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase4.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Multi Columns - 2 days</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase6.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Columns (multi agendas)</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase5.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Columns other example</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase3.png" alt="drawing" width="130"/> 
+      </td>
+   </tr>
+</table>
 
 ## Preview
 
