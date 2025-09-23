@@ -37,7 +37,7 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 
 ## Showcase
 
-<table>
+<table style="background-color:rgba(0, 0, 0, 0);">
    <tr>
       <td>
          <div style="text-align:center;">One day</div>
