@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:random_avatar/random_avatar.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar({
@@ -22,29 +23,12 @@ class Avatar extends StatelessWidget {
       6 => 'Alfred',
       int() => '',
     };
-    var imageUrl = switch (columIndex) {
-      0 => 'https://randomuser.me/api/portraits/thumb/women/88.jpg',
-      1 => 'https://randomuser.me/api/portraits/thumb/men/11.jpg',
-      2 => 'https://randomuser.me/api/portraits/thumb/women/85.jpg',
-      3 => 'https://randomuser.me/api/portraits/thumb/men/88.jpg',
-      4 => 'https://randomuser.me/api/portraits/thumb/men/12.jpg',
-      5 => 'https://randomuser.me/api/portraits/thumb/women/18.jpg',
-      6 => 'https://randomuser.me/api/portraits/thumb/men/90.jpg',
-      int() => '',
-    };
 
     return Container(
       width: columnWidth,
       child: Column(
         children: [
-          ClipOval(
-            child: Image.network(
-              imageUrl,
-              width: 40,
-              height: 40,
-              fit: BoxFit.cover,
-            ),
-          ),
+          RandomAvatar(name, height: 40, width: 40),
           Text(name, style: TextStyle(fontSize: 12)),
         ],
       ),

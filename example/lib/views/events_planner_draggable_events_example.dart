@@ -1,21 +1,18 @@
 import 'package:example/extension.dart';
+import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
 
 import '../utils.dart';
 
-class EventsPlannerDraggableEventsView extends StatelessWidget {
-  const EventsPlannerDraggableEventsView({
+class PlannerEventsDrag extends StatelessWidget {
+  const PlannerEventsDrag({
     super.key,
-    required this.controller,
     required this.daysShowed,
-    required this.isDarkMode,
   });
 
-  final EventsController controller;
   final int daysShowed;
-  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +20,11 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
     var initialVerticalScrollOffset = heightPerMinute * 7 * 60;
 
     return EventsPlanner(
-      controller: controller,
+      controller: eventsController,
       daysShowed: daysShowed,
       heightPerMinute: heightPerMinute,
       initialVerticalScrollOffset: initialVerticalScrollOffset,
       dayParam: DayParam(
-        onSlotTap: (columnIndex, exactDateTime, roundDateTime) {},
         dayEventBuilder: (event, height, width, heightPerMinute) {
           return draggableEvent(context, event, height, width);
         },
@@ -70,7 +66,7 @@ class EventsPlannerDraggableEventsView extends StatelessWidget {
       height: height,
       width: width,
       onDragEnd: (columnIndex, exactStart, exactEnd, roundStart, roundEnd) {
-        controller.updateCalendarData(
+        eventsController.updateCalendarData(
           (calendarData) => calendarData.moveEvent(event, roundStart),
         );
       },

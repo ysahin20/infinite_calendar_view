@@ -1,3 +1,4 @@
+import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
@@ -5,16 +6,13 @@ import 'package:intl/intl.dart';
 class EventsPlannerAllParamView extends StatelessWidget {
   const EventsPlannerAllParamView({
     super.key,
-    required this.controller,
   });
-
-  final EventsController controller;
 
   @override
   Widget build(BuildContext context) {
     return EventsPlanner(
       key: GlobalKey<EventsPlannerState>(),
-      controller: controller,
+      controller: eventsController,
       daysShowed: 3,
       initialDate: DateTime.now(),
       maxNextDays: 365,

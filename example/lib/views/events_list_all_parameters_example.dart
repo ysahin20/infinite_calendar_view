@@ -1,3 +1,4 @@
+import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
@@ -5,15 +6,12 @@ import 'package:intl/intl.dart';
 class EventsListView extends StatelessWidget {
   const EventsListView({
     super.key,
-    required this.controller,
   });
-
-  final EventsController controller;
 
   @override
   Widget build(BuildContext context) {
     return EventsList(
-      controller: controller,
+      controller: eventsController,
       initialDate: DateTime.now(),
       maxPreviousDays: 365,
       maxNextDays: 365,

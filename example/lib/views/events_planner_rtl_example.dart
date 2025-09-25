@@ -1,16 +1,12 @@
+import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart' as intl;
 
-class EventsPlannerRTL extends StatelessWidget {
-  const EventsPlannerRTL({
+class PlannerRTL extends StatelessWidget {
+  const PlannerRTL({
     super.key,
-    required this.controller,
-    required this.isDarkMode,
   });
-
-  final EventsController controller;
-  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +14,7 @@ class EventsPlannerRTL extends StatelessWidget {
     var initialVerticalScrollOffset = heightPerMinute * 7 * 60;
 
     return EventsPlanner(
-      controller: controller,
+      controller: eventsController,
       daysShowed: 3,
       textDirection: TextDirection.rtl,
       heightPerMinute: heightPerMinute,

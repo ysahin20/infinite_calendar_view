@@ -14,7 +14,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
   final EventsController eventsController;
   final void Function(bool darkMode)? onChangeDarkMode;
-  final void Function(CalendarView calendarMode)? onChangeCalendarView;
+  final void Function(Mode calendarMode)? onChangeCalendarView;
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -24,7 +24,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
-  var calendarMode = CalendarView.day3;
+  var calendarMode = Mode.day3;
   var darkMode = false;
   var appBarText = "";
 
@@ -90,7 +90,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             widget.onChangeCalendarView?.call(value);
           }),
           itemBuilder: (BuildContext context) {
-            return CalendarView.values.map((mode) {
+            return Mode.values.map((mode) {
               return PopupMenuItem(
                 value: mode,
                 child: ListTile(

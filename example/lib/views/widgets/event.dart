@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
-class EventWidget extends StatelessWidget {
-  const EventWidget(
+class CustomEventWidgetExample extends StatelessWidget {
+  const CustomEventWidgetExample(
     this.controller,
     this.event,
     this.height,

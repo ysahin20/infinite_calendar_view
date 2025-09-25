@@ -1,20 +1,19 @@
+import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart' as intl;
 
-class EventsMonthsViewRTL extends StatelessWidget {
-  const EventsMonthsViewRTL({
+class MonthsRTL extends StatelessWidget {
+  const MonthsRTL({
     super.key,
-    required this.controller,
   });
 
-  final EventsController controller;
   final locale = "ar_TN";
 
   @override
   Widget build(BuildContext context) {
     return EventsMonths(
-      controller: controller,
+      controller: eventsController,
       textDirection: TextDirection.rtl,
       weekParam: WeekParam(
         headerDayText: (dayOfWeek) => getDayName(dayOfWeek),

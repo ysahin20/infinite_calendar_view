@@ -1,4 +1,5 @@
 import 'package:example/data.dart';
+import 'package:example/main.dart';
 import 'package:example/utils.dart';
 import 'package:example/views/widgets/avatar.dart';
 import 'package:example/views/widgets/calendar.dart';
@@ -7,21 +8,16 @@ import 'package:example/views/widgets/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 
-class EventsPlannerMultiColumnSchedulerView extends StatefulWidget {
-  const EventsPlannerMultiColumnSchedulerView({
+class PlannerMultiColumns2 extends StatefulWidget {
+  const PlannerMultiColumns2({
     super.key,
-    required this.isDarkMode,
   });
 
-  final bool isDarkMode;
-
   @override
-  State<EventsPlannerMultiColumnSchedulerView> createState() =>
-      _EventsPlannerMultiColumnSchedulerViewState();
+  State<PlannerMultiColumns2> createState() => _PlannerMultiColumns2State();
 }
 
-class _EventsPlannerMultiColumnSchedulerViewState
-    extends State<EventsPlannerMultiColumnSchedulerView> {
+class _PlannerMultiColumns2State extends State<PlannerMultiColumns2> {
   GlobalKey<EventsPlannerState> oneDayViewKey = GlobalKey<EventsPlannerState>();
   late double heightPerMinute;
   late double initialVerticalScrollOffset;
@@ -79,16 +75,13 @@ class _EventsPlannerMultiColumnSchedulerViewState
             ),
 
             // personalize offTimes per column
-            offTimesParam: Utils.customOffTimes(
-              context,
-              widget.isDarkMode,
-            ),
+            offTimesParam: Utils.customOffTimes(context, isDarkMode),
             onDayChange: (newDay) => setState(() => selectedDay = newDay),
 
             // event cell
             dayParam: DayParam(
               dayEventBuilder: (event, height, width, heightPerMinute) =>
-                  EventWidget(controller, event, height, width),
+                  CustomEventWidgetExample(controller, event, height, width),
               onSlotTap: (columnIndex, exactDateTime, roundDateTime) =>
                   showSnack(context, "Slot Tap column = ${columnIndex}"),
               todayColor: Theme.of(context).colorScheme.surface,

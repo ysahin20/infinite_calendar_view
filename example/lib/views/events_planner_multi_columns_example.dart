@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
 
-class EventsPlannerMultiColumnView extends StatelessWidget {
-  const EventsPlannerMultiColumnView({
+class PlannerMultiColumns extends StatelessWidget {
+  const PlannerMultiColumns({
     super.key,
-    required this.isDarkMode,
   });
-
-  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {

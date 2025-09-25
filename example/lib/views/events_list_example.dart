@@ -1,3 +1,4 @@
+import 'package:example/main.dart';
 import 'package:example/views/widgets/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
@@ -6,10 +7,7 @@ import 'package:intl/intl.dart';
 class EventsListView extends StatefulWidget {
   const EventsListView({
     super.key,
-    required this.controller,
   });
-
-  final EventsController controller;
 
   @override
   State<EventsListView> createState() => _EventsListViewState();
@@ -22,7 +20,7 @@ class _EventsListViewState extends State<EventsListView> {
   @override
   void initState() {
     super.initState();
-    selectedDay = widget.controller.focusedDay;
+    selectedDay = eventsController.focusedDay;
   }
 
   @override
@@ -39,7 +37,7 @@ class _EventsListViewState extends State<EventsListView> {
         Expanded(
           child: EventsList(
             key: listViewKey,
-            controller: widget.controller,
+            controller: eventsController,
             dayEventsBuilder: (day, events) {
               return DefaultDayEvents(
                 events: events,
@@ -68,7 +66,7 @@ class _EventsListViewState extends State<EventsListView> {
         setState(() {
           this.selectedDay = selectedDay;
         });
-        widget.controller.updateFocusedDay(selectedDay);
+        eventsController.updateFocusedDay(selectedDay);
         listViewKey.currentState?.jumpToDate(selectedDay);
       },
     );

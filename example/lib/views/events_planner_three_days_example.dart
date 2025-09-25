@@ -1,16 +1,12 @@
+import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
 
-class EventsPlannerTreeDaysView extends StatelessWidget {
-  const EventsPlannerTreeDaysView({
+class PlannerTreeDays extends StatelessWidget {
+  const PlannerTreeDays({
     super.key,
-    required this.controller,
-    required this.isDarkMode,
   });
-
-  final EventsController controller;
-  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +14,7 @@ class EventsPlannerTreeDaysView extends StatelessWidget {
     var initialVerticalScrollOffset = heightPerMinute * 7 * 60;
 
     return EventsPlanner(
-      controller: controller,
+      controller: eventsController,
       daysShowed: 3,
       heightPerMinute: heightPerMinute,
       initialVerticalScrollOffset: initialVerticalScrollOffset,

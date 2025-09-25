@@ -1,3 +1,9 @@
+## 2.8.2
+
+- [documentation] Add rotated view examples
+- [documentation] Showcase
+- [lint] Clean warning
+
 ## 2.8.1
 
 - [documentation] Showcase

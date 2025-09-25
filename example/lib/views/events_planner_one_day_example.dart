@@ -1,31 +1,26 @@
+import 'package:example/main.dart';
 import 'package:example/views/widgets/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_calendar_view/infinite_calendar_view.dart';
 import 'package:intl/intl.dart';
 
-class EventsPlannerOneDayView extends StatefulWidget {
-  const EventsPlannerOneDayView({
+class PlannerOneDay extends StatefulWidget {
+  const PlannerOneDay({
     super.key,
-    required this.controller,
-    required this.isDarkMode,
   });
 
-  final EventsController controller;
-  final bool isDarkMode;
-
   @override
-  State<EventsPlannerOneDayView> createState() =>
-      _EventsPlannerOneDayViewState();
+  State<PlannerOneDay> createState() => _PlannerOneDayState();
 }
 
-class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
+class _PlannerOneDayState extends State<PlannerOneDay> {
   GlobalKey<EventsPlannerState> oneDayViewKey = GlobalKey<EventsPlannerState>();
   late DateTime selectedDay;
 
   @override
   void initState() {
     super.initState();
-    selectedDay = widget.controller.focusedDay;
+    selectedDay = eventsController.focusedDay;
   }
 
   @override
@@ -45,7 +40,7 @@ class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
         Expanded(
           child: EventsPlanner(
             key: oneDayViewKey,
-            controller: widget.controller,
+            controller: eventsController,
             daysShowed: 1,
             heightPerMinute: heightPerMinute,
             initialVerticalScrollOffset: initialVerticalScrollOffset,
@@ -89,7 +84,7 @@ class _EventsPlannerOneDayViewState extends State<EventsPlannerOneDayView> {
         setState(() {
           this.selectedDay = selectedDay;
         });
-        widget.controller.updateFocusedDay(selectedDay);
+        eventsController.updateFocusedDay(selectedDay);
         oneDayViewKey.currentState?.jumpToDate(selectedDay);
       },
     );
