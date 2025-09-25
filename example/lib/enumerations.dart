@@ -9,8 +9,8 @@ enum Mode {
   multiColumn("Multi columns 1", Icons.view_column_outlined),
   multiColumn2("Multi columns 2", Icons.view_column_outlined),
   day7("Seven days (web or tablet)", Icons.calendar_view_week),
-  day3RTL("Three days RTL (Hindi or Arabic)", Icons.view_column),
-  monthRTL("Month RTL (Hindi or Arabic)", Icons.calendar_month),
+  day3RTL("Three days RTL (Arabic, Hebrew etc.)", Icons.view_column),
+  monthRTL("Month RTL (Arabic, Hebrew etc.)", Icons.calendar_month),
   day3Rotation("Three days horizontal (rotation)", Icons.view_list),
   day3RotationMultiColumn(
       "Three days horizontal (rotation) with multi column", Icons.view_list),

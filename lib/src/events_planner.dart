@@ -628,7 +628,7 @@ class EventsPlannerState extends State<EventsPlanner> {
     });
   }
 
-  void updateVerticalScrollOffset(verticalScrollOffset) {
+  void updateVerticalScrollOffset(double verticalScrollOffset) {
     mainVerticalController.jumpTo(verticalScrollOffset);
   }
 

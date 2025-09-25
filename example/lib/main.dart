@@ -61,7 +61,6 @@ class _MyAppState extends State<MyApp> {
               _ => 500,
             },
             maxHeight: switch (calendarMode) {
-              Mode.day3Rotation => 600,
               _ => double.infinity,
             },
           ),

@@ -21,7 +21,7 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
 - ♾️ **Infinite scroll**. Lazy build and best user experience
 - 🚀 **Good performance**. With several dozen appointments per day
 - ✏️ **All configurable**. Everything is configurable!
-- 🌍 **RTL Support (Arabic, Hindi, Hebrew... text/scroll direction)**
+- 🌍 **RTL Support (Arabic, Hebrew etc. text/scroll direction)**
 - 🗂️ **Events filter**. Easy filter day events
 - 🗓️ **Events types**. Managing all-day events and multi-day events. Possibility of having several
   types of events with different placement
@@ -72,6 +72,24 @@ https://pickywawa.github.io/infinite_calendar_view_demo/
       <td>
          <div style="text-align:center;">Columns other example</div>
          <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase3.png" alt="drawing" width="130"/> 
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <div style="text-align:center;">Rotated planner (3 days)</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase11.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Rotated planner multi-row</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase10.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Planner RTL</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase12.png" alt="drawing" width="170"/>
+      </td>
+      <td>
+         <div style="text-align:center;">Month RTL</div>
+         <img src="https://raw.githubusercontent.com/pickywawa/infinite_calendar_view/master/readme_assets/showcase13.png" alt="drawing" width="130"/> 
       </td>
    </tr>
 </table>

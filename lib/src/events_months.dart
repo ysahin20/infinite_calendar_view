@@ -34,7 +34,7 @@ class EventsMonths extends StatefulWidget {
   /// initial first day
   final DateTime? initialMonth;
 
-  // Arabic, Hindi, Hebrew text direction
+  // (Arabic, Hebrew etc.) text direction
   // Text direction : change position of elements and scroll direction
   final TextDirection textDirection;
 
