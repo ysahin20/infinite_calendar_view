@@ -398,12 +398,14 @@ class EventsPlannerState extends State<EventsPlanner> {
                 // top days header
                 if (widget.daysHeaderParam.daysHeaderVisibility ||
                     widget.columnsParam.columns > 1) ...[
-                  SliverToBoxAdapter(
-                    child: getHorizontalDaysIndicatorWidget(
+                  SliverAppBar(
+                    expandedHeight: widget.daysHeaderParam.daysHeaderHeight,
+                    pinned: true,
+                    flexibleSpace: getHorizontalDaysIndicatorWidget(
                       _startColumnIndex,
                       onColumnIndexChanged,
                     ),
-                  )
+                  ),
                 ],
 
                 // full day events
