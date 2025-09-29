@@ -136,6 +136,29 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
         columnsParam.columns);
     return Stack(
       children: [
+        // columns
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            for (var column = startColumnIndex;
+                column < endColumnIndex;
+                column++)
+              if (builder != null)
+                builder.call(day, isToday, column,
+                    columnsParam.getColumSize(dayWidth, column))
+              else
+                DefaultColumnHeader(
+                  columnText: columnsParam.columnsLabels[column],
+                  columnWidth: columnsParam.getColumSize(dayWidth, column),
+                  backgroundColor: columnsParam.columnsColors.isNotEmpty
+                      ? columnsParam.columnsColors[column]
+                      : bgColor,
+                  foregroundColor:
+                      columnsParam.columnsForegroundColors?[column] ??
+                          colorScheme.primary,
+                )
+          ],
+        ),
         // left previous columns icons
         if (startColumnIndex > 0 && columnsParam.maxColumns != null)
           Positioned(
@@ -176,29 +199,6 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
               },
             ),
           ),
-
-        // columns
-        Row(
-          children: [
-            for (var column = startColumnIndex;
-                column < endColumnIndex;
-                column++)
-              if (builder != null)
-                builder.call(day, isToday, column,
-                    columnsParam.getColumSize(dayWidth, column))
-              else
-                DefaultColumnHeader(
-                  columnText: columnsParam.columnsLabels[column],
-                  columnWidth: columnsParam.getColumSize(dayWidth, column),
-                  backgroundColor: columnsParam.columnsColors.isNotEmpty
-                      ? columnsParam.columnsColors[column]
-                      : bgColor,
-                  foregroundColor:
-                      columnsParam.columnsForegroundColors?[column] ??
-                          colorScheme.primary,
-                )
-          ],
-        ),
       ],
     );
   }
