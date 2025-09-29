@@ -330,21 +330,6 @@ class EventsPlannerState extends State<EventsPlanner> {
 
         return Column(
           children: [
-            // top days header
-            if (widget.daysHeaderParam.daysHeaderVisibility ||
-                widget.columnsParam.columns > 1)
-              getHorizontalDaysIndicatorWidget(
-                _startColumnIndex,
-                _onColumnIndexChanged,
-              ),
-
-            // full day events
-            if (widget.fullDayParam.fullDayEventsBarVisibility)
-              getHorizontalFullDayEventsWidget(
-                _daySeparationWidthPadding,
-                _todayColor,
-              ),
-
             // days content
             Expanded(
               child: getPlannerAndTimesWidget(
@@ -352,6 +337,8 @@ class EventsPlannerState extends State<EventsPlanner> {
                 _currentHourIndicatorColor,
                 _todayColor,
                 _daySeparationWidthPadding,
+                _startColumnIndex,
+                _onColumnIndexChanged,
               ),
             ),
           ],
@@ -377,6 +364,8 @@ class EventsPlannerState extends State<EventsPlanner> {
     Color currentHourIndicatorColor,
     Color todayColor,
     double daySeparationWidthPadding,
+    int startColumnIndex,
+    Function(int newStartColumnIndex) onColumnIndexChanged,
   ) {
     var zoom = widget.pinchToZoomParam;
     var canZoom = zoom.pinchToZoom;
@@ -405,6 +394,29 @@ class EventsPlannerState extends State<EventsPlanner> {
               controller: mainVerticalController,
               slivers: [
                 ...widget.customSliverWidgets,
+
+                // top days header
+                if (widget.daysHeaderParam.daysHeaderVisibility ||
+                    widget.columnsParam.columns > 1) ...[
+                  SliverToBoxAdapter(
+                    child: getHorizontalDaysIndicatorWidget(
+                      _startColumnIndex,
+                      onColumnIndexChanged,
+                    ),
+                  )
+                ],
+
+                // full day events
+                if (widget.fullDayParam.fullDayEventsBarVisibility) ...[
+                  SliverToBoxAdapter(
+                    child: getHorizontalFullDayEventsWidget(
+                      daySeparationWidthPadding,
+                      todayColor,
+                    ),
+                  )
+                ],
+
+                // top days header
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     childCount: 1,
