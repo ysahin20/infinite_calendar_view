@@ -48,6 +48,7 @@ class EventsPlanner extends StatefulWidget {
     this.offTimesParam = const OffTimesParam(),
     this.pinchToZoomParam = const PinchToZoomParameters(),
     this.fullDayParam = const FullDayParam(),
+    this.customSliverWidgets = const [],
   });
 
   /// data controller
@@ -133,6 +134,9 @@ class EventsPlanner extends StatefulWidget {
 
   // full day parameters
   final FullDayParam fullDayParam;
+
+  // custom sliver widgets
+  final List<Widget> customSliverWidgets;
 
   @override
   State createState() => EventsPlannerState();
@@ -400,6 +404,7 @@ class EventsPlannerState extends State<EventsPlanner> {
                   : widget.verticalScrollPhysics,
               controller: mainVerticalController,
               slivers: [
+                ...widget.customSliverWidgets,
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     childCount: 1,
