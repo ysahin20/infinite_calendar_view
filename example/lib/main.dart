@@ -18,7 +18,7 @@ import 'views/events_list_example.dart';
 import 'views/events_planner_draggable_events_example.dart';
 
 var isDarkMode = false;
-var calendarMode = Mode.day3Draggable;
+var calendarMode = Mode.day;
 var eventsController = EventsController();
 
 void main() {
@@ -64,18 +64,20 @@ class _MyAppState extends State<MyApp> {
               _ => double.infinity,
             },
           ),
-          child: Scaffold(
-            appBar: CustomAppBar(
-              eventsController: eventsController,
-              onChangeCalendarView: (newCalendarMode) {
-                setState(() => calendarMode = newCalendarMode);
-              },
-              onChangeDarkMode: (darkMode) {
-                setState(() => isDarkMode = darkMode);
-              },
-            ),
-            body: CalendarViewWidget(),
-          ),
+          child: calendarMode != Mode.day
+              ? Scaffold(
+                  appBar: CustomAppBar(
+                    eventsController: eventsController,
+                    onChangeCalendarView: (newCalendarMode) {
+                      setState(() => calendarMode = newCalendarMode);
+                    },
+                    onChangeDarkMode: (darkMode) {
+                      setState(() => isDarkMode = darkMode);
+                    },
+                  ),
+                  body: CalendarViewWidget(),
+                )
+              : Scaffold(body: CalendarViewWidget()),
         ),
       ),
     );
