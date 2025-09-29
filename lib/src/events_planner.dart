@@ -400,6 +400,7 @@ class EventsPlannerState extends State<EventsPlanner> {
                     widget.columnsParam.columns > 1) ...[
                   SliverAppBar(
                     expandedHeight: widget.daysHeaderParam.daysHeaderHeight,
+                    collapsedHeight: widget.daysHeaderParam.daysHeaderHeight,
                     pinned: true,
                     // leading: null,
                     automaticallyImplyLeading: false,
