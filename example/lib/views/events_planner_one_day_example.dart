@@ -34,6 +34,13 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
       bottom: false,
       child: Column(
         children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PlannerOneDay()));
+            },
+            child: Text("sss"),
+          ),
           Expanded(
             child: EventsPlanner(
               key: oneDayViewKey,

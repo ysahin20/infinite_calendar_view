@@ -401,6 +401,8 @@ class EventsPlannerState extends State<EventsPlanner> {
                   SliverAppBar(
                     expandedHeight: widget.daysHeaderParam.daysHeaderHeight,
                     pinned: true,
+                    // leading: null,
+                    automaticallyImplyLeading: false,
                     flexibleSpace: getHorizontalDaysIndicatorWidget(
                       _startColumnIndex,
                       onColumnIndexChanged,
