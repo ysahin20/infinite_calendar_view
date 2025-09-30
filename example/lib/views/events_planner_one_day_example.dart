@@ -73,7 +73,7 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
               initialVerticalScrollOffset: initialVerticalScrollOffset,
               horizontalScrollPhysics: const PageScrollPhysics(),
               daysHeaderParam: DaysHeaderParam(
-                daysHeaderHeight: 70,
+                daysHeaderHeight: 72,
                 daysHeaderVisibility: false,
                 dayHeaderTextBuilder: (day) => DateFormat("E d").format(day),
               ),
@@ -86,7 +86,7 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
                 columns: 6,
                 maxColumns: 3,
                 columnsWidthRatio: List.generate(6, (i) => 1 / 3),
-                nextColumnsIcon: Icon(Icons.arrow_forward_ios),
+                // nextColumnsIcon: Icon(Icons.arrow_forward_ios),
                 columnHeaderBuilder: (day, isToday, columIndex, columnWidth) {
                   // return DefaultColumnHeader(
                   //   backgroundColor: Colors.blue,
@@ -114,7 +114,7 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
 
                   return Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           personNames[columIndex],
@@ -144,6 +144,17 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
                             color: Colors.redAccent,
                           ),
                         ),
+                        SizedBox(height: 4),
+                        if (thisWeekWorkedHours[columIndex] != null &&
+                            thisWeekTotalEligibleHours[columIndex] != null)
+                          Text(
+                            "${thisWeekWorkedHours[columIndex]} / ${thisWeekTotalEligibleHours[columIndex]}",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 12,
+                              fontFamily: "Montserrat",
+                            ),
+                          ),
                       ],
                     ),
                   );

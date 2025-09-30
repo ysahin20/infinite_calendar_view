@@ -403,6 +403,7 @@ class EventsPlannerState extends State<EventsPlanner> {
                     collapsedHeight: widget.daysHeaderParam.daysHeaderHeight,
                     toolbarHeight: widget.daysHeaderParam.daysHeaderHeight,
                     pinned: true,
+                    surfaceTintColor: widget.daysHeaderParam.daysHeaderColor,
                     // leading: null,
                     automaticallyImplyLeading: false,
                     flexibleSpace: getHorizontalDaysIndicatorWidget(

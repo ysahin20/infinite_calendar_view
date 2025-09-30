@@ -95,6 +95,7 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
                                 onColumnIndexChanged,
                                 day,
                                 isToday,
+                                daysHeaderParam.daysHeaderHeight,
                               )
                           ],
                         ),
@@ -125,6 +126,7 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
     Function(int newStartColumnIndex) onColumnIndexChanged,
     DateTime day,
     bool isToday,
+    double columnHeaderHeight,
   ) {
     var colorScheme = Theme.of(context).colorScheme;
     var bgColor = colorScheme.surface;
@@ -137,68 +139,122 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
     return Stack(
       children: [
         // columns
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            for (var column = startColumnIndex;
-                column < endColumnIndex;
-                column++)
-              if (builder != null)
-                builder.call(day, isToday, column,
-                    columnsParam.getColumSize(dayWidth, column))
-              else
-                DefaultColumnHeader(
-                  columnText: columnsParam.columnsLabels[column],
-                  columnWidth: columnsParam.getColumSize(dayWidth, column),
-                  backgroundColor: columnsParam.columnsColors.isNotEmpty
-                      ? columnsParam.columnsColors[column]
-                      : bgColor,
-                  foregroundColor:
-                      columnsParam.columnsForegroundColors?[column] ??
-                          colorScheme.primary,
-                )
-          ],
+        Container(
+          height: columnHeaderHeight,
+          child: Center(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                for (var column = startColumnIndex;
+                    column < endColumnIndex;
+                    column++)
+                  if (builder != null)
+                    builder.call(day, isToday, column,
+                        columnsParam.getColumSize(dayWidth, column))
+                  else
+                    DefaultColumnHeader(
+                      columnText: columnsParam.columnsLabels[column],
+                      columnWidth: columnsParam.getColumSize(dayWidth, column),
+                      backgroundColor: columnsParam.columnsColors.isNotEmpty
+                          ? columnsParam.columnsColors[column]
+                          : bgColor,
+                      foregroundColor:
+                          columnsParam.columnsForegroundColors?[column] ??
+                              colorScheme.primary,
+                    )
+              ],
+            ),
+          ),
         ),
         // left previous columns icons
         if (startColumnIndex > 0 && columnsParam.maxColumns != null)
-          Positioned(
-            left: 0,
-            child: IconButton(
-              icon: columnsParam.previousColumnsIcon ??
-                  Icon(
-                    Icons.arrow_back_ios_rounded,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-              onPressed: () {
-                var newStartColumnIndex =
-                    max(0, startColumnIndex - columnsParam.maxColumns!);
-                onColumnIndexChanged.call(newStartColumnIndex);
-              },
+          Container(
+            height: columnHeaderHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: columnsParam.previousColumnsIcon ??
+                      Icon(
+                        Icons.arrow_back_ios_rounded,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                  onPressed: () {
+                    var newStartColumnIndex =
+                        max(0, startColumnIndex - columnsParam.maxColumns!);
+                    onColumnIndexChanged.call(newStartColumnIndex);
+                  },
+                ),
+                Spacer(),
+              ],
             ),
           ),
+        // Positioned(
+        //   left: 0,
+        //   child: IconButton(
+        //     icon: columnsParam.previousColumnsIcon ??
+        //         Icon(
+        //           Icons.arrow_back_ios_rounded,
+        //           size: 20,
+        //           color: Theme.of(context).colorScheme.onSurface,
+        //         ),
+        //     onPressed: () {
+        //       var newStartColumnIndex =
+        //           max(0, startColumnIndex - columnsParam.maxColumns!);
+        //       onColumnIndexChanged.call(newStartColumnIndex);
+        //     },
+        //   ),
+        // ),
 
         // right next columns icon
         if (endColumnIndex < columnsParam.columns &&
             columnsParam.maxColumns != null)
-          Positioned(
-            right: 0,
-            child: IconButton(
-              icon: columnsParam.nextColumnsIcon ??
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-              onPressed: () {
-                var newStartColumnIndex = min(
-                  columnsParam.columns - columnsParam.maxColumns!,
-                  startColumnIndex + columnsParam.maxColumns!,
-                );
-                onColumnIndexChanged.call(newStartColumnIndex);
-              },
+          Container(
+            // color: Colors.red.withOpacity(0.2),
+            height: columnHeaderHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Spacer(),
+                IconButton(
+                  icon: columnsParam.nextColumnsIcon ??
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                  onPressed: () {
+                    var newStartColumnIndex = min(
+                      columnsParam.columns - columnsParam.maxColumns!,
+                      startColumnIndex + columnsParam.maxColumns!,
+                    );
+                    onColumnIndexChanged.call(newStartColumnIndex);
+                  },
+                ),
+              ],
             ),
           ),
+        // Positioned(
+        //   right: 0,
+        //   child: IconButton(
+        //     icon: columnsParam.nextColumnsIcon ??
+        //         Icon(
+        //           Icons.arrow_forward_ios_rounded,
+        //           size: 20,
+        //           color: Theme.of(context).colorScheme.onSurface,
+        //         ),
+        //     onPressed: () {
+        //       var newStartColumnIndex = min(
+        //         columnsParam.columns - columnsParam.maxColumns!,
+        //         startColumnIndex + columnsParam.maxColumns!,
+        //       );
+        //       onColumnIndexChanged.call(newStartColumnIndex);
+        //     },
+        //   ),
+        // ),
       ],
     );
   }
