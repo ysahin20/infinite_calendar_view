@@ -149,7 +149,18 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
                   );
                 },
               ),
+              fullDayParam: const FullDayParam(
+                fullDayEventsBarVisibility: false,
+                showMultiDayEvents: false,
+              ),
               dayParam: DayParam(
+                dayCustomPainter: (heightPerMinute, isToday) {
+                  return LinesPainter(
+                    heightPerMinute: heightPerMinute,
+                    isToday: isToday,
+                    lineColor: Colors.black12,
+                  );
+                },
                 dayEventBuilder: (event, height, width, heightPerMinute) {
                   return DefaultDayEvent(
                     height: height,
