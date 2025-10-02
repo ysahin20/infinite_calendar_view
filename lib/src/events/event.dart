@@ -18,7 +18,8 @@ class Event {
   }) {
     if (!isFullDay) {
       assert(endTime != null);
-      assert(endTime!.isAfter(startTime));
+      assert(endTime!.isAfter(startTime),
+          'endTime($endTime) must be after startTime($startTime)');
     } else if (endTime != null) {
       assert(endTime!.isAfter(startTime));
     }

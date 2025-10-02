@@ -18,7 +18,7 @@ import 'views/events_list_example.dart';
 import 'views/events_planner_draggable_events_example.dart';
 
 var isDarkMode = false;
-var calendarMode = Mode.day;
+var calendarMode = Mode.day3;
 var eventsController = EventsController();
 
 void main() {
