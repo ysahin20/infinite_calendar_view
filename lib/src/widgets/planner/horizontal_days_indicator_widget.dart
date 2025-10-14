@@ -76,11 +76,11 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
 
                   return InfiniteListItem(
                     contentBuilder: (context) {
-                      print(
-                          "columnsParam.canHeaderHaveOnlyOneColumn: ${columnsParam.canHeaderHaveOnlyOneColumn}");
-                      print("columnsParam.columns: ${columnsParam.columns}");
-                      print("columnsParam.isColumnHeaderVisible: ${columnsParam.isColumnHeaderVisible}");
-                      print("daysHeaderParam.daysHeaderVisibility: ${daysHeaderParam.daysHeaderVisibility}");
+                      // print(
+                      //     "columnsParam.canHeaderHaveOnlyOneColumn: ${columnsParam.canHeaderHaveOnlyOneColumn}");
+                      // print("columnsParam.columns: ${columnsParam.columns}");
+                      // print("columnsParam.isColumnHeaderVisible: ${columnsParam.isColumnHeaderVisible}");
+                      // print("daysHeaderParam.daysHeaderVisibility: ${daysHeaderParam.daysHeaderVisibility}");
                       return SizedBox(
                         width: dayWidth,
                         child: Column(
@@ -153,8 +153,8 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
             : columnsParam.columns,
         columnsParam.columns);
 
-    print("startColumnIndex: $startColumnIndex");
-    print("endColumnIndex: $endColumnIndex");
+    // print("startColumnIndex: $startColumnIndex");
+    // print("endColumnIndex: $endColumnIndex");
 
     return Stack(
       children: [
