@@ -76,6 +76,11 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
 
                   return InfiniteListItem(
                     contentBuilder: (context) {
+                      print(
+                          "columnsParam.canHeaderHaveOnlyOneColumn: ${columnsParam.canHeaderHaveOnlyOneColumn}");
+                      print("columnsParam.columns: ${columnsParam.columns}");
+                      print("columnsParam.isColumnHeaderVisible: ${columnsParam.isColumnHeaderVisible}");
+                      print("daysHeaderParam.daysHeaderVisibility: ${daysHeaderParam.daysHeaderVisibility}");
                       return SizedBox(
                         width: dayWidth,
                         child: Column(
@@ -86,17 +91,28 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
                                   ? daysHeaderParam.dayHeaderBuilder!
                                       .call(day, isToday)
                                   : getDefaultDayHeader(day, isToday),
-                            if (columnsParam.columns > 1 ||
-                                columnsParam.columnHeaderBuilder != null ||
-                                columnsParam.columnsLabels.isNotEmpty)
-                              getColumnsHeader(
-                                context,
-                                startColumnIndex,
-                                onColumnIndexChanged,
-                                day,
-                                isToday,
-                                daysHeaderParam.daysHeaderHeight,
-                              )
+                            if (columnsParam.isColumnHeaderVisible)
+                              if (columnsParam.canHeaderHaveOnlyOneColumn &&
+                                  columnsParam.columns == 1)
+                                getColumnsHeader(
+                                  context,
+                                  startColumnIndex,
+                                  onColumnIndexChanged,
+                                  day,
+                                  isToday,
+                                  daysHeaderParam.daysHeaderHeight,
+                                )
+                              else if (columnsParam.columns > 1 ||
+                                  columnsParam.columnHeaderBuilder != null ||
+                                  columnsParam.columnsLabels.isNotEmpty)
+                                getColumnsHeader(
+                                  context,
+                                  startColumnIndex,
+                                  onColumnIndexChanged,
+                                  day,
+                                  isToday,
+                                  daysHeaderParam.daysHeaderHeight,
+                                )
                           ],
                         ),
                       );
@@ -136,6 +152,10 @@ class HorizontalDaysIndicatorWidget extends StatelessWidget {
             ? startColumnIndex + columnsParam.maxColumns!
             : columnsParam.columns,
         columnsParam.columns);
+
+    print("startColumnIndex: $startColumnIndex");
+    print("endColumnIndex: $endColumnIndex");
+
     return Stack(
       children: [
         // columns

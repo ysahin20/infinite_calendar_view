@@ -397,7 +397,9 @@ class EventsPlannerState extends State<EventsPlanner> {
 
                 // top days header
                 if (widget.daysHeaderParam.daysHeaderVisibility ||
-                    widget.columnsParam.columns > 1) ...[
+                    widget.columnsParam.isColumnHeaderVisible ||
+                    (widget.columnsParam.columns == 1 &&
+                        widget.columnsParam.canHeaderHaveOnlyOneColumn)) ...[
                   SliverAppBar(
                     expandedHeight: widget.daysHeaderParam.daysHeaderHeight,
                     collapsedHeight: widget.daysHeaderParam.daysHeaderHeight,
@@ -889,6 +891,8 @@ class ColumnsParam {
     this.columnCustomPainter,
     this.previousColumnsIcon,
     this.nextColumnsIcon,
+    this.canHeaderHaveOnlyOneColumn = false,
+    this.isColumnHeaderVisible = false,
   });
 
   /// number of columns per day
@@ -913,6 +917,12 @@ class ColumnsParam {
 
   /// right icon to change displayed columns
   final Icon? nextColumnsIcon;
+
+  /// visibility of column header
+  final bool canHeaderHaveOnlyOneColumn;
+
+  /// visibility of column header
+  final bool isColumnHeaderVisible;
 
   /// column custom builder in top bar
   final Widget Function(

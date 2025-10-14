@@ -18,7 +18,7 @@ import 'views/events_list_example.dart';
 import 'views/events_planner_draggable_events_example.dart';
 
 var isDarkMode = false;
-var calendarMode = Mode.day3;
+var calendarMode = Mode.day;
 var eventsController = EventsController();
 
 void main() {
@@ -99,12 +99,12 @@ class _MyAppState extends State<MyApp> {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      primaryColor: Colors.blue,
-      appBarTheme: AppBarTheme(backgroundColor: Colors.blue),
+      primaryColor: Colors.green,
+      appBarTheme: AppBarTheme(backgroundColor: Colors.green),
       colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.light,
-        seedColor: Colors.blue,
-        primary: Colors.blue,
+        seedColor: Colors.green,
+        primary: Colors.green,
       ),
     );
   }

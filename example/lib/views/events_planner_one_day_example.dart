@@ -24,6 +24,87 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
     selectedDay = eventsController.focusedDay;
   }
 
+  ColumnsParam getColumnsParam(int totalColumns) {
+    int maxColumns = 3;
+
+    if (totalColumns < maxColumns) {
+      maxColumns = totalColumns;
+    }
+    return ColumnsParam(
+      columns: totalColumns,
+      maxColumns: maxColumns,
+      canHeaderHaveOnlyOneColumn: true,
+      isColumnHeaderVisible: true,
+      columnsWidthRatio: List.generate(totalColumns, (i) => 1 / maxColumns),
+      // nextColumnsIcon: Icon(Icons.arrow_forward_ios),
+      columnHeaderBuilder: (day, isToday, columIndex, columnWidth) {
+        // return DefaultColumnHeader(
+        //   backgroundColor: Colors.blue,
+        //   foregroundColor: Colors.white,
+        //   columnText: ["DSP1", "DSP2", "DSP3"].elementAt(columIndex),
+        //   columnWidth: columnWidth,
+        // );
+        List<String> personNames = [
+          "Jackson, Jack",
+          "Haraldson, Harald",
+          "Johnson, John",
+          "Jimson, Jim",
+          "Carson, Car",
+          "Mason, Ma",
+        ];
+        List<double> thisWeekWorkedHours = [21, 33, 40, 30, 20, 39];
+        List<double> thisWeekTotalEligibleHours = [40, 40, 40, 40, 40, 40];
+
+        return Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                personNames[columIndex],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Montserrat",
+                ),
+              ),
+              SizedBox(height: 4),
+              CircleAvatar(
+                backgroundColor: Colors.red,
+                radius: 10,
+                child: Icon(
+                  thisWeekWorkedHours[columIndex] >=
+                          thisWeekTotalEligibleHours[columIndex]
+                      ? Icons.error
+                      : thisWeekTotalEligibleHours[columIndex] -
+                                  thisWeekWorkedHours[columIndex] <
+                              8
+                          ? Icons.warning
+                          : Icons.check,
+                  size: 16,
+                  color: Colors.redAccent,
+                ),
+              ),
+              SizedBox(height: 4),
+              if (thisWeekWorkedHours[columIndex] != null &&
+                  thisWeekTotalEligibleHours[columIndex] != null)
+                Text(
+                  "${thisWeekWorkedHours[columIndex]} / ${thisWeekTotalEligibleHours[columIndex]}",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 12,
+                    fontFamily: "Montserrat",
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var heightPerMinute = 1.0;
@@ -75,91 +156,14 @@ class _PlannerOneDayState extends State<PlannerOneDay> {
               daysHeaderParam: DaysHeaderParam(
                 daysHeaderHeight: 72,
                 daysHeaderVisibility: false,
-                dayHeaderTextBuilder: (day) => DateFormat("E d").format(day),
+                // dayHeaderTextBuilder: (day) => DateFormat("E d").format(day),
               ),
               onDayChange: (firstDay) {
                 setState(() {
                   selectedDay = firstDay;
                 });
               },
-              columnsParam: ColumnsParam(
-                columns: 6,
-                maxColumns: 3,
-                columnsWidthRatio: List.generate(6, (i) => 1 / 3),
-                // nextColumnsIcon: Icon(Icons.arrow_forward_ios),
-                columnHeaderBuilder: (day, isToday, columIndex, columnWidth) {
-                  // return DefaultColumnHeader(
-                  //   backgroundColor: Colors.blue,
-                  //   foregroundColor: Colors.white,
-                  //   columnText: ["DSP1", "DSP2", "DSP3"].elementAt(columIndex),
-                  //   columnWidth: columnWidth,
-                  // );
-                  List<String> personNames = [
-                    "Jackson, Jack",
-                    "Haraldson, Harald",
-                    "Johnson, John",
-                    "Jimson, Jim",
-                    "Carson, Car",
-                    "Mason, Ma",
-                  ];
-                  List<double> thisWeekWorkedHours = [21, 33, 40, 30, 20, 39];
-                  List<double> thisWeekTotalEligibleHours = [
-                    40,
-                    40,
-                    40,
-                    40,
-                    40,
-                    40
-                  ];
-
-                  return Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          personNames[columIndex],
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Montserrat",
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        CircleAvatar(
-                          backgroundColor: Colors.red,
-                          radius: 10,
-                          child: Icon(
-                            thisWeekWorkedHours[columIndex] >=
-                                    thisWeekTotalEligibleHours[columIndex]
-                                ? Icons.error
-                                : thisWeekTotalEligibleHours[columIndex] -
-                                            thisWeekWorkedHours[columIndex] <
-                                        8
-                                    ? Icons.warning
-                                    : Icons.check,
-                            size: 16,
-                            color: Colors.redAccent,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        if (thisWeekWorkedHours[columIndex] != null &&
-                            thisWeekTotalEligibleHours[columIndex] != null)
-                          Text(
-                            "${thisWeekWorkedHours[columIndex]} / ${thisWeekTotalEligibleHours[columIndex]}",
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 12,
-                              fontFamily: "Montserrat",
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+              columnsParam: getColumnsParam(1),
               fullDayParam: const FullDayParam(
                 fullDayEventsBarVisibility: false,
                 showMultiDayEvents: false,
